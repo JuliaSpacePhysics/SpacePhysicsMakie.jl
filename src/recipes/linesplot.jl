@@ -31,11 +31,7 @@ function Makie.convert_arguments(::Type{<:LinesPlot}, x::AbstractVector, ys::Abs
     return (curves,)
 end
 
-# """Convert the vector of vectors into a single vector of curves"""
-Makie.convert_arguments(T::Type{<:LinesPlot}, ys::Tuple) = reduce(vcat, convert_arguments.(T, ys))
-Makie.convert_arguments(T::Type{<:LinesPlot}, ys::AbstractVector{<:AbstractArray}) = reduce(vcat, convert_arguments.(T, ys))
-
-function Makie.plot!(plot::LinesPlot)
+function Makie.plot!(plot::LinesPlot{<:Tuple{AbstractArray}})
     curves = plot[1]
     return map(eachindex(curves[])) do i
         positions = lift(c -> c[i], plot, curves)
@@ -46,7 +42,7 @@ function Makie.plot!(plot::LinesPlot)
 end
 
 
-function Makie.plot!(plot::LinesPlot{<:Tuple{AbstractArray}})
+function Makie.plot!(plot::LinesPlot{<:Tuple{AbstractArray{<:Number}}})
     A = resample(plot[1][])
     x = makie_x(A)
     lbs = something(plot.labels[], Some(labels(A)))

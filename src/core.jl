@@ -3,33 +3,38 @@ Core functionality for time series plotting.
 This file contains the main `tplot` function and its variants.
 """
 
+"""
+    default_palette(x)
+
+Generate a default palette for positioning plots in a grid.
+Returns an iterator of (row, column) tuples for each item in x.
+"""
 default_palette(x) = ((i, 1) for i in 1:length(x))
 
 mappable(x) = values(x)
 mappable(x::SupportTypes) = (x,)
 
 """
-    tplot(f, tas; legend=(; position=Right()), link_xaxes=true, link_yaxes=false, rowgap=5, transform=transform_pipeline, kwargs...)
+    tplot(f, tas; legend=(; position=Right()), link_xaxes=true, link_yaxes=false, rowgap=5, kwargs...)
 
 Lay out multiple time series across different panels (rows) on one Figure / GridPosition `f`
 
 If `legend` is `nothing`, no legend will be added to the plot. Otherwise, `legend` can be a `NamedTuple` containing options for legend placement and styling.
-By default, the time series are transformed via `transform_pipeline`, which is extensible via `transform`.
+By default, the time series are transformed via extensible `transform`.
 
-See also: [`tplot_panel`](@ref), [`transform_pipeline`](@ref), [`transform`](@ref)
+See also: [`tplot_panel`](@ref), [`transform`](@ref)
 """
-function tplot(f::Drawable, tas, args...; legend=(; position=Right()), link_xaxes=true, link_yaxes=false, rowgap=5, transform=transform_pipeline, axis=(;), palette=nothing, kwargs...)
+function tplot(f::Drawable, tas, args...; legend=(; position=Right()), link_xaxes=true, link_yaxes=false, rowgap=5, axis=(;), palette=nothing, kwargs...)
     mtas = mappable(tas)
     palette = something(palette, default_palette(mtas))
     gaps = map(palette, mtas) do pos, ta
         gp = f[pos...]
-        pap = tplot_panel(gp, ta, args...; transform, axis, kwargs...)
+        pap = tplot_panel(gp, ta, args...; axis, kwargs...)
         # Hide redundant x labels
         link_xaxes && pos != last(palette) && hidexdecorations!.(pap.axis, grid=false)
         pap
     end
-
-    axs = reduce(vcat, getproperty.(gaps, :axis))
+    axs = reduce(vcat, get_axes.(gaps))
     link_xaxes && linkxaxes!(axs...)
     link_yaxes && linkyaxes!(axs...)
 

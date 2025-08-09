@@ -11,18 +11,12 @@ Extend this for custom data types to integrate with the plotting system.
 @doc pfdoc function plotfunc end
 @doc pfdoc function plotfunc! end
 
-# default fallback
+# default fallback; like `Makie.plot` and handles `plottype` keyword argument
 _plot(args...; plottype = Plot{plot}, kw...) = plotfunc(plottype)(args...; kw...)
 _plot!(args...; plottype = Plot{plot}, kw...) = plotfunc!(plottype)(args...; kw...)
 
-plottype(::Any) = Plot{_plot}
-plottype(x::AbstractVector{<:Number}) = Plot{_plot}
-
-plottype(::AbstractVector) = MultiPlot
-plottype(::NamedTuple) = MultiPlot
-plottype(::Tuple) = MultiPlot
+plottype(x) = eltype(x) <: Number ? Plot{_plot} : MultiPlot
 plottype(::DualAxisData) = DualPlot
-plottype(::NTuple{2, Any}) = DualPlot
 plottype(::Function) = FunctionPlot
 plottype(args...) = plottype(args[1])
 
@@ -43,10 +37,10 @@ Generic entry point for plotting different types of data on a grid position `gp`
 Transforms the arguments to appropriate types and calls the plotting function.
 Dispatches to appropriate implementation based on the plotting trait of the transformed arguments.
 """
-function tplot_panel(gp, data, args...; transform = transform_pipeline, verbose = false, kwargs...)
+function tplot_panel(gp, data, args...; transform = transform, verbose = false, kwargs...)
     transformed = transform(data, args...)
-    verbose && @info "Plotting $(typeof(transformed))"
     pf = plotfunc(transformed)
+    verbose && @info "$(pf) data of type $(typeof(transformed))"
     return pf(gp, transformed, args...; kwargs...)
 end
 
@@ -59,7 +53,7 @@ Transforms the arguments to appropriate types and calls the plotting function.
 Dispatches to appropriate implementation based on the plotting trait of the transformed arguments.
 """
 function tplot_panel!(ax::Axis, data, args...; kwargs...)
-    transformed = transform_pipeline(data, args...)
+    transformed = transform(data, args...)
     pf! = plotfunc!(transformed)
     return pf!(ax, transformed, args...; kwargs...)
 end

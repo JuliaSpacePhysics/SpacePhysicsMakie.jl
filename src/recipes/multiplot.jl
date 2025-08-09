@@ -1,4 +1,3 @@
-
 @recipe MultiPlot begin
     plottype = nothing
 end
@@ -17,18 +16,17 @@ end
 
 Setup the panel on a position and plot multiple time series on it
 """
-function multiplot(gp, tas, args...; axis=(;), add_title=DEFAULTS.add_title, kwargs...)
+function multiplot(gp, tas, args...; axis = (;), add_title = DEFAULTS.add_title, kwargs...)
     ax = Axis(gp; axis_attributes(tas, args...; add_title)..., axis...)
     plots = multiplot!(ax, values(tas), args...; kwargs...)
-    PanelAxesPlots(gp, AxisPlots(ax, plots))
+    return PanelAxesPlots(gp, AxisPlots(ax, plots))
 end
 
 function multiplot(gp, plottype::Type{<:AbstractPlot}, tas, args...; kwargs...)
-    multiplot(gp, tas, args...; plottype, kwargs...)
+    return multiplot(gp, tas, args...; plottype, kwargs...)
 end
 
 Makie.get_plots(plot::MultiPlot) = mapreduce(get_plots, vcat, plot.plots)
-
 
 
 # For compatibility since `multiplot_spec!` need to concatenate specs before plotting
