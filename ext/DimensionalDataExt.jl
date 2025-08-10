@@ -1,7 +1,8 @@
 import DimensionalData
 import DimensionalData as DD
-using DimensionalData: AbstractDimArray, AbstractDimVector, AbstractDimMatrix, AbstractDimStack, TimeDim, Dimension
+using DimensionalData: AbstractDimArray, AbstractDimVector, AbstractDimStack, TimeDim, Dimension, lookup
 
+dims(x::AbstractDimArray, d) = DD.dims(x, d)
 unwrap(x::Dimension) = parent(lookup(x))
 times(x::AbstractDimArray, args...) = unwrap(timedim(x, args...))
 
@@ -14,11 +15,9 @@ end
 apply(A::AbstractDimStack, tmin, tmax) = tview(A, tmin, tmax)
 
 _label(x::AbstractDimArray) = DD.label(x)
-xlabel(da::AbstractDimArray) = prioritized_get(meta(da), xlabel_sources, DD.label(dims(da, 1)))
+filter_by_fieldnames(::Type, ::DimensionalData.NoMetadata) = Dict()
 
-plottype(::AbstractDimVector) = LinesPlot
-plottype(::AbstractDimStack) = MultiPlot
-plottype(x::AbstractDimMatrix) = isspectrogram(x) ? SpecPlot : LinesPlot
+plottype(x::AbstractDimArray) = isspectrogram(x) ? SpecPlot : LinesPlot
 
 makie_x(da::AbstractDimArray) = makie_t2x(times(da))
 

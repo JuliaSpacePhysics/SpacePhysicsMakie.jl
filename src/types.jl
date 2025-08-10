@@ -1,6 +1,12 @@
-const Drawable = Union{Figure,GridPosition,GridSubposition}
-const SupportTypes = Union{AbstractArray{<:Number},Function,String}
-const MultiPlottable = Union{AbstractVector{<:SupportTypes},NamedTuple,Tuple}
+# Type aliases for better code readability and maintainability
+"""Union type for drawable containers that can hold plots"""
+const Drawable = Union{Figure, GridPosition, GridSubposition}
+
+"""Union type for data types supported by the plotting system"""
+const SupportTypes = Union{AbstractArray{<:Number}, Function, String}
+
+"""Union type for data that can be plotted as multiple series"""
+const MultiPlottable = Union{AbstractVector{<:SupportTypes}, NamedTuple, Tuple}
 
 
 @kwdef mutable struct Defaults
@@ -21,10 +27,10 @@ A global constant that holds default parameters:
 - `resample::Int` : the number of points to resample to. Default is 6070.
 """
 const DEFAULTS = Defaults(;
-    add_title=false,
-    add_colorbar=true,
-    delay=0.25,
-    resample=6070
+    add_title = false,
+    add_colorbar = true,
+    delay = 0.25,
+    resample = 6070
 )
 
 # https://github.com/MakieOrg/AlgebraOfGraphics.jl/blob/master/src/entries.jl
@@ -40,8 +46,8 @@ for f in (:hideydecorations!, :hidexdecorations!, :hidedecorations!, :hidespines
     @eval import Makie: $f
     @eval $f(fa::FigureAxes, args...; kwargs...) =
         foreach(fa.axes) do ax
-            $f(ax, args...; kwargs...)
-        end
+        $f(ax, args...; kwargs...)
+    end
 end
 
 struct AxisPlots
@@ -67,7 +73,7 @@ The first field is plotted against the left y-axis and the second field against 
 - `data2`: Data for the right y-axis
 - `metadata`: Metadata for the data (e.g., title)
 """
-struct DualAxisData{T1,T2,M}
+struct DualAxisData{T1, T2, M}
     data1::T1
     data2::T2
     metadata::M
@@ -81,10 +87,14 @@ function Base.getindex(obj::DualAxisData, i::Int)
     throw(BoundsError(obj, i))
 end
 
+# Add length and iteration support for DualAxisData
+Base.length(::DualAxisData) = 2
+Base.iterate(obj::DualAxisData, state = 1) = state > 2 ? nothing : (obj[state], state + 1)
+
 
 function Base.getproperty(obj::PanelAxesPlots, sym::Symbol)
     sym in fieldnames(PanelAxesPlots) && return getfield(obj, sym)
-    getproperty.(obj.axisPlots, sym)
+    return getproperty.(obj.axisPlots, sym)
 end
 
 Base.display(fg::FigureAxes) = display(fg.figure)
@@ -95,6 +105,10 @@ Base.showable(mime::MIME{M}, fg::FigureAxes) where {M} = showable(mime, fg.figur
 
 Base.iterate(fg::FigureAxes) = iterate((fg.figure, fg.axes))
 Base.iterate(fg::FigureAxes, i) = iterate((fg.figure, fg.axes), i)
+
+get_axes(f::Makie.AxisPlot) = [f.axis]
+get_axes(f::AxisPlots) = [f.axis]
+get_axes(f::PanelAxesPlots) = reduce(vcat, get_axes.(f.axisPlots))
 
 """
     Debouncer
@@ -117,7 +131,7 @@ function (d::Debouncer)(args...; kwargs...)
     d.timer isa Timer && close(d.timer)
 
     # Create a new timer
-    d.timer = Timer(d.delay) do _
+    return d.timer = Timer(d.delay) do _
         d.f(args...; kwargs...)
     end
 end
