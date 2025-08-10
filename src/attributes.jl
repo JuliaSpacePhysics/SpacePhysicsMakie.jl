@@ -12,7 +12,7 @@ function unit_str(A)
     return u == NoUnits ? prioritized_get(meta(A), (:unit, :units, "UNITS"), "") : string(u)
 end
 
-title(A) = get(meta(A), "CATDESC", nothing)
+title(A) = mget(A, "CATDESC", nothing)
 
 dims(x, d) = 1:size(x, d)
 
@@ -28,8 +28,8 @@ function yvalues(::Type{Vector}, x)
 end
 
 function ylabel(x; flag = isspectrogram(x), multiline = true)
-    name = flag ? "" : get(meta(x), "LABLAXIS", "")
-    ustr = flag ? prioritized_get(meta(x), (:yunit,), "") : unit_str(x)
+    name = flag ? "" : mget(x, "LABLAXIS", SpaceDataModel.name(x))
+    ustr = flag ? mget(x, :yunit, "") : unit_str(x)
     return ustr == "" ? name : ulabel(name, ustr; multiline)
 end
 
@@ -44,7 +44,7 @@ function labels(x)
     return isnothing(lbls) ? NoMetadata() : _iter(lbls)
 end
 
-_scale_func(::Any) = nothing
+_scale_func(x) = (@warn "Unknown scale: $x"; identity)
 _scale_func(f::Function) = f
 function _scale_func(s::String)
     return if s == "linear"
@@ -64,7 +64,7 @@ function scale(x, sources)
 end
 
 yunit(x; flag = isspectrogram(x)) = flag ? unit(eltype(yvalues(x))) : unit(eltype(x))
-yscale(x; flag = isspectrogram(x)) = flag ? scale(x, (:yscale,)) : scale(x, (:scale, "SCALETYP"))
+yscale(x; flag = isspectrogram(x)) = flag ? mget(x, "SCAL_PTR") : mget(x, "SCALETYP")
 
 filter_by_keys!(f, d) = filter!(f ∘ first, d)
 filter_by_keys(f, d) = filter(f ∘ first, d)

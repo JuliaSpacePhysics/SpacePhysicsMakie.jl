@@ -20,6 +20,9 @@ function resample(arr; n = DEFAULTS.resample, dim = 1, verbose = false)
     end
 end
 
+
+mget(x, key, default = nothing) = get(meta(x), key, default)
+
 """
     prioritized_get(container, keys, default=nothing)
 
@@ -124,6 +127,7 @@ Can return either bin centers or edges. By default, return bin edges for better 
 Reference: Makie.edges
 """
 function spectrogram_y_values(ta; check = false, center = true, transform = yscale(ta))
+    transform = _scale_func(transform)
     centers = yvalues(Vector, ta)
     if center && transform == log10
         edges = binedges(centers)
