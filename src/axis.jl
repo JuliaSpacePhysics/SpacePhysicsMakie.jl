@@ -32,7 +32,7 @@ function process_axis_attributes!(attrs; add_title = false, kw...)
         haskey(attrs, :ylabel) || (attrs[:ylabel] = string(u))
     end
     add_title || delete!(attrs, :title)
-    haskey(attrs, :yscale) || (attrs[:yscale] = _scale_func(attrs[:yscale]))
+    haskey(attrs, :yscale) && (attrs[:yscale] = _scale_func(attrs[:yscale]))
     return filter_by_fieldnames!(Axis, merge!(attrs, kw))
 end
 
