@@ -28,7 +28,7 @@ function yvalues(::Type{Vector}, x)
 end
 
 function ylabel(x; flag = isspectrogram(x), multiline = true)
-    name = flag ? "" : mget(x, "LABLAXIS", SpaceDataModel.name(x))
+    name = flag ? "" : mget(x, "LABLAXIS", string(SpaceDataModel.name(x)))
     ustr = flag ? mget(x, :yunit, "") : unit_str(x)
     return ustr == "" ? name : ulabel(name, ustr; multiline)
 end

@@ -1,3 +1,18 @@
+@testitem "FunctionPlot" begin
+    using CairoMakie, Dates, DimensionalData
+
+    t0 = DateTime(2001, 1, 1)
+    t1 = DateTime(2001, 1, 2)
+
+    function func(t0, t1)
+        x = t0:Hour(1):t1
+        y = @. sin(2pi * ((x - t0) / Day(1)))
+        DimArray(y, Ti(x))
+    end
+
+    @test_nowarn tplot(func, t0, t1)
+end
+
 @testitem "DualPlot" begin
     using CairoMakie
     axis = (; title = "Dual y-axes")
@@ -13,10 +28,7 @@
 end
 
 @testitem "LinesPlot" begin
-    using CairoMakie
-    using Unitful
-    using DimensionalData
-    using Dates
+    using CairoMakie, Dates, DimensionalData, Unitful
     ys = [[1, 2, 4] [3, 4, 10]]
     @test_nowarn linesplot(ys)
     @test_nowarn linesplot([10, 20, 30], ys)
