@@ -12,11 +12,11 @@ function unit_str(A)
     return u == NoUnits ? prioritized_get(meta(A), (:unit, :units, "UNITS"), "") : string(u)
 end
 
-title(A) = mget(A, "CATDESC", nothing)
+title(A) = mget(A, "CATDESC")
 
 dims(x, d) = 1:size(x, d)
 
-yvalues(x) = parent(get(meta(x), "y", dims(x, 2)))
+yvalues(x) = parent(mget(x, "DEPEND_1", dims(x, 2)))
 function yvalues(::Type{Vector}, x)
     vals = yvalues(x)
     return if isa(vals, AbstractMatrix)
@@ -27,9 +27,13 @@ function yvalues(::Type{Vector}, x)
     end
 end
 
+get_depend_1_label(x) = mget(mget(x, "DEPEND_1"), "LABLAXIS", "")
+get_depend_1_unit(x) = mget(mget(x, "DEPEND_1"), "UNITS", "")
+get_depend_1_scale(x) = mget(mget(x, "DEPEND_1"), "SCALETYP")
+
 function ylabel(x; flag = isspectrogram(x), multiline = true)
-    name = flag ? "" : mget(x, "LABLAXIS", string(SpaceDataModel.name(x)))
-    ustr = flag ? mget(x, :yunit, "") : unit_str(x)
+    name = flag ? get_depend_1_label(x) : mget(x, "LABLAXIS", string(SpaceDataModel.name(x)))
+    ustr = flag ? get_depend_1_unit(x) : unit_str(x)
     return ustr == "" ? name : ulabel(name, ustr; multiline)
 end
 
@@ -39,7 +43,7 @@ _iter(x) = (x,)
 _iter(x::AbstractVector) = x
 
 function labels(x)
-    LABELS_SOURCES = (:labels, "LABL_PTR_1")
+    LABELS_SOURCES = (:labels, "LABL_PTR_1", "LABLAXIS") # use "LABLAXIS" for multiplot to show label
     lbls = prioritized_get(meta(x), LABELS_SOURCES)
     return isnothing(lbls) ? NoMetadata() : _iter(lbls)
 end
@@ -64,7 +68,7 @@ function scale(x, sources)
 end
 
 yunit(x; flag = isspectrogram(x)) = flag ? unit(eltype(yvalues(x))) : unit(eltype(x))
-yscale(x; flag = isspectrogram(x)) = flag ? mget(x, "SCAL_PTR") : mget(x, "SCALETYP")
+yscale(x; flag = isspectrogram(x)) = flag ? get_depend_1_scale(x) : mget(x, "SCALETYP")
 
 filter_by_keys!(f, d) = filter!(f ∘ first, d)
 filter_by_keys(f, d) = filter(f ∘ first, d)
