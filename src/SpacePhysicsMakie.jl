@@ -2,6 +2,7 @@ module SpacePhysicsMakie
 using Makie
 using Dates
 using Unitful, Latexify, UnitfulLatexify
+using InverseFunctions: inverse
 using SpaceDataModel: meta, NoMetadata
 using DimensionalData: DimArray
 using Statistics: mean
