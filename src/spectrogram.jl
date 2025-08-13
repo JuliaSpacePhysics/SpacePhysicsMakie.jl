@@ -3,7 +3,7 @@ const COLORRANGE_SOURCES = (:colorrange, :z_range, "z_range")
 isspectrogram(A) = false
 
 function isspectrogram(A::AbstractMatrix; threshold = 5)
-    m = prioritized_get(meta(A), ("DISPLAY_TYPE",))
+    m = mget(A, "DISPLAY_TYPE")
     return if isnothing(m)
         size(A, 2) >= threshold
     else
@@ -12,7 +12,7 @@ function isspectrogram(A::AbstractMatrix; threshold = 5)
 end
 
 function clabel(A; multiline = true)
-    name = get(meta(A), "LABLAXIS", DD.label(A))
+    name = mget(A, "LABLAXIS", DD.label(A))
     units = unit_str(A)
     return units == "" ? name : ulabel(name, units; multiline)
 end
@@ -23,14 +23,11 @@ function heatmap_attributes(A; kwargs...)
     attrs = Attributes(; kwargs...)
     set_if_valid!(
         attrs,
-        :colorscale => scale(A, (:scale, "SCALETYP")), :colorrange => colorrange(A)
+        :colorscale => mget(A, "SCALETYP"),
+        :colorrange => colorrange(A)
     )
     return attrs
 end
-
-set_colorrange(x, range) = modify_meta(x; colorrange = range)
-
-
 
 """
     _linear_binedges(centers)
