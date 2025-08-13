@@ -1,21 +1,15 @@
 # https://github.com/MakieOrg/Makie.jl/blob/master/src/basic_recipes/series.jl
 # https://github.com/rafaqz/DimensionalData.jl/blob/main/ext/DimensionalDataMakie.jl
 
-struct NoDimConversion <: Makie.ConversionTrait end
-
 @recipe LinesPlot begin
     labels = nothing
-    # Makie.documented_attributes(Lines)...
     # resample = 10000
 end
-
-Makie.MakieCore.conversion_trait(::Type{<:LinesPlot}) = NoDimConversion()
 
 function plot2spec(::Type{<:LinesPlot}, da::AbstractMatrix; labels = labels(da), kws...)
     da = resample(da)
     x = makie_x(da)
     return map(enumerate(eachcol(parent(da)))) do (i, y)
-        # S.Lines(x, y; label = get(labels, i, nothing), kws...)
         S.Lines(x, y; label = get(labels, i, nothing), kws...)
     end
 end
