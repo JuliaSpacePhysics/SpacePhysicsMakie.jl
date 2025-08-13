@@ -44,10 +44,6 @@ function prioritized_get(nt::NamedTuple, keys, default = nothing)
     return default
 end
 
-
-# Define functions that were previously imported from SPEDAS
-binedges(x) = x
-
 # filter out invalid values (nothing, or empty string, or empty array)
 _is_valid(x) = true
 _is_valid(::Nothing) = false

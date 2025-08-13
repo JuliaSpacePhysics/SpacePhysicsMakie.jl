@@ -12,4 +12,5 @@ Makie.convert_arguments(::Type{<:LinesPlot}, da::AbstractDataVariable; kwargs...
 
 transform(x::AbstractDataVariable) = DimArray(x) # TODO: remove this; we need this mainly to resample data
 transform(x::AbstractProduct, args...) = DimArray ∘ x
+transform(x::AbstractDataSet, args...) = x
 transform(p::AbstractArray{<:AbstractDataVariable}; kwargs...) = DimArray.(p; kwargs...)

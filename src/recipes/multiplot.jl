@@ -5,8 +5,9 @@ end
 function Makie.plot!(p::MultiPlot)
     pt = p.plottype[]
     foreach(p[1][]) do x
-        pf = plotfunc!(something(pt, plottype(x)))
-        pf(p, x)
+        transformed = transform(x)
+        pf = plotfunc!(something(pt, plottype(transformed)))
+        pf(p, transformed)
     end
     return p
 end
