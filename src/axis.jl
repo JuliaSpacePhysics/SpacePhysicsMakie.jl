@@ -1,4 +1,7 @@
-_axis_meta(x) = filter_by_fieldnames(Axis, meta(x))
+_axis_meta(x::AbstractDict) = filter_by_fieldnames(Axis, x)
+_axis_meta(x::NamedTuple) = Dict(pairs(filter_by_fieldnames(Axis, x)))
+_axis_meta(::NoMetadata) = Dict{Symbol, Any}()
+_axis_meta(x) = _axis_meta(meta(x))
 
 _axis_attributes(x, args...) = _axis_attributes(plottype(x), x, args...)
 

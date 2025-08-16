@@ -1,15 +1,23 @@
 import DimensionalData
 import DimensionalData as DD
-using DimensionalData: AbstractDimArray, AbstractDimVector, AbstractDimStack, TimeDim, Dimension, lookup
+using DimensionalData: AbstractDimArray, AbstractDimVector, AbstractDimStack, TimeDim, Dimension, lookup, basetypeof
 
 dims(x::AbstractDimArray, d) = DD.dims(x, d)
 unwrap(x::Dimension) = parent(lookup(x))
 times(x::AbstractDimArray, args...) = unwrap(timedim(x, args...))
 
+dimtype_eltype(d) = (basetypeof(d), eltype(d))
+dimtype_eltype(A, query) = dimtype_eltype(dims(A, something(query, TimeDim)))
+
 function timedim(x, query=nothing)
     query = something(query, TimeDim)
     qdim = dims(x, query)
     isnothing(qdim) ? dims(x, 1) : qdim
+end
+
+function tview(da::AbstractDimArray, t0, t1; query=nothing)
+    Dim, T = dimtype_eltype(da, query)
+    return @view da[Dim(T(t0) .. T(t1))]
 end
 
 apply(A::AbstractDimStack, tmin, tmax) = tview(A, tmin, tmax)

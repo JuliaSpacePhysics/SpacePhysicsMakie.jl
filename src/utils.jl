@@ -20,8 +20,11 @@ function resample(arr; n = DEFAULTS.resample, dim = 1, verbose = false)
     end
 end
 
+# like get, but handles NamedTuple
+_get(x, key, default) = get(x, key, default)
+_get(::NamedTuple, ::String, default) = default
 
-mget(x, key, default = nothing) = get(meta(x), key, default)
+mget(x, key, default = nothing) = _get(meta(x), key, default)
 
 """
     prioritized_get(container, keys, default=nothing)
