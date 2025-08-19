@@ -3,6 +3,8 @@
 
 @recipe LinesPlot begin
     labels = nothing
+    plottype = Lines
+    predicate = nothing
     # resample = 10000
 end
 
@@ -35,14 +37,18 @@ function Makie.plot!(plot::LinesPlot{<:Tuple{AbstractArray}})
     end
 end
 
+_predicate(::Nothing, i) = true
+_predicate(pred, i) = pred(i)
 
 function Makie.plot!(plot::LinesPlot{<:Tuple{AbstractArray{<:Number}}})
     A = resample(plot[1][])
     x = makie_x(A)
     lbs = something(plot.labels[], Some(labels(A)))
-    foreach(enumerate(eachcol(parent(A)))) do (i, col)
+    pf = plotfunc!(plot.plottype[])
+    for (i, col) in enumerate(eachcol(parent(A)))
+        _predicate(plot.predicate[], i) || continue
         label = get(lbs, i, nothing)
-        lines!(plot, x, col; label)
+        pf(plot, x, col; label)
     end
     return plot
 end

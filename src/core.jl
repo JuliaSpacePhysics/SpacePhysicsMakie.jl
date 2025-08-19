@@ -39,8 +39,7 @@ function tplot(f::Drawable, tas, args...; legend=(; position=Right()), link_xaxe
     link_yaxes && linkyaxes!(axs...)
 
     !isnothing(legend) && add_legend!.(gaps; legend...)
-
-    !isnothing(rowgap) && rowgap!(f.layout, rowgap)
+    !isnothing(rowgap) && hasproperty(f, :layout) && rowgap!(f.layout, rowgap)
     FigureAxes(f, axs)
 end
 
