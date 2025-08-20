@@ -40,7 +40,7 @@ struct FigureAxes
 end
 
 FigureAxes(gp::GridPosition, axes) = FigureAxes(gp.layout.parent, axes)
-FigureAxes(gp::GridSubposition) = FigureAxes(gp.parent, axes)
+FigureAxes(gp::GridSubposition, axes) = FigureAxes(gp.parent, axes)
 
 for f in (:hideydecorations!, :hidexdecorations!, :hidedecorations!, :hidespines!)
     @eval import Makie: $f
