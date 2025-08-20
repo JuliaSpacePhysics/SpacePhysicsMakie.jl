@@ -1,6 +1,6 @@
 name = "SpacePhysicsMakie"
 uuid = "0c28ffd8-ae30-4a56-b2e4-f8332c621ad2"
-version = "0.1.1"
+version = "0.1.2"
 
 [deps]
 Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
