@@ -7,7 +7,8 @@
 
 ## Version Bumping
 - Use patch version bumps unless breaking changes are introduced or explicitly requested
-- Push version bumps directly to main after rebasing (avoid PRs for version bumps)
+1. Move main bookmark to the bump commit like `jj bookmark move main --to=@`
+2. Push version bumps directly to main after rebasing (avoid PRs for version bumps)
 
 ## Pull Request Workflow
 1. Check PR status and wait for all checks to pass before merging
