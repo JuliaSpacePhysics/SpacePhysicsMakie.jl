@@ -34,9 +34,11 @@ end
     @test_nowarn linesplot([10, 20, 30], ys)
 
     t = Ti(range(DateTime(2000), step = Hour(1), length = 4))
-    A = rand(t, Y(1:5))
+    A = rand(t, Y(1:5); metadata= (; labels = ["Y1", "Y2", "Y3", "Y4", "Y5"], xlabel="Time"))
     Au = A * 1u"nT"
-    @test_nowarn linesplot(Au)
+    f = @test_nowarn linesplot(Au)
+    @test f.axis.xlabel[] == "Time"
+    @test length(f.figure.layout.content) == 2 # axis and legend
 
     @test_nowarn let
         f = Figure()

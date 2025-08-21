@@ -17,9 +17,10 @@ end
 
 Setup the panel on a position and plot multiple time series on it
 """
-function multiplot(gp, tas, args...; axis = (;), add_title = DEFAULTS.add_title, kwargs...)
+function multiplot(gp, tas, args...; axis = (;), add_title = DEFAULTS.add_title, legend=(;), kwargs...)
     ax = Axis(gp; axis_attributes(tas, args...; add_title)..., axis...)
     plots = multiplot!(ax, values(tas), args...; kwargs...)
+    !isnothing(legend) && add_legend!(gp, ax; legend...)
     return PanelAxesPlots(gp, AxisPlots(ax, plots))
 end
 

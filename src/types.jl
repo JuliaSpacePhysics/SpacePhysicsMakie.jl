@@ -14,6 +14,7 @@ const MultiPlottable = Union{AbstractVector{<:SupportTypes}, NamedTuple, Tuple}
     add_colorbar::Bool
     delay::Float64
     resample::Int
+    position
 end
 
 """
@@ -30,7 +31,8 @@ const DEFAULTS = Defaults(;
     add_title = false,
     add_colorbar = true,
     delay = 0.25,
-    resample = 6070
+    resample = 6070,
+    position = Right()
 )
 
 # https://github.com/MakieOrg/AlgebraOfGraphics.jl/blob/master/src/entries.jl

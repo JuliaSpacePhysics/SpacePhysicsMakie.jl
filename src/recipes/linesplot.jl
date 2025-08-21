@@ -8,15 +8,15 @@
     # resample = 10000
 end
 
-function plot2spec(::Type{<:LinesPlot}, da::AbstractMatrix; labels = labels(da), kws...)
+function plot2spec(::Type{<:LinesPlot}, da::AbstractMatrix; labels=labels(da), kws...)
     da = resample(da)
     x = makie_x(da)
     return map(enumerate(eachcol(parent(da)))) do (i, y)
-        S.Lines(x, y; label = get(labels, i, nothing), kws...)
+        S.Lines(x, y; label=get(labels, i, nothing), kws...)
     end
 end
 
-function plot2spec(::Type{<:LinesPlot}, da::AbstractVector; labels = nothing, label = nothing, kws...)
+function plot2spec(::Type{<:LinesPlot}, da::AbstractVector; labels=nothing, label=nothing, kws...)
     label = @something label labels to_value(SpacePhysicsMakie.label(da))
     return S.Lines(makie_x(da), parent(da); label, kws...)
 end
@@ -60,8 +60,15 @@ Makie.get_plots(plot::LinesPlot) = plot.plots
 
 Plot a multivariate time series on a panel
 """
-function linesplot(gp::Drawable, ta; axis = (;), add_title = DEFAULTS.add_title, plot = (;), kwargs...)
-    ax = Axis(gp; axis_attributes(ta; add_title)..., axis...)
-    plots = linesplot!(ax, ta; plot..., kwargs...)
-    return PanelAxesPlots(gp, AxisPlots(ax, plots))
+function linesplot(gp::Drawable, A; axis=(;), add_title=DEFAULTS.add_title, legend=(;), plot=(;), kwargs...)
+    ax = Axis(gp; axis_attributes(A; add_title)..., axis...)
+    plots = linesplot!(ax, A; plot..., kwargs...)
+    !isnothing(legend) && add_legend!(gp, ax, depend_1_name(A); legend...)
+    return Makie.AxisPlot(ax, plots)
+end
+
+function linesplot(A; kwargs...)
+    f = Figure()
+    ap = linesplot(f[1, 1], A; kwargs...)
+    return Makie.FigureAxisPlot(f, ap...)
 end

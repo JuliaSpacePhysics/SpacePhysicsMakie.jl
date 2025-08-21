@@ -14,7 +14,7 @@ end
 function clabel(A; multiline = true)
     name = mget(A, "LABLAXIS", DD.label(A))
     units = unit_str(A)
-    return units == "" ? name : ulabel(name, units; multiline)
+    return ulabel(name, units; multiline)
 end
 
 colorrange(x) = prioritized_get(meta(x), COLORRANGE_SOURCES)

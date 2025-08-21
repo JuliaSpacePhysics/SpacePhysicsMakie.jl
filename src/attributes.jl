@@ -1,7 +1,9 @@
 # Reference
 # [ISTP Metadata Guidelines: Global Attributes](https://spdf.gsfc.nasa.gov/istp_guide/gattributes.html)
 # [ISTP Metadata Guidelines: Variables](https://spdf.gsfc.nasa.gov/istp_guide/variables.html)
-function ulabel(l, u; multiline = false)
+function ulabel(l, u; multiline=false)
+    l == "" && return u
+    u == "" && return l
     return multiline ? "$(l)\n($(u))" : "$(l) ($(u))"
 end
 
@@ -21,20 +23,22 @@ function yvalues(::Type{Vector}, x)
     vals = yvalues(x)
     return if isa(vals, AbstractMatrix)
         all(allequal, eachcol(vals)) || @warn "y values are not constant along time"
-        vec(mean(vals; dims = 1))
+        vec(mean(vals; dims=1))
     else
         vals
     end
 end
 
-get_depend_1_label(x) = mget(mget(x, "DEPEND_1"), "LABLAXIS", "")
-get_depend_1_unit(x) = mget(mget(x, "DEPEND_1"), "UNITS", "")
-get_depend_1_scale(x) = mget(mget(x, "DEPEND_1"), "SCALETYP")
+depend_1(x) = mget(x, "DEPEND_1")
+depend_1_name(x) = mget(depend_1(x), ("LABLAXIS", "FIELDNAM"))
+depend_1_unit(x) = mget(depend_1(x), "UNITS", "")
+get_depend_1_scale(x) = mget(depend_1(x), "SCALETYP")
 
-function ylabel(x; flag = isspectrogram(x), multiline = true)
-    name = flag ? get_depend_1_label(x) : mget(x, "LABLAXIS", string(SpaceDataModel.name(x)))
-    ustr = flag ? get_depend_1_unit(x) : unit_str(x)
-    return ustr == "" ? name : ulabel(name, ustr; multiline)
+function ylabel(x; flag=isspectrogram(x), multiline=true)
+    name = flag ? depend_1_name(x) : mget(x, "LABLAXIS", SpaceDataModel.name(x))
+    ustr = flag ? depend_1_unit(x) : unit_str(x)
+    name = string(something(name, ""))
+    return ulabel(name, ustr; multiline)
 end
 
 label(ta) = prioritized_get(meta(ta), (:label, "LABLAXIS"), _label(ta))
@@ -43,8 +47,7 @@ _iter(x) = (x,)
 _iter(x::AbstractVector) = x
 
 function labels(x)
-    LABELS_SOURCES = (:labels, "LABL_PTR_1", "LABLAXIS") # use "LABLAXIS" for multiplot to show label
-    lbls = prioritized_get(meta(x), LABELS_SOURCES)
+    lbls = @something mget(x, (:labels, "LABL_PTR_1")) mget(depend_1(x), "LABL_PTR_1") mget(x, "LABLAXIS") Some(nothing)
     return isnothing(lbls) ? NoMetadata() : _iter(lbls)
 end
 
@@ -67,8 +70,8 @@ function scale(x, sources)
     )
 end
 
-yunit(x; flag = isspectrogram(x)) = flag ? unit(eltype(yvalues(x))) : unit(eltype(x))
-yscale(x; flag = isspectrogram(x)) = flag ? get_depend_1_scale(x) : mget(x, "SCALETYP")
+yunit(x; flag=isspectrogram(x)) = flag ? unit(eltype(yvalues(x))) : unit(eltype(x))
+yscale(x; flag=isspectrogram(x)) = flag ? get_depend_1_scale(x) : mget(x, "SCALETYP")
 
 filter_by_keys!(f, d) = filter!(f ∘ first, d)
 filter_by_keys(f, d) = filter(f ∘ first, d)
@@ -78,9 +81,9 @@ filter_by_fieldnames!(T::Type, d) = filter_by_keys!(∈(fieldnames(T)), d)
 filter_by_fieldnames(T::Type, d) = filter_by_keys(∈(fieldnames(T)), d)
 filter_by_fieldnames(T::Type, ::NoMetadata) = Dict()
 
-function plottype_attributes(meta; allowed = (:labels, :label))
+function plottype_attributes(meta; allowed=(:labels, :label))
     return filter_by_keys(∈(allowed), meta)
 end
 
-plot_attributes(ta; add_title = false) = Attributes(; axis = axis_attributes(ta; add_title))
+plot_attributes(ta; add_title=false) = Attributes(; axis=axis_attributes(ta; add_title))
 plot_attributes(f::Function, args...; kwargs...) = plot_attributes(f(args...); kwargs...)
