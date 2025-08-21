@@ -43,10 +43,10 @@ end
 """
 Only add legend when the axis contains multiple labels
 """
-function add_legend!(gp, ax; min = 2, position = Right(), orientation = default_orientation(position), kwargs...)
+function add_legend!(gp, ax, args...; min = 2, position = DEFAULTS.position, orientation = default_orientation(position), kwargs...)
     plots, labels = Makie.get_labeled_plots(ax; merge = false, unique = false)
     length(plots) < min && return
-    return Legend(gp[1, 1, position], ax; orientation, kwargs...)
+    return Legend(gp[1, 1, position], ax, args...; orientation, kwargs...)
 end
 
 """

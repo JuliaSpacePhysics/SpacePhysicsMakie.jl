@@ -24,7 +24,7 @@ By default, the time series are transformed via extensible `transform`.
 
 See also: [`tplot_panel`](@ref), [`transform`](@ref)
 """
-function tplot(f::Drawable, tas, args...; legend=(; position=Right()), link_xaxes=true, link_yaxes=false, rowgap=5, axis=(;), palette=nothing, kwargs...)
+function tplot(f::Drawable, tas, args...; link_xaxes=true, link_yaxes=false, rowgap=5, axis=(;), palette=nothing, kwargs...)
     mtas = mappable(tas)
     palette = something(palette, default_palette(mtas))
     gaps = map(palette, mtas) do pos, ta
@@ -38,7 +38,6 @@ function tplot(f::Drawable, tas, args...; legend=(; position=Right()), link_xaxe
     link_xaxes && linkxaxes!(axs...)
     link_yaxes && linkyaxes!(axs...)
 
-    !isnothing(legend) && add_legend!.(gaps; legend...)
     !isnothing(rowgap) && hasproperty(f, :layout) && rowgap!(f.layout, rowgap)
     FigureAxes(f, axs)
 end

@@ -6,10 +6,10 @@
 
 Plot a spectrogram on a panel
 """
-function specplot(gp, ta; axis = (;), add_colorbar = DEFAULTS.add_colorbar, add_title = DEFAULTS.add_title, kwargs...)
+function specplot(gp, ta; axis = (;), add_colorbar = DEFAULTS.add_colorbar, add_title = DEFAULTS.add_title, position = DEFAULTS.position, kwargs...)
     ax = Axis(gp; axis_attributes(ta; add_title)..., axis...)
     plots = specplot!(ax, ta; kwargs...)
-    add_colorbar && isspectrogram(ta) && Colorbar(gp[1, 1, Right()], plots; label = clabel(ta))
+    add_colorbar && isspectrogram(ta) && Colorbar(gp[1, 1, position], plots; label = clabel(ta))
     return PanelAxesPlots(gp, AxisPlots(ax, plots))
 end
 

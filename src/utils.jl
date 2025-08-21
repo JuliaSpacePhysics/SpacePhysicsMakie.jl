@@ -25,6 +25,7 @@ _get(x, key, default) = get(x, key, default)
 _get(::NamedTuple, ::String, default) = default
 
 mget(x, key, default = nothing) = _get(meta(x), key, default)
+mget(x, keys::Tuple, default = nothing) = prioritized_get(meta(x), keys, default)
 
 """
     prioritized_get(container, keys, default=nothing)
@@ -34,7 +35,7 @@ Returns the first non-nothing value found, or `default` if none found.
 """
 function prioritized_get(c, keys, default = nothing)
     for k in keys
-        v = get(c, k, nothing)
+        v = _get(c, k, nothing)
         !isnothing(v) && return v
     end
     return default
