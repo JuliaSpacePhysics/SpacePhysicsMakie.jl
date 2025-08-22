@@ -26,11 +26,16 @@ tlims!(tmin, tmax) = tlims!(current_axis(), tmin, tmax)
 tlims!(trange) = tlims!(trange...)
 
 """Add vertical lines to a plot"""
-tlines!(ax, time; kwargs...) = vlines!(ax, Dates.value.(DateTime.(time)); kwargs...)
-tlines!(time; kwargs...) = tlines!(current_axis(), time; kwargs...)
-tlines!(faxes::FigureAxes, time; kwargs...) =
-    foreach(faxes.axes) do ax
-    tlines!(ax, time; kwargs...)
+tlines!(ax::Axis, time; kwargs...) = vlines!(ax, Dates.value.(DateTime.(time)); kwargs...)
+
+# Temporary solution for https://github.com/MakieOrg/Makie.jl/issues/4412
+tvspan!(ax::Axis, tmins, tmaxs; kwargs...) = vspan!(ax, Dates.value.(DateTime.(tmins)), Dates.value.(DateTime.(tmaxs)); kwargs...)
+
+for f in (:tlines!, :tvspan!)
+    @eval $f(args...; kwargs...) = $f(current_axis(), args...; kwargs...)
+    @eval $f(faxes::FigureAxes, args...; kwargs...) = foreach(faxes.axes) do ax
+        $f(ax, args...; kwargs...)
+    end
 end
 
 """
