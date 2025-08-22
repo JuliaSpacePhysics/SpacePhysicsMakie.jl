@@ -11,7 +11,7 @@ import Makie: convert_arguments, plot!, conversion_trait, get_plots
 
 export tplot!, tplot, tplot_panel, tplot_panel!
 export LinesPlot, linesplot, linesplot!
-export tlims!, tlines!, add_labels!
+export tlims!, tlines!, tvspan!, add_labels!
 export axis_attributes, plot_attributes
 
 include("types.jl")
