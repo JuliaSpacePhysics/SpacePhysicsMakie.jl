@@ -26,6 +26,12 @@ function heatmap_attributes(A; kwargs...)
         :colorscale => _scale_func(mget(A, "SCALETYP")),
         :colorrange => colorrange(A)
     )
+    heatmap_keys = Makie.MakieCore.attribute_names(Heatmap)
+    for (k, v) in meta(A)
+        if k in heatmap_keys
+            attrs[k] = v
+        end
+    end
     return attrs
 end
 

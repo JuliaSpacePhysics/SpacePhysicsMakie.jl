@@ -18,7 +18,10 @@ title(A) = mget(A, "CATDESC")
 
 dims(x, d) = 1:size(x, d)
 
-yvalues(x) = parent(mget(x, "DEPEND_1", dims(x, 2)))
+function yvalues(x)
+    d1 = mget(x, "DEPEND_1", nothing)
+    return parent(d1 isa AbstractArray ? d1 : dims(x, 2))
+end
 function yvalues(::Type{Vector}, x)
     vals = yvalues(x)
     return if isa(vals, AbstractMatrix)
