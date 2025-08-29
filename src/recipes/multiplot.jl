@@ -7,7 +7,7 @@ function Makie.plot!(p::MultiPlot)
     foreach(p[1][]) do x
         transformed = transform(x)
         pf = plotfunc!(something(pt, plottype(transformed)))
-        pf(p, transformed)
+        pf(transformed)
     end
     return p
 end
@@ -28,7 +28,7 @@ function multiplot(gp, plottype::Type{<:AbstractPlot}, tas, args...; kwargs...)
     return multiplot(gp, tas, args...; plottype, kwargs...)
 end
 
-Makie.get_plots(plot::MultiPlot) = mapreduce(get_plots, vcat, plot.plots)
+# Makie.get_plots(plot::MultiPlot) = mapreduce(get_plots, vcat, plot.plots; init = AbstractPlot[])
 
 
 # For compatibility since `multiplot_spec!` need to concatenate specs before plotting

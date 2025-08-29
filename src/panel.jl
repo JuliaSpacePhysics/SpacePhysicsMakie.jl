@@ -20,10 +20,10 @@ plottype(::DualAxisData) = DualPlot
 plottype(::Function) = FunctionPlot
 plottype(args...) = plottype(args[1])
 
-plotfunc(args...) = Makie.MakieCore.plotfunc(plottype(args...))
-plotfunc(T::Type{<:AbstractPlot}) = Makie.MakieCore.plotfunc(T)
-plotfunc!(args...) = Makie.MakieCore.plotfunc!(plottype(args...))
-plotfunc!(T::Type{<:AbstractPlot}) = Makie.MakieCore.plotfunc!(T)
+plotfunc(args...) = Makie.plotfunc(plottype(args...))
+plotfunc(T::Type{<:AbstractPlot}) = Makie.plotfunc(T)
+plotfunc!(args...) = Makie.plotfunc!(plottype(args...))
+plotfunc!(T::Type{<:AbstractPlot}) = Makie.plotfunc!(T)
 
 plotfunc(::NTuple{2, Any}) = dualplot
 plotfunc(::Type{Plot{_plot}}) = _plot

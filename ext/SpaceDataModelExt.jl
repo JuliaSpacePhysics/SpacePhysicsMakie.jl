@@ -8,7 +8,7 @@ plottype(::AbstractDataSet) = MultiPlot
 
 makie_x(da::AbstractDataVariable) = makie_t2x(parent(times(da)))
 
-Makie.convert_arguments(::Type{<:LinesPlot}, da::AbstractDataVariable; kwargs...) = plot2spec(LinesPlot, da; kwargs...)
+# Makie.convert_arguments(::Type{<:LinesPlsot}, da::AbstractDataVariable; kwargs...) = plot2spec(LinesPlot, da; kwargs...)
 
 transform(x::AbstractDataVariable) = DimArray(x) # TODO: remove this; we need this mainly to resample data
 transform(x::AbstractProduct, args...) = DimArray ∘ x

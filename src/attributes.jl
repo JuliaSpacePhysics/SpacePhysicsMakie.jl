@@ -54,6 +54,8 @@ function labels(x)
     return isnothing(lbls) ? NoMetadata() : _iter(lbls)
 end
 
+const meta_labels = labels
+
 _scale_func(x) = (@warn "Unknown scale: $x"; identity)
 _scale_func(f::Function) = f
 function _scale_func(s::String)

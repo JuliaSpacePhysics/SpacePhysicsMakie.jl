@@ -27,9 +27,8 @@ end
 
 Interactive plot of a function `f` on `ax` for a time range from `tmin` to `tmax`
 """
-function functionplot!(ax, f, tmin, tmax; data = nothing, plotfunc = plot2spec, plot = (;), kwargs...)
-    to_plotspec = trange -> plotfunc(f(trange...); plot...)
-    return iviz_api!(ax, to_plotspec, (tmin, tmax); kwargs...)
+function functionplot!(ax, f, tmin, tmax; data = nothing, plot = (;), kwargs...)
+    return iviz_api!(ax, f, (tmin, tmax); plot..., kwargs...)
 end
 
 """

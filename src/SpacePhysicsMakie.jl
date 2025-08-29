@@ -8,6 +8,8 @@ using DimensionalData: DimArray
 using Statistics: mean
 
 import Makie: convert_arguments, plot!, conversion_trait, get_plots
+using Makie: ComputeGraph
+using Makie.ComputePipeline
 
 export tplot!, tplot, tplot_panel, tplot_panel!
 export LinesPlot, linesplot, linesplot!
