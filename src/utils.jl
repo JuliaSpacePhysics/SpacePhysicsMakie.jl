@@ -1,7 +1,3 @@
-issymbol(x) = false
-issymbol(::Symbol) = true
-
-
 """
     resample(arr, n=DEFAULTS.resample; dim=1, verbose=false)
 
@@ -42,8 +38,9 @@ function prioritized_get(c, keys, default = nothing)
 end
 
 function prioritized_get(nt::NamedTuple, keys, default = nothing)
-    for k in filter(issymbol, keys)
-        hasproperty(nt, k) && return getfield(nt, k)
+    for k in keys
+        k_sym = Symbol(k)
+        hasproperty(nt, k_sym) && return getfield(nt, k_sym)
     end
     return default
 end

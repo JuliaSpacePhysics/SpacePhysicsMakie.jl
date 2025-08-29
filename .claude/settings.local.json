@@ -13,7 +13,8 @@
       "Bash(gh api:*)",
       "Bash(mkdir:*)",
       "WebFetch(domain:github.com)",
-      "Bash(jj git fetch:*)"
+      "Bash(jj git fetch:*)",
+      "Bash(tree:*)"
     ],
     "deny": [],
     "ask": []

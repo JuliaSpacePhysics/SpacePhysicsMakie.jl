@@ -5,7 +5,8 @@ makedocs(
     sitename = "SpacePhysicsMakie.jl",
     pages = [
         "Home" => "index.md",
-        "Examples" => "interactive.md",
+        "Toy Examples" => "interactive.md",
+        "Speasy Examples" => "speasy.md",
     ],
     format = Documenter.HTML(size_threshold = nothing),
     modules = [SpacePhysicsMakie],

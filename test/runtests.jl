@@ -4,7 +4,7 @@ using TestItemRunner
 
 @testitem "Aqua" begin
     using Aqua
-    Aqua.test_all(SpacePhysicsMakie;)
+    Aqua.test_all(SpacePhysicsMakie)
 end
 
 @testitem "Basic plotting workflow" begin
@@ -28,11 +28,11 @@ end
     @test_nowarn tplot(fig, data1)
 
     # Test panel plotting
-    @test_nowarn tplot(fig[1, 1], data1)
-    @test_nowarn tplot(fig[2, 1], [data1, data2])
+    @test_nowarn tplot(fig[2, 1], data1)
+    @test_nowarn tplot(fig[3, 1], [data1, data2])
 
     # Test dual axis data
-    @test_nowarn tplot(fig[1:2, 2], [data3, (data1, data2)])
+    @test_nowarn tplot(fig[1:3, 2], [data3, (data1, data2)])
     fig
 end
 
@@ -54,7 +54,7 @@ end
     # Method 1
     scatterlines(f[1, 1], data1); scatterlines!(f[1, 1], data2)
     # Method 2
-    @test_nowarn tplot_panel(f[2, 1], [data1, data2])
+    @test_nowarn tplot_panel(f[2, 1], [data1, data2]; plottype = ScatterLines)
     # Method 3
     @test_nowarn multiplot(f[3, 1], [data1, data2], plottype = ScatterLines)
     f
@@ -68,6 +68,8 @@ end
     @test_nowarn tplot_panel(f[2, 1], [data4, data1, data2])
     # Method 3
     @test_nowarn multiplot(f[3, 1], [data4, data1, data2])
+
+    @test_nowarn multiaxisplot(f[4, 1], data4, data1)
     f
 end
 
@@ -76,7 +78,7 @@ end
     # Multiple Series (same y-axis)
     @test_nowarn tplot_panel(f[1, 1], [data1, data2]; axis = (; title = "Multiple series"), plottype = ScatterLines)
     # Dual Y-Axes (different units)
-    @test_nowarn tplot_panel(f[2, 1], (data1, data3); axis=(;title="Dual y-axes"))
+    @test_nowarn tplot_panel(f[2, 1], (data1, data3); axis = (; title = "Dual y-axes"))
     # Overlay Series on Heatmap
     @test_nowarn tplot_panel(f[1, 2], [data4, data1, data2]; axis = (; title = "Heatmap with overlays"))
     # XY Plot (non-time series)

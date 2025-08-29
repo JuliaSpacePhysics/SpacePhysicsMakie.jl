@@ -1,8 +1,6 @@
-_axis_attributes(x, args...) = _axis_attributes(plottype(x), x, args...)
-
 # This is much faster than `∈(fieldnames(T))` as `fieldnames(Axis)` is pretty slow due to nospecialization
 _has_field(T, x) = x isa Symbol && hasfield(T, x)
-_hasfield(T) = x -> _has_field(T, x)
+_has_field(T) = x -> _has_field(T, x)
 
 function merge_axis_attributes!(attrs, d)
     for (k, v) in pairs(d)
@@ -10,6 +8,8 @@ function merge_axis_attributes!(attrs, d)
     end
     return attrs
 end
+
+_axis_attributes(x, args...) = _axis_attributes(plottype(x), x, args...)
 
 function _axis_attributes(::Type, A, args...)
     attrs = Dict{Symbol, Any}()
@@ -42,7 +42,7 @@ function process_axis_attributes!(attrs; add_title = false, kw...)
     end
     add_title || delete!(attrs, :title)
     haskey(attrs, :yscale) && (attrs[:yscale] = _scale_func(attrs[:yscale]))
-    return filter!(_hasfield(Axis) ∘ first, merge!(attrs, kw))
+    return filter!(_has_field(Axis) ∘ first, merge!(attrs, kw))
 end
 
 """
@@ -50,6 +50,6 @@ Get axis attributes for `x`
 """
 function axis_attributes(x, args...; kw...)
     return process_axis_attributes!(
-        _axis_attributes(plottype(x), x, args...); kw...
+        _axis_attributes(x, args...); kw...
     )
 end

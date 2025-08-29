@@ -12,7 +12,7 @@ function isspectrogram(A::AbstractMatrix; threshold = 5)
 end
 
 function clabel(A; multiline = true)
-    name = mget(A, "LABLAXIS", DD.label(A))
+    name = mget(A, "LABLAXIS", SpaceDataModel.name(A))
     units = unit_str(A)
     return ulabel(name, units; multiline)
 end

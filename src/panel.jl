@@ -15,17 +15,17 @@ Extend this for custom data types to integrate with the plotting system.
 _plot(args...; plottype = Plot{plot}, kw...) = plotfunc(plottype)(args...; kw...)
 _plot!(args...; plottype = Plot{plot}, kw...) = plotfunc!(plottype)(args...; kw...)
 
-plottype(x) = eltype(x) <: Number ? Plot{_plot} : MultiPlot
-plottype(::DualAxisData) = DualPlot
+plottype(x) = eltype(x) <: Number ? Makie.plottype(x) : MultiPlot
+plottype(::MultiAxisData) = MultiAxisPlot
 plottype(::Function) = FunctionPlot
 plottype(args...) = plottype(args[1])
 
-plotfunc(args...) = Makie.MakieCore.plotfunc(plottype(args...))
-plotfunc(T::Type{<:AbstractPlot}) = Makie.MakieCore.plotfunc(T)
-plotfunc!(args...) = Makie.MakieCore.plotfunc!(plottype(args...))
-plotfunc!(T::Type{<:AbstractPlot}) = Makie.MakieCore.plotfunc!(T)
+plotfunc(args...) = Makie.plotfunc(plottype(args...))
+plotfunc(T::Type{<:AbstractPlot}) = Makie.plotfunc(T)
+plotfunc!(args...) = Makie.plotfunc!(plottype(args...))
+plotfunc!(T::Type{<:AbstractPlot}) = Makie.plotfunc!(T)
 
-plotfunc(::NTuple{2, Any}) = dualplot
+plotfunc(::Tuple) = multiaxisplot
 plotfunc(::Type{Plot{_plot}}) = _plot
 plotfunc!(::Type{Plot{_plot}}) = _plot!
 

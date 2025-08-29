@@ -1,6 +1,19 @@
 import Makie.SpecApi as S
 
 # S.Colorbar(plots; label=clabel(ta))] # TODO: find a way to make SpecApi.Colorbar work on grid positions
+# function plot2spec(::Type{<:LinesPlot}, da::AbstractMatrix; labels=labels(da), kws...)
+#     da = resample(da)
+#     x = makie_x(da)
+#     return map(enumerate(eachcol(parent(da)))) do (i, y)
+#         S.Lines(x, y; label=get(labels, i, nothing), kws...)
+#     end
+# end
+
+# function plot2spec(::Type{<:LinesPlot}, da::AbstractVector; labels=nothing, label=nothing, kws...)
+#     label = @something label labels to_value(SpacePhysicsMakie.label(da))
+#     return S.Lines(makie_x(da), parent(da); label, kws...)
+# end
+
 
 function plot2spec(da; resample = (; verbose = true), kwargs...)
     da = SpacePhysicsMakie.resample(da; resample...)

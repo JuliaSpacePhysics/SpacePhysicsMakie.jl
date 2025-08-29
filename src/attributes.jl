@@ -11,16 +11,13 @@ _label(x) = SpaceDataModel.name(x)
 
 function unit_str(A)
     u = unit(eltype(A))
-    return u == NoUnits ? prioritized_get(meta(A), (:unit, :units, "UNITS"), "") : string(u)
+    return u == NoUnits ? mget(A, (:unit, :units, "UNITS"), "") : string(u)
 end
 
 title(A) = mget(A, "CATDESC")
 
-dims(x, d) = 1:size(x, d)
-
-yvalues(x) = parent(mget(x, "DEPEND_1", dims(x, 2)))
 function yvalues(::Type{Vector}, x)
-    vals = yvalues(x)
+    vals = depend_1(x)
     return if isa(vals, AbstractMatrix)
         all(allequal, eachcol(vals)) || @warn "y values are not constant along time"
         vec(mean(vals; dims = 1))
@@ -29,7 +26,7 @@ function yvalues(::Type{Vector}, x)
     end
 end
 
-depend_1(x) = mget(x, "DEPEND_1")
+depend_1(x) = unwrap(SpaceDataModel.dim(x, 2))
 depend_1_name(x) = mget(depend_1(x), ("LABLAXIS", "FIELDNAM"))
 depend_1_unit(x) = mget(depend_1(x), "UNITS", "")
 get_depend_1_scale(x) = mget(depend_1(x), "SCALETYP", identity)
@@ -51,6 +48,8 @@ function labels(x)
     return isnothing(lbls) ? NoMetadata() : _iter(lbls)
 end
 
+const meta_labels = labels
+
 _scale_func(x) = (@warn "Unknown scale: $x"; identity)
 _scale_func(f::Function) = f
 function _scale_func(s::String)
@@ -70,16 +69,19 @@ function scale(x, sources)
     )
 end
 
-yunit(x; flag = isspectrogram(x)) = flag ? unit(eltype(yvalues(x))) : unit(eltype(x))
+yunit(x; flag = isspectrogram(x)) = flag ? unit(eltype(depend_1(x))) : unit(eltype(x))
 yscale(x; flag = isspectrogram(x)) = flag ? get_depend_1_scale(x) : mget(x, "SCALETYP")
 
-filter_by_keys(f, d) = length(d) == 0 ? Dict() : filter(f ∘ first, d)
-filter_by_keys(f, ::NoMetadata) = Dict()
-filter_by_keys(f, nt::NamedTuple) = NamedTuple{filter(f, keys(nt))}(nt)
-
-function plottype_attributes(meta; allowed = (:labels, :label))
-    return filter_by_keys(∈(allowed), meta)
+filter_by_keys(f, d) = length(d) == 0 ? Dict{Symbol, Any}() : filter(f ∘ first, pairs(d))
+filter_by_keys!(f, d) = filter!(f ∘ first, pairs(d))
+function filter_by_keys!(T::Type{<:AbstractPlot}, d)
+    atts = Makie.attribute_names(T)
+    return isnothing(atts) ? Dict{Symbol, Any}() : filter_by_keys!(∈(atts), d)
 end
+
+# This is slow for NamedTuple `NamedTuple{filter(f, keys(nt))}(nt)`
+plottype_attributes(meta; allowed = (:labels, :label)) =
+    filter_by_keys(∈(allowed), meta)
 
 plot_attributes(ta; add_title = false) = Attributes(; axis = axis_attributes(ta; add_title))
 plot_attributes(f::Function, args...; kwargs...) = plot_attributes(f(args...); kwargs...)

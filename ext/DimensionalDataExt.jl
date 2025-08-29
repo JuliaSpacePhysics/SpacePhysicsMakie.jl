@@ -2,23 +2,17 @@ import DimensionalData
 import DimensionalData as DD
 using DimensionalData: AbstractDimArray, AbstractDimVector, AbstractDimMatrix, AbstractDimStack, TimeDim, Dimension, lookup, basetypeof
 
-dims(x::AbstractDimArray, d) = DD.dims(x, d)
-unwrap(x::Dimension) = parent(lookup(x))
-times(x::AbstractDimArray, args...) = unwrap(timedim(x, args...))
-
-depend_1(x::AbstractDimMatrix) = mget(x, "DEPEND_1", dims(x, 2).val)
-
+function depend_1_meta(x::AbstractDimMatrix)
+    d1 = depend_1(x)
+    m1 = d1.metadata
+    return isempty(m1) ? meta(d1.data) : m1
+end
 
 dimtype_eltype(d) = (basetypeof(d), eltype(d))
 dimtype_eltype(A, query) = dimtype_eltype(dims(A, something(query, TimeDim)))
 
-function timedim(x, query=nothing)
-    query = something(query, TimeDim)
-    qdim = dims(x, query)
-    isnothing(qdim) ? dims(x, 1) : qdim
-end
-
-function tview(da::AbstractDimArray, t0, t1; query=nothing)
+tview(x, t0, t1) = x
+function tview(da::AbstractDimArray, t0, t1; query = nothing)
     Dim, T = dimtype_eltype(da, query)
     return @view da[Dim(T(t0) .. T(t1))]
 end
@@ -59,4 +53,4 @@ plot2spec(ds::AbstractDimStack; kwargs...) =
     plot2spec(ds; kwargs...)
 end |> collect
 
-Makie.convert_arguments(t::Type{<:LinesPlot}, da::AbstractDimVector{<:AbstractVector}) = convert_arguments(t, tstack(da))
+# Makie.convert_arguments(t::Type{<:LinesPlot}, da::AbstractDimVector{<:AbstractVector}) = convert_arguments(t, tstack(da))

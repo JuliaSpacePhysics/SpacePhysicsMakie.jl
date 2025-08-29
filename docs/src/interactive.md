@@ -34,5 +34,5 @@ end;
 ```
 
 ```@raw html
-<video autoplay loop muted playsinline controls src="../interactive.mp4" />
+<video autoplay loop muted playsinline controls src="./interactive.mp4" />
 ```
