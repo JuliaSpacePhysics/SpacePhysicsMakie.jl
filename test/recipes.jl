@@ -6,11 +6,12 @@
 
     function func(t0, t1)
         x = t0:Hour(1):t1
-        y = @. sin(2pi * ((x - t0) / Day(1)))
-        DimArray(y, Ti(x))
+        y1 = @. sin(2pi * ((x - t0) / Day(1)))
+        y2 = @. cos(2pi * ((x - t0) / Day(1)))
+        DimArray([y1 y2], (Ti(x),Y()))
     end
 
-    @test_nowarn tplot(func, t0, t1)
+    f, axes = @test_nowarn tplot(func, t0, t1)
 end
 
 @testitem "DualPlot" begin

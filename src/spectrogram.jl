@@ -26,8 +26,17 @@ function heatmap_attributes(A; kwargs...)
         :colorscale => _scale_func(mget(A, "SCALETYP")),
         :colorrange => colorrange(A)
     )
+    heatmap_keys = Makie.attribute_names(Heatmap)
+    for (k, v) in meta(A)
+        if k in heatmap_keys
+            attrs[k] = v
+        end
+    end
     return attrs
 end
+
+safe_div(x, y) = x / y
+safe_div(x::Union{Integer, Dates.TimePeriod}, y) = div(x, y)
 
 """
     _linear_binedges(centers)
@@ -39,7 +48,7 @@ function _linear_binedges(centers)
     edges = similar(centers, N + 1)
     # Calculate internal edges
     for i in 2:N
-        edges[i] = (centers[i-1] + centers[i]) / 2
+        edges[i] = centers[i-1] + safe_div(centers[i] - centers[i-1], 2)
     end
 
     # Calculate first and last edges using the same spacing as adjacent bins

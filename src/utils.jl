@@ -135,6 +135,7 @@ function spectrogram_y_values(ta; check = false, center = true, transform = ysca
             @warn "Automatically using edge for Makie because transform == $transform and the first edge is negative"
             center = false
         end
+        @info edges
     end
 
     return !center ? binedges(centers; transform) : centers

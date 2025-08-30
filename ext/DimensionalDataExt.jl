@@ -57,4 +57,4 @@ plot2spec(ds::AbstractDimStack; kwargs...) =
     plot2spec(ds; kwargs...)
 end |> collect
 
-Makie.convert_arguments(t::Type{<:LinesPlot}, da::AbstractDimVector{<:AbstractVector}) = convert_arguments(t, tstack(da))
+# Makie.convert_arguments(t::Type{<:LinesPlot}, da::AbstractDimVector{<:AbstractVector}) = convert_arguments(t, tstack(da))
