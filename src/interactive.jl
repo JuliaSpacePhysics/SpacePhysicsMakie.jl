@@ -7,7 +7,7 @@ This file contains functions for interactive plotting of time series data.
 
 # https://github.com/MakieOrg/Makie.jl/pull/4630
 
-function iviz_api!(ax::Axis, to_plotspec, trange; delay=DEFAULTS.delay)
+function iviz_api!(ax::Axis, to_plotspec, trange; delay=DEFAULTS.delay, kw...)
     specs = Observable(to_plotspec(trange))
     plots = plotlist!(ax, specs)
     reset_limits!(ax)

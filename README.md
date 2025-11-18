@@ -8,18 +8,13 @@ Space physics plotting utilities built on [`Makie.jl`](https://makie.juliaplots.
 
 Designed for fast, interactive plotting of multiple time series with automatic handling of ISTP metadata. While tailored for space physics, it supports any time series data via extensible `transform` function.
 
+**Installation**: at the Julia REPL, run `using Pkg; Pkg.add("SpacePhysicsMakie")`
+
 ## Features
 
 - **Versatile**: Unified API (`tplot`) for various time series representations including dimensional arrays, functions, or product IDs (strings).
 - **Flexible Layouts**: Separate panels (`tplot_panel`), overlaid plots (`multiplot`), or dual-axis (`dualplot`) panels.
 - **Interactive Exploration**: Efficient data retrieval and rendering during zoom/pan operations.
-
-## Installation
-
-```julia
-using Pkg
-Pkg.add("SpacePhysicsMakie")
-```
 
 ## Examples
 

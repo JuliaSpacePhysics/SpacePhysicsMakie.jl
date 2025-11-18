@@ -74,7 +74,7 @@ yunit(x; flag=isspectrogram(x)) = flag ? unit(eltype(yvalues(x))) : unit(eltype(
 yscale(x; flag=isspectrogram(x)) = flag ? get_depend_1_scale(x) : mget(x, "SCALETYP")
 
 filter_by_keys!(f, d) = filter!(f ∘ first, d)
-filter_by_keys(f, d) = filter(f ∘ first, d)
+filter_by_keys(f, d) = length(d) == 0 ? Dict() : filter(f ∘ first, d)
 filter_by_keys(f, ::NoMetadata) = Dict()
 filter_by_keys(f, nt::NamedTuple) = NamedTuple{filter(f, keys(nt))}(nt)
 filter_by_fieldnames!(T::Type, d) = filter_by_keys!(∈(fieldnames(T)), d)

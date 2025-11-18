@@ -7,9 +7,9 @@
 Plot a spectrogram on a panel
 """
 function specplot(gp, ta; axis = (;), add_colorbar = DEFAULTS.add_colorbar, add_title = DEFAULTS.add_title, position = DEFAULTS.position, kwargs...)
-    ax = Axis(gp; axis_attributes(ta; add_title)..., axis...)
+    ax = Axis(gp[1, 1]; axis_attributes(ta; add_title)..., axis...)
     plots = specplot!(ax, ta; kwargs...)
-    add_colorbar && isspectrogram(ta) && Colorbar(gp[1, 1, position], plots; label = clabel(ta))
+    add_colorbar && isspectrogram(ta) && Colorbar(gp[1, 2], plots; label = clabel(ta))
     return PanelAxesPlots(gp, AxisPlots(ax, plots))
 end
 
@@ -18,7 +18,7 @@ Plot heatmap of a time series on the same axis
 """
 function specplot!(ax::Axis, ta; labels = labels(ta), verbose = true, kwargs...)
     ta = resample(ta; verbose)
-    plotlist!(ax, plot2spec(SpecPlot, ta; kwargs...))
+    return plotlist!(ax, plot2spec(SpecPlot, ta; kwargs...))
 end
 
 function plot2spec(::Type{<:SpecPlot}, da; kwargs...)

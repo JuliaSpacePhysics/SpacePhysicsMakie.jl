@@ -18,7 +18,7 @@ function functionplot(gp, f, tmin, tmax; axis = (;), add_title = DEFAULTS.add_ti
     ax = Axis(gp; attrs..., axis...)
     plot = _merge(plottype_attributes(m), plot)
     p = functionplot!(ax, f, tmin, tmax; data, plot, kwargs...)
-    isspectrogram(data) && add_colorbar && Colorbar(gp[1, 1, Right()], p; label = clabel(data))
+    isspectrogram(data) && add_colorbar && Colorbar(gp[1, 2], p; label = clabel(data))
     return PanelAxesPlots(gp, AxisPlots(ax, p))
 end
 
