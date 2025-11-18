@@ -1,7 +1,7 @@
 # Reference
 # [ISTP Metadata Guidelines: Global Attributes](https://spdf.gsfc.nasa.gov/istp_guide/gattributes.html)
 # [ISTP Metadata Guidelines: Variables](https://spdf.gsfc.nasa.gov/istp_guide/variables.html)
-function ulabel(l, u; multiline=false)
+function ulabel(l, u; multiline = false)
     l == "" && return u
     u == "" && return l
     return multiline ? "$(l)\n($(u))" : "$(l) ($(u))"
@@ -23,7 +23,7 @@ function yvalues(::Type{Vector}, x)
     vals = yvalues(x)
     return if isa(vals, AbstractMatrix)
         all(allequal, eachcol(vals)) || @warn "y values are not constant along time"
-        vec(mean(vals; dims=1))
+        vec(mean(vals; dims = 1))
     else
         vals
     end
@@ -32,9 +32,9 @@ end
 depend_1(x) = mget(x, "DEPEND_1")
 depend_1_name(x) = mget(depend_1(x), ("LABLAXIS", "FIELDNAM"))
 depend_1_unit(x) = mget(depend_1(x), "UNITS", "")
-get_depend_1_scale(x) = mget(depend_1(x), "SCALETYP")
+get_depend_1_scale(x) = mget(depend_1(x), "SCALETYP", identity)
 
-function ylabel(x; flag=isspectrogram(x), multiline=true)
+function ylabel(x; flag = isspectrogram(x), multiline = true)
     name = flag ? depend_1_name(x) : mget(x, "LABLAXIS", SpaceDataModel.name(x))
     ustr = flag ? depend_1_unit(x) : unit_str(x)
     name = string(something(name, ""))
@@ -66,24 +66,20 @@ end
 
 function scale(x, sources)
     return _scale_func(
-        prioritized_get(meta(x), sources, nothing)
+        prioritized_get(meta(x), sources, identity)
     )
 end
 
-yunit(x; flag=isspectrogram(x)) = flag ? unit(eltype(yvalues(x))) : unit(eltype(x))
-yscale(x; flag=isspectrogram(x)) = flag ? get_depend_1_scale(x) : mget(x, "SCALETYP")
+yunit(x; flag = isspectrogram(x)) = flag ? unit(eltype(yvalues(x))) : unit(eltype(x))
+yscale(x; flag = isspectrogram(x)) = flag ? get_depend_1_scale(x) : mget(x, "SCALETYP")
 
-filter_by_keys!(f, d) = filter!(f ∘ first, d)
 filter_by_keys(f, d) = length(d) == 0 ? Dict() : filter(f ∘ first, d)
 filter_by_keys(f, ::NoMetadata) = Dict()
 filter_by_keys(f, nt::NamedTuple) = NamedTuple{filter(f, keys(nt))}(nt)
-filter_by_fieldnames!(T::Type, d) = filter_by_keys!(∈(fieldnames(T)), d)
-filter_by_fieldnames(T::Type, d) = filter_by_keys(∈(fieldnames(T)), d)
-filter_by_fieldnames(T::Type, ::NoMetadata) = Dict()
 
-function plottype_attributes(meta; allowed=(:labels, :label))
+function plottype_attributes(meta; allowed = (:labels, :label))
     return filter_by_keys(∈(allowed), meta)
 end
 
-plot_attributes(ta; add_title=false) = Attributes(; axis=axis_attributes(ta; add_title))
+plot_attributes(ta; add_title = false) = Attributes(; axis = axis_attributes(ta; add_title))
 plot_attributes(f::Function, args...; kwargs...) = plot_attributes(f(args...); kwargs...)

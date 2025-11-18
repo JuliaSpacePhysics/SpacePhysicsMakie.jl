@@ -1,10 +1,13 @@
 import DimensionalData
 import DimensionalData as DD
-using DimensionalData: AbstractDimArray, AbstractDimVector, AbstractDimStack, TimeDim, Dimension, lookup, basetypeof
+using DimensionalData: AbstractDimArray, AbstractDimVector, AbstractDimMatrix, AbstractDimStack, TimeDim, Dimension, lookup, basetypeof
 
 dims(x::AbstractDimArray, d) = DD.dims(x, d)
 unwrap(x::Dimension) = parent(lookup(x))
 times(x::AbstractDimArray, args...) = unwrap(timedim(x, args...))
+
+depend_1(x::AbstractDimMatrix) = mget(x, "DEPEND_1", dims(x, 2).val)
+
 
 dimtype_eltype(d) = (basetypeof(d), eltype(d))
 dimtype_eltype(A, query) = dimtype_eltype(dims(A, something(query, TimeDim)))
@@ -23,7 +26,6 @@ end
 apply(A::AbstractDimStack, tmin, tmax) = tview(A, tmin, tmax)
 
 _label(x::AbstractDimArray) = DD.label(x)
-filter_by_fieldnames(::Type, ::DimensionalData.NoMetadata) = Dict()
 
 plottype(x::AbstractDimArray) = isspectrogram(x) ? SpecPlot : LinesPlot
 

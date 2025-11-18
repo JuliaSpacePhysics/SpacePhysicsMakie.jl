@@ -22,3 +22,7 @@ Designed for fast, interactive plotting of multiple time series with automatic h
 - [Advanced plotting](https://juliaspacephysics.github.io/SPEDAS.jl/dev/examples/speasy/) — combining multiple data types.
 - [Interactive plots](https://juliaspacephysics.github.io/SPEDAS.jl/dev/examples/interactive/) — basic usage.
 - [Interactive with data retrieval](https://juliaspacephysics.github.io/SPEDAS.jl/dev/examples/interactive_speasy/) — using Speasy.jl.
+
+## Development
+
+- To support other data types, the simplest way is to extend the `transform` function and `transform` the data to a supported type like `DimArray`.

@@ -26,8 +26,17 @@ function heatmap_attributes(A; kwargs...)
         :colorscale => _scale_func(mget(A, "SCALETYP")),
         :colorrange => colorrange(A)
     )
+    heatmap_keys = Makie.attribute_names(Heatmap)
+    for (k, v) in meta(A)
+        if k in heatmap_keys
+            attrs[k] = v
+        end
+    end
     return attrs
 end
+
+safe_div(x, y) = x / y
+safe_div(x::Union{Integer, Dates.TimePeriod}, y) = div(x, y)
 
 """
     _linear_binedges(centers)
@@ -39,12 +48,12 @@ function _linear_binedges(centers)
     edges = similar(centers, N + 1)
     # Calculate internal edges
     for i in 2:N
-        edges[i] = (centers[i-1] + centers[i]) / 2
+        edges[i] = centers[i - 1] + safe_div(centers[i] - centers[i - 1], 2)
     end
 
     # Calculate first and last edges using the same spacing as adjacent bins
     edges[1] = centers[1] - (edges[2] - centers[1])
-    edges[end] = centers[end] + (centers[end] - edges[end-1])
+    edges[end] = centers[end] + (centers[end] - edges[end - 1])
 
     return edges
 end
@@ -66,7 +75,7 @@ edges = binedges(centers)               # Returns [0.5, 1.5, 2.5, 3.5]
 edges = binedges(centers, transform=log)  # Returns edges in log space
 ```
 """
-function binedges(centers; transform=identity)
+function binedges(centers; transform = identity)
     N = length(centers)
     N < 2 && throw(ArgumentError("Need at least 2 bin centers to calculate edges"))
     if transform === identity
@@ -79,6 +88,6 @@ function binedges(centers; transform=identity)
     end
 end
 
-function binedges(centers::AbstractVector{Q}; kwargs...) where {Q<:Quantity}
+function binedges(centers::AbstractVector{Q}; kwargs...) where {Q <: Quantity}
     return binedges(ustrip(centers); kwargs...) * unit(Q)
 end
