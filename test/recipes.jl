@@ -12,6 +12,12 @@
     end
 
     f, axes = @test_nowarn tplot(func, t0, t1)
+
+    @testset "MultiFunctionPlot" begin
+        f2 = (t0, t1) -> -func(t0, t1)
+        @test_nowarn tplot([func, f2], t0, t1)
+        @test_nowarn tplot([[func, f2]], t0, t1)
+    end
 end
 
 @testitem "MultiAxisPlot" begin
