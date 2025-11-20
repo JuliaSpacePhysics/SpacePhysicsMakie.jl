@@ -1,10 +1,10 @@
 # Demo: Plotting with `Speasy`
 
 ```@example speasy
+using Dates
 using Speasy
 spz = speasy
-using Dates
-using GLMakie, SpacePhysicsMakie
+using CairoMakie, SpacePhysicsMakie
 ```
 
 ## Complex requests and flexible layout
