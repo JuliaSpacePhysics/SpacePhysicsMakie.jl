@@ -1,8 +1,7 @@
 @testset "filter" begin
-    using SpacePhysicsMakie: filter_by_keys, filter_by_keys!, filter_by_fieldnames, filter_by_fieldnames!
+    using SpacePhysicsMakie: filter_by_keys
     d = Dict{Symbol, Any}(:a => 1, :b => 2, :c => 3)
     @test filter_by_keys(∈((:a, :b)), d) == Dict{Symbol, Any}(:a => 1, :b => 2)
-    @test filter_by_keys!(∈((:a, :b)), d) == Dict{Symbol, Any}(:a => 1, :b => 2)
     @test d == Dict{Symbol, Any}(:a => 1, :b => 2)
     nt = (a = 1, b = 2, c = 3)
     @test filter_by_keys(∈((:a, :b)), nt) == (a = 1, b = 2)

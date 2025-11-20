@@ -18,6 +18,11 @@
         data::A
         meta::D
     end
-    test_data = TestVariable([1, 2, 3], Dict(:ylabel => "right", "LABLAXIS" => "wrong", :nothing => nothing));
-    @test axis_attributes(test_data) == Dict{Symbol, Any}(:ylabel => "right")
+    test_data = TestVariable([1, 2, 3], Dict(:ylabel => "right", "LABLAXIS" => "wrong", :nothing => nothing, :title => "title"))
+
+    expected = Dict{Symbol, Any}(:ylabel => "right", :title => "title")
+
+    @test axis_attributes(test_data; add_title = true) == expected
+    @test axis_attributes(() -> test_data; add_title = true) == expected
+    @test axis_attributes([() -> test_data, test_data]; add_title = true) == expected
 end

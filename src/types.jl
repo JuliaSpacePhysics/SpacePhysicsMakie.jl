@@ -41,6 +41,7 @@ struct FigureAxes
     axes::AbstractArray{Axis}
 end
 
+FigureAxes(f::Figure, ax::Axis) = FigureAxes(f, [ax])
 FigureAxes(gp::GridPosition, axes) = FigureAxes(gp.layout.parent, axes)
 FigureAxes(gp::GridSubposition, axes) = FigureAxes(gp.parent, axes)
 
@@ -65,34 +66,39 @@ end
 PanelAxesPlots(pos, ap::AxisPlots) = PanelAxesPlots(pos, [ap])
 
 """
-    DualAxisData(data1, data2; meta=nothing)
+    MultiAxisData(primary, secondaries...; metadata=nothing)
 
-A type for handling dual-axis data where each field represents data for a different axis.
-The first field is plotted against the left y-axis and the second field against the right y-axis.
+A type for handling multiple y-axes where the first element is the primary axis (left)
+and subsequent elements are secondary axes (right side, with increasing padding).
 
 # Fields
-- `data1`: Data for the left y-axis
-- `data2`: Data for the right y-axis
-- `metadata`: Metadata for the data (e.g., title)
+- `primary`: Data for the primary (left) y-axis
+- `secondaries`: Tuple of data for secondary (right) y-axes
+- `metadata`: Optional metadata (e.g., title)
+
+# Example
+```julia
+# Three axes: one primary, two secondary
+data = MultiAxisData(y1_data, y2_data, y3_data)
+tplot(data)
+```
 """
-struct DualAxisData{T1, T2, M}
-    data1::T1
-    data2::T2
+struct MultiAxisData{T, S, M}
+    primary::T
+    secondaries::S
     metadata::M
 end
 
-DualAxisData(data1, data2) = DualAxisData(data1, data2, nothing)
+MultiAxisData(primary, secondaries; metadata = NoMetadata()) = MultiAxisData(primary, secondaries, metadata)
 
-function Base.getindex(obj::DualAxisData, i::Int)
-    i == 1 && return obj.data1
-    i == 2 && return obj.data2
+function Base.getindex(obj::MultiAxisData, i)
+    i == 1 && return obj.primary
+    i > 1 && i <= length(obj) && return obj.secondaries[i - 1]
     throw(BoundsError(obj, i))
 end
 
-# Add length and iteration support for DualAxisData
-Base.length(::DualAxisData) = 2
-Base.iterate(obj::DualAxisData, state = 1) = state > 2 ? nothing : (obj[state], state + 1)
-
+Base.length(obj::MultiAxisData) = length(obj.secondaries) + 1
+Base.iterate(obj::MultiAxisData, state = 1) = state > length(obj) ? nothing : (obj[state], state + 1)
 
 function Base.getproperty(obj::PanelAxesPlots, sym::Symbol)
     sym in fieldnames(PanelAxesPlots) && return getfield(obj, sym)

@@ -1,7 +1,13 @@
-_axis_meta(x::AbstractDict) = filter_by_fieldnames(Axis, x)
-_axis_meta(x::NamedTuple) = Dict(pairs(filter_by_fieldnames(Axis, x)))
-_axis_meta(::NoMetadata) = Dict{Symbol, Any}()
-_axis_meta(x) = _axis_meta(meta(x))
+# This is much faster than `∈(fieldnames(T))` as `fieldnames(Axis)` is pretty slow due to nospecialization
+_has_field(T, x) = x isa Symbol && hasfield(T, x)
+_has_field(T) = x -> _has_field(T, x)
+
+function merge_axis_attributes!(attrs, d)
+    for (k, v) in pairs(d)
+        _has_field(Axis, k) && setindex!(attrs, v, k)
+    end
+    return attrs
+end
 
 _axis_attributes(x, args...) = _axis_attributes(plottype(x), x, args...)
 
@@ -13,17 +19,17 @@ function _axis_attributes(::Type, A, args...)
         :yunit => yunit(A; flag), :yscale => yscale(A; flag), :ylabel => ylabel(A; flag),
         :title => title(A),
     )
-    return merge!(attrs, _axis_meta(A))
+    return merge_axis_attributes!(attrs, meta(A))
 end
 
 function _axis_attributes(::Type{FunctionPlot}, f, args...; data = nothing)
     attrs = _axis_attributes(@something data apply(f, args...))
-    return merge!(attrs, _axis_meta(f))
+    return merge_axis_attributes!(attrs, meta(f))
 end
 
 function _axis_attributes(::Type{MultiPlot}, fs, args...)
     attrs = _intersect!(_axis_attributes.(values(fs), args...)...)
-    return merge!(attrs, _axis_meta(fs))
+    return merge_axis_attributes!(attrs, meta(fs))
 end
 
 # Process axis attributes before makie
@@ -36,7 +42,7 @@ function process_axis_attributes!(attrs; add_title = false, kw...)
     end
     add_title || delete!(attrs, :title)
     haskey(attrs, :yscale) && (attrs[:yscale] = _scale_func(attrs[:yscale]))
-    return filter_by_fieldnames!(Axis, merge!(attrs, kw))
+    return filter!(_has_field(Axis) ∘ first, merge!(attrs, kw))
 end
 
 """
@@ -44,6 +50,6 @@ Get axis attributes for `x`
 """
 function axis_attributes(x, args...; kw...)
     return process_axis_attributes!(
-        _axis_attributes(plottype(x), x, args...); kw...
+        _axis_attributes(x, args...); kw...
     )
 end

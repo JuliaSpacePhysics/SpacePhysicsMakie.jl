@@ -1,15 +1,13 @@
-@recipe MultiPlot begin
-    plottype = nothing
-end
+# Like `series` in https://github.com/MakieOrg/Makie.jl/blob/master/Makie/src/basic_recipes/series.jl
+# Also handle spectrogram
 
-function Makie.plot!(p::MultiPlot)
-    pt = p.plottype[]
-    foreach(p[1][]) do x
-        transformed = transform(x)
-        pf = plotfunc!(something(pt, plottype(transformed)))
-        pf(p, transformed)
+function multiplot!(ax::Axis, tas, args...; plottype = nothing, kwargs...)
+    pt = plottype
+    return map(tas) do x
+        x′ = transform(x)
+        pf = plotfunc!(something(pt, SpacePhysicsMakie.plottype(x′)))
+        pf(ax, x′; kwargs...)
     end
-    return p
 end
 
 """
@@ -17,7 +15,7 @@ end
 
 Setup the panel on a position and plot multiple time series on it
 """
-function multiplot(gp, tas, args...; axis = (;), add_title = DEFAULTS.add_title, legend=(;), kwargs...)
+function multiplot(gp, tas, args...; axis = (;), add_title = DEFAULTS.add_title, legend = (;), kwargs...)
     ax = Axis(gp; axis_attributes(tas, args...; add_title)..., axis...)
     plots = multiplot!(ax, values(tas), args...; kwargs...)
     !isnothing(legend) && add_legend!(gp, ax; legend...)
@@ -28,7 +26,28 @@ function multiplot(gp, plottype::Type{<:AbstractPlot}, tas, args...; kwargs...)
     return multiplot(gp, tas, args...; plottype, kwargs...)
 end
 
-Makie.get_plots(plot::MultiPlot) = mapreduce(get_plots, vcat, plot.plots)
+const MultiPlot = Plot{multiplot}
+
+# Old implementation `@recipe` style
+# The problem with this implementation is that it does not cycle the attributes
+# See https://github.com/MakieOrg/Makie.jl/issues/5322, https://github.com/MakieOrg/Makie.jl/issues/4843
+
+# @recipe MultiPlot begin
+#     plottype = nothing
+# end
+
+# function Makie.plot!(p::MultiPlot)
+#     pt = p.plottype[]
+#     foreach(p[1][]) do x
+#         transformed = transform(x)
+#         pf = plotfunc!(something(pt, plottype(transformed)))
+#         pf(transformed)
+#     end
+#     return p
+# end
+
+
+# Makie.get_plots(plot::MultiPlot) = mapreduce(get_plots, vcat, plot.plots; init = AbstractPlot[])
 
 
 # For compatibility since `multiplot_spec!` need to concatenate specs before plotting

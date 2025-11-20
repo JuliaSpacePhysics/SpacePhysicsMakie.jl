@@ -22,3 +22,19 @@ Designed for fast, interactive plotting of multiple time series with automatic h
 - [Advanced plotting](https://juliaspacephysics.github.io/SPEDAS.jl/dev/examples/speasy/) — combining multiple data types.
 - [Interactive plots](https://juliaspacephysics.github.io/SPEDAS.jl/dev/examples/interactive/) — basic usage.
 - [Interactive with data retrieval](https://juliaspacephysics.github.io/SPEDAS.jl/dev/examples/interactive_speasy/) — using Speasy.jl.
+
+## Development
+
+- To support other data types, the simplest way is to extend the `transform` function and `transform` the data to a supported type like `DimArray`.
+    - Also if possible define a proper `depend_1` is used to get the y axis label and unit.
+
+
+## Roadmap
+
+- [ ] Add marking tools such as vertical lines across panels, horizontal bars, and rectangular shadings. The marking tools are often used to indicate interesting time periods for a event analysis.
+
+## Elsewhere
+
+- Makie.jl and its ecosystem
+    - [GeoMakie.jl](https://github.com/JuliaPlots/GeoMakie.jl): plotting geospatial data on a given map projection
+    - [UnfoldMakie.jl](https://github.com/JuliaNeuroscience/UnfoldMakie.jl): visualizations of EEG/ERP data and Unfold.jl models.

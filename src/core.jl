@@ -24,14 +24,14 @@ By default, the time series are transformed via extensible `transform`.
 
 See also: [`tplot_panel`](@ref), [`transform`](@ref)
 """
-function tplot(f::Drawable, tas, args...; link_xaxes=true, link_yaxes=false, rowgap=5, axis=(;), palette=nothing, kwargs...)
+function tplot(f::Drawable, tas, args...; link_xaxes = true, link_yaxes = false, rowgap = 5, axis = (;), palette = nothing, kwargs...)
     mtas = mappable(tas)
     palette = something(palette, default_palette(mtas))
     gaps = map(palette, mtas) do pos, ta
         gp = f[pos...]
         pap = tplot_panel(gp, ta, args...; axis, kwargs...)
         # Hide redundant x labels
-        link_xaxes && pos != last(palette) && hidexdecorations!.(pap.axis, grid=false)
+        link_xaxes && pos != last(palette) && hidexdecorations!.(pap.axis, grid = false)
         pap
     end
     axs = reduce(vcat, get_axes.(gaps))
@@ -39,13 +39,13 @@ function tplot(f::Drawable, tas, args...; link_xaxes=true, link_yaxes=false, row
     link_yaxes && linkyaxes!(axs...)
 
     !isnothing(rowgap) && hasproperty(f, :layout) && rowgap!(f.layout, rowgap)
-    FigureAxes(f, axs)
+    return FigureAxes(f, axs)
 end
 
-function tplot(ta, args...; figure=(;), kwargs...)
+function tplot(ta, args...; figure = (;), kwargs...)
     tas = mappable(ta)
-    f = Figure(; size=auto_figure_size(tas), figure...)
-    tplot(f, tas, args...; kwargs...)
+    f = Figure(; size = auto_figure_size(tas), figure...)
+    return tplot(f, tas, args...; kwargs...)
 end
 
 """
@@ -54,7 +54,7 @@ end
 Calculate an appropriate figure size based on the number of plots in the list.
 Returns a tuple of (width, height) in pixels.
 """
-function auto_figure_size(tas; base_height=200, min_height=600, width=800)
+function auto_figure_size(tas; base_height = 200, min_height = 600, width = 800)
     n_plots = length(tas)
     height = max(min_height, n_plots * base_height)
     return (width, height)
