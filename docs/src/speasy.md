@@ -61,5 +61,5 @@ end
 ```
 
 ```@raw html
-<video autoplay loop muted playsinline controls src="./speasy.mp4" />
+<video autoplay loop muted playsinline controls src="../speasy.mp4" />
 ```

@@ -20,9 +20,6 @@ SpacePhysicsMakie.tplot_panel
 SpacePhysicsMakie.tplot_panel!
 ```
 
-```@index
-```
-
 ## Installation
 
 ```julia
@@ -69,6 +66,9 @@ transform(x::MyType) = DimArray(x.data)
 - [SciQLop](https://github.com/SciQLop/SciQLop) : A python application built on top of `Qt` to explore multivariate time series effortlessly,
 
 ## API
+
+```@index
+```
 
 ```@autodocs
 Modules = [SpacePhysicsMakie]
