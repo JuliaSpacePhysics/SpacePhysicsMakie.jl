@@ -11,10 +11,11 @@ function isspectrogram(A::AbstractMatrix; threshold = 5)
     end
 end
 
+# Makie requires `String`
 function clabel(A; multiline = true)
     name = mget(A, "LABLAXIS", SpaceDataModel.name(A))
     units = unit_str(A)
-    return ulabel(name, units; multiline)
+    return ulabel(name, units; multiline) |> String
 end
 
 colorrange(x) = prioritized_get(meta(x), COLORRANGE_SOURCES)
