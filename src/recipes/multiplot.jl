@@ -1,11 +1,12 @@
 # Like `series` in https://github.com/MakieOrg/Makie.jl/blob/master/Makie/src/basic_recipes/series.jl
 # Also handle spectrogram
 
-function multiplot!(ax::Axis, tas, args...; plottype = nothing, kwargs...)
-    pt = plottype
-    return map(tas) do x
+function multiplot!(ax::Axis, tas, args...; plottypes = (), kwargs...)
+    ptypes = _plottypes(plottypes)
+    return map(enumerate(tas)) do (i, x)
         x′ = transform(x)
-        pf = plotfunc!(something(pt, SpacePhysicsMakie.plottype(x′)))
+        ptype = get(ptypes, i, plottype(x′))
+        pf = plotfunc!(ptype)
         pf(ax, x′; kwargs...)
     end
 end

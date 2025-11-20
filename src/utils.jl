@@ -1,3 +1,15 @@
+struct Fill
+    x
+end
+
+Base.get(f::Fill, _, _) = f.x
+
+_plottypes(x) = x
+_plottypes(x::Type{<:AbstractPlot}) = Fill(x)
+
+_dict(; kwargs...) = Dict(kwargs)
+
+
 """
     resample(arr, n=DEFAULTS.resample; dim=1, verbose=false)
 
