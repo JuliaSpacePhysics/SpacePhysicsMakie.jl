@@ -54,9 +54,9 @@ end
     # Method 1
     scatterlines(f[1, 1], data1); scatterlines!(f[1, 1], data2)
     # Method 2
-    @test_nowarn tplot_panel(f[2, 1], [data1, data2]; plottype = ScatterLines)
+    @test_nowarn tplot_panel(f[2, 1], [data1, data2]; plottypes = ScatterLines)
     # Method 3
-    @test_nowarn multiplot(f[3, 1], [data1, data2], plottype = ScatterLines)
+    @test_nowarn multiplot(f[3, 1], [data1, data2], plottypes = ScatterLines)
     f
 end
 
@@ -76,7 +76,7 @@ end
 @testitem "tplot_panel dispatch" setup = [DataShare] begin
     f = Figure()
     # Multiple Series (same y-axis)
-    @test_nowarn tplot_panel(f[1, 1], [data1, data2]; axis = (; title = "Multiple series"), plottype = ScatterLines)
+    @test_nowarn tplot_panel(f[1, 1], [data1, data2]; axis = (; title = "Multiple series"), plottypes = ScatterLines)
     # Dual Y-Axes (different units)
     @test_nowarn tplot_panel(f[2, 1], (data1, data3); axis = (; title = "Dual y-axes"))
     # Overlay Series on Heatmap

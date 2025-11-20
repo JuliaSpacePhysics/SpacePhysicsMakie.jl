@@ -1,8 +1,3 @@
-function gridposition(ax)
-    gc = ax.layoutobservables.gridcontent[]
-    return gc.parent[gc.span.rows, gc.span.cols]
-end
-
 """
     tlims!(ax, tmin, tmax)
     tlims!(tmin, tmax)

@@ -7,7 +7,7 @@ This file contains functions for interactive plotting of time series data.
 
 # https://github.com/MakieOrg/Makie.jl/pull/4630
 
-function iviz_api!(ax::Axis, f, trange; delay=DEFAULTS.delay, kw...)
+function iviz_api!(ax::Axis, f, trange; delay = DEFAULTS.delay, kw...)
     graph = ComputeGraph()
     add_input!(graph, :input1, trange)
     map!(tr -> f(tr...), graph, :input1, :output) # register_computation!
@@ -30,6 +30,7 @@ function iviz_api!(ax::Axis, f, trange; delay=DEFAULTS.delay, kw...)
             graph[:output]
             prev_xrange .= xrange
         end
+        return
     end
     on(Debouncer(update, delay), axislimits)
 

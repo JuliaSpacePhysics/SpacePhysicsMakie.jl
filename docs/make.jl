@@ -10,7 +10,6 @@ makedocs(
     ],
     format = Documenter.HTML(size_threshold = nothing),
     modules = [SpacePhysicsMakie],
-    warnonly = Documenter.except(:doctest),
     doctest = true
 )
 

@@ -15,7 +15,10 @@ const MultiPlottable = Union{AbstractVector{<:SupportTypes}, NamedTuple, Tuple}
     delay::Float64
     resample::Int
     position
+    vector_plottype::Symbol
 end
+
+vector_plottype() = Makie.symbol_to_plot(DEFAULTS.vector_plottype)
 
 """
     DEFAULTS
@@ -32,7 +35,8 @@ const DEFAULTS = Defaults(;
     add_colorbar = true,
     delay = 0.25,
     resample = 6070,
-    position = Right()
+    position = Right(),
+    vector_plottype = :Lines,
 )
 
 # https://github.com/MakieOrg/AlgebraOfGraphics.jl/blob/master/src/entries.jl

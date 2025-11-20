@@ -11,11 +11,15 @@ Extend this for custom data types to integrate with the plotting system.
 @doc pfdoc function plotfunc end
 @doc pfdoc function plotfunc! end
 
-# default fallback; like `Makie.plot` and handles `plottype` keyword argument
-_plot(args...; plottype = Plot{plot}, kw...) = plotfunc(plottype)(args...; kw...)
-_plot!(args...; plottype = Plot{plot}, kw...) = plotfunc!(plottype)(args...; kw...)
-
-plottype(x) = eltype(x) <: Number ? Makie.plottype(x) : MultiPlot
+function plottype(x)
+    return if eltype(x) <: Number
+        # Makie default plottype for AbstractVector is Scatter
+        # We change it to Lines
+        x isa AbstractVector ? vector_plottype() : Makie.plottype(x)
+    else
+        MultiPlot
+    end
+end
 plottype(::MultiAxisData) = MultiAxisPlot
 plottype(::Function) = FunctionPlot
 plottype(args...) = plottype(args[1])
@@ -24,10 +28,7 @@ plotfunc(args...) = Makie.plotfunc(plottype(args...))
 plotfunc(T::Type{<:AbstractPlot}) = Makie.plotfunc(T)
 plotfunc!(args...) = Makie.plotfunc!(plottype(args...))
 plotfunc!(T::Type{<:AbstractPlot}) = Makie.plotfunc!(T)
-
 plotfunc(::Tuple) = multiaxisplot
-plotfunc(::Type{Plot{_plot}}) = _plot
-plotfunc!(::Type{Plot{_plot}}) = _plot!
 
 """
     tplot_panel(gp, args...; kwargs...)

@@ -37,6 +37,7 @@ include("attributes.jl")
 include("axis.jl")
 include("methods.jl")
 include("utils.jl")
+include("makie.jl")
 include("../ext/DimensionalDataExt.jl")
 include("../ext/SpaceDataModelExt.jl")
 end

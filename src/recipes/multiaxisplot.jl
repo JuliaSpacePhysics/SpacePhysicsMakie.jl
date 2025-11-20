@@ -26,12 +26,6 @@ const _multi_axis_styles = [
     (; linestyle = :dashdotdot, marker = :star5),  # Secondary 4
 ]
 
-
-# Helper functions used by multiaxisplot
-_to_color(x::ComputePipeline.Computed) = to_color(x[])
-_to_color(x) = x
-_axis_color(color) = (; yticklabelcolor = color, ylabelcolor = color, ytickcolor = color)
-
 "Create and configure a secondary y-axis"
 function make_secondary_axis(gp; color = Makie.wong_colors()[6], yaxisposition = :right, kwargs...)
     color = _to_color(color)
@@ -41,22 +35,11 @@ function make_secondary_axis(gp; color = Makie.wong_colors()[6], yaxisposition =
     return ax2
 end
 
-struct Fill
-    x
-end
-
-Base.get(f::Fill, _, _) = f.x
-
-_plottypes(x) = x
-_plottypes(x::Type{<:AbstractPlot}) = Fill(x)
-
-_dict(; kwargs...) = Dict(kwargs)
-
 n_child_plot(ptype, x) = 1
 n_child_plot(::Type{<:MultiPlot}, x) = length(x)
 
 """
-    multiaxisplot(gp, primary, secondaries...; colors, styles, kwargs...)
+    multiaxisplot(gp, primary, secondaries...; pad_increment = 50.0, [colors, styles, plottypes, axis], kwargs...)
 
 Create a plot with one primary y-axis (left) for `primary` and multiple secondary y-axes (right) for `secondaries...`.
 
@@ -65,8 +48,7 @@ Each secondary axis is offset to the right with increasing padding of `pad_incre
 # Attributes
 - `colors`: Vector of colors for each axis (default: Wong color palette)
 - `styles`: Vector of NamedTuples with plot attributes for each secondary axis
-- `plottype`: Plot type to use (default: ScatterLines)
-- `axis`: Axis attributes for the primary axis
+- `plottypes`: Plot types to use, a single type would be broadcasted to all axes
 """
 function multiaxisplot(
         gp::Drawable, data::MultiAxisData, args...;
@@ -122,7 +104,6 @@ function multiaxisplot(
             gp;
             color,
             yticklabelpad = pad,
-            ylabelpadding = pad,  # Move ylabel together with tick labels
             axis_attributes(sec_data, args...; add_title = false)...
         )
 
