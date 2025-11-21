@@ -1,7 +1,7 @@
 # Like `series` in https://github.com/MakieOrg/Makie.jl/blob/master/Makie/src/basic_recipes/series.jl
 # Also handle spectrogram
 
-function multiplot!(ax::Axis, tas, args...; plottypes = (), kwargs...)
+function multiplot!(ax, tas, args...; plottypes = (), kwargs...)
     ptypes = _plottypes(plottypes)
     return map(enumerate(tas)) do (i, x)
         x′ = transform(x)
@@ -10,6 +10,8 @@ function multiplot!(ax::Axis, tas, args...; plottypes = (), kwargs...)
         pf(ax, x′; kwargs...)
     end
 end
+
+multiplot!(ax, c::Computed, args...; kwargs...) = multiplot!(ax, c[]; kwargs...)
 
 """
     multiplot(gp, tas::MultiPlottable, args...; axis=(;), kwargs...)
