@@ -16,10 +16,19 @@ end
 # A temporary solution until https://github.com/MakieOrg/Makie.jl/issues/5193 is fixed
 # Some optimizations are possible here https://discourse.julialang.org/t/virtual-or-lazy-representation-of-a-repeated-array/124954
 function _heatmap!(ax, x, y, matrix; colorscale = log10, kw...)
-    xx = repeat(x, 1, size(y, 1))
-    yy = repeat(y', size(x, 1), 1)
-    z = zero(matrix)
-    return surface!(ax, xx, yy, z; color = matrix, shading = NoShading, colorscale, kw...)
+    xx = repeat(x, 1, size(matrix, 2))
+    mat = ustrip(matrix)
+    z = zero(mat)
+    return surface!(ax, xx, y, z; color = mat, shading = NoShading, colorscale, kw...)
+end
+
+function prepare_y_values(A)
+    y = depend_1(A)
+    return if isa(y, AbstractVector)
+        repeat(y', size(A, 1), 1)
+    else
+        y
+    end
 end
 
 """
@@ -28,14 +37,7 @@ Plot heatmap of a time series on the same axis
 function specplot!(ax::Axis, A; labels = labels(A), verbose = true, kwargs...)
     A = resample(A; verbose)
     x = makie_x(A)
-    y = spectrogram_y_values(A)
+    y = prepare_y_values(A)
     attrs = heatmap_attributes(A; kwargs...)
     return _heatmap!(ax, x, y, parent(A); attrs...)
-end
-
-function plot2spec(::Type{<:SpecPlot}, da; kwargs...)
-    x = makie_x(da)
-    y = spectrogram_y_values(da)
-    attributes = heatmap_attributes(da; kwargs...)
-    return S.Heatmap(x, y, parent(da); attributes...)
 end

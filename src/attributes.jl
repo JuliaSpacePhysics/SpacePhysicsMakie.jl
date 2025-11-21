@@ -1,52 +1,42 @@
-# Reference
-# [ISTP Metadata Guidelines: Global Attributes](https://spdf.gsfc.nasa.gov/istp_guide/gattributes.html)
-# [ISTP Metadata Guidelines: Variables](https://spdf.gsfc.nasa.gov/istp_guide/variables.html)
+_string(x) = string(x)
+_string(::Nothing) = ""
+
+ulabel(::Nothing, ::Nothing; kw...) = ""
+ulabel(l::Nothing, u; kw...) = string(u)
+ulabel(l, u::Nothing; kw...) = string(l)
 function ulabel(l, u; multiline = false)
-    l == "" && return u
-    u == "" && return l
+    l == "" && return string(u)
+    u == "" && return string(l)
     return multiline ? "$(l)\n($(u))" : "$(l) ($(u))"
 end
 
-_label(x) = SpaceDataModel.name(x)
-
-function unit_str(A)
-    u = unit(eltype(A))
-    return u == NoUnits ? mget(A, (:unit, :units, "UNITS"), "") : string(u)
+# Return the unit of the data:
+# If A is a Unitful object, return the unit of A
+# Otherwise, return the unit from the metadata schema
+function _unit(A; schema = get_schema(A))
+    u = Unitful.unit(eltype(A))
+    return u == NoUnits ? schema(A)[:unit] : u
 end
 
-title(A) = mget(A, "CATDESC")
+"""
+    labels(x; schema=get_schema(x))
 
-function yvalues(::Type{Vector}, x)
-    vals = depend_1(x)
-    return if isa(vals, AbstractMatrix)
-        all(allequal, eachcol(vals)) || @warn "y values are not constant along time"
-        vec(mean(vals; dims = 1))
-    else
-        vals
-    end
-end
+Get the labels for `data` using the metadata `schema`.
+"""
+labels(x; schema = get_schema(x)) = _labels(
+    @something(
+        schema(x, :labels),
+        schema(depend_1(x), :labels),
+        Some(nothing)
+    )
+)
 
-depend_1(x) = unwrap(SpaceDataModel.dim(x, 2))
-depend_1_name(x) = mget(depend_1(x), ("LABLAXIS", "FIELDNAM"))
-depend_1_unit(x) = mget(depend_1(x), "UNITS", "")
-get_depend_1_scale(x) = mget(depend_1(x), "SCALETYP", identity)
+labels(x::AbstractVector; schema = get_schema(x)) =
+    _labels(schema(x, :labels))
 
-function ylabel(x; flag = isspectrogram(x), multiline = true)
-    name = flag ? depend_1_name(x) : mget(x, "LABLAXIS", SpaceDataModel.name(x))
-    ustr = flag ? depend_1_unit(x) : unit_str(x)
-    name = string(something(name, ""))
-    return ulabel(name, ustr; multiline)
-end
-
-label(ta) = prioritized_get(meta(ta), (:label, "LABLAXIS"), _label(ta))
-
-_iter(x) = (x,)
-_iter(x::AbstractVector) = x
-
-function labels(x)
-    lbls = @something mget(x, (:labels, "LABL_PTR_1")) mget(depend_1(x), "LABL_PTR_1") mget(x, "LABLAXIS") Some(nothing)
-    return isnothing(lbls) ? NoMetadata() : _iter(lbls)
-end
+_labels(::Nothing) = NoMetadata()
+_labels(x::AbstractVector) = x
+_labels(x) = (x,)
 
 const meta_labels = labels
 
@@ -69,9 +59,6 @@ function scale(x, sources)
     )
 end
 
-yunit(x; flag = isspectrogram(x)) = flag ? unit(eltype(depend_1(x))) : unit(eltype(x))
-yscale(x; flag = isspectrogram(x)) = flag ? get_depend_1_scale(x) : mget(x, "SCALETYP")
-
 filter_by_keys(f, d) = length(d) == 0 ? Dict{Symbol, Any}() : filter(f ∘ first, pairs(d))
 filter_by_keys!(f, d) = filter!(f ∘ first, pairs(d))
 function filter_by_keys!(T::Type{<:AbstractPlot}, d)
@@ -79,9 +66,17 @@ function filter_by_keys!(T::Type{<:AbstractPlot}, d)
     return isnothing(atts) ? Dict{Symbol, Any}() : filter_by_keys!(∈(atts), d)
 end
 
-# This is slow for NamedTuple `NamedTuple{filter(f, keys(nt))}(nt)`
-plottype_attributes(meta; allowed = (:labels, :label)) =
-    filter_by_keys(∈(allowed), meta)
+function plottype_attributes(A; schema = get_schema(A))
+    attrs = Dict{Symbol, Any}()
+    lookup = SchemaLookup(schema, A)
+    set_if_valid!(attrs; labels = lookup[:labels])
+    return attrs
+end
 
-plot_attributes(ta; add_title = false) = Attributes(; axis = axis_attributes(ta; add_title))
+function plot_attributes(A; schema = get_schema(A), kw...)
+    return Dict(
+        :axis => axis_attributes(A; schema, kw...),
+        :plot => plottype_attributes(A; schema)
+    )
+end
 plot_attributes(f::Function, args...; kwargs...) = plot_attributes(f(args...); kwargs...)

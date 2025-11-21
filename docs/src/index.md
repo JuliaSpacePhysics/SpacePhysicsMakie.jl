@@ -13,7 +13,7 @@ CurrentModule = SpacePhysicsMakie
 
 `tplot` offers flexible visualization options, allowing you to display multiple time series either across separate panels.
 
-`SpacePhysicsMakie` integrates with many packages in the space physics ecosystem through a common API defined in [SpaceDataModel.jl](https://juliaspacephysics.github.io/SpaceDataModel.jl/dev/). See [a real world example](./speasy.md) of using [`Speasy.jl`](https://github.com/SciQLop/Speasy.jl) to retrieve and visualize data.
+`SpacePhysicsMakie` integrates with many packages in the space physics ecosystem through a common API defined in [SpaceDataModel.jl](https://juliaspacephysics.github.io/SpaceDataModel.jl/dev/). See [real world example](./speasy.md) of using [`Speasy.jl`](https://github.com/SciQLop/Speasy.jl) to retrieve and visualize data. More demos are available in the [Examples](./examples.md) page.
 
 Built on `Makie`'s [complex layouts](https://makie.juliaplots.org/stable/plotting/complex-layouts/) capabilities, `tplot` provides both interactive exploration capabilities and publication-quality output. It features dynamic data loading during zoom/pan operations, efficiently retrieving and rendering data on demand.
 

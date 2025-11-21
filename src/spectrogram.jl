@@ -1,9 +1,12 @@
-const COLORRANGE_SOURCES = (:colorrange, :z_range, "z_range")
-
 isspectrogram(A) = false
 
-function isspectrogram(A::AbstractMatrix; threshold = 5)
-    m = mget(A, "DISPLAY_TYPE")
+"""
+    isspectrogram(A::AbstractMatrix; threshold=5, schema=get_schema(A))
+
+Determine if data should be plotted as a spectrogram using the metadata schema.
+"""
+function isspectrogram(A::AbstractMatrix; threshold = 5, schema = get_schema(A))
+    m = schema(A)[:display_type]
     return if isnothing(m)
         size(A, 2) >= threshold
     else
@@ -11,24 +14,30 @@ function isspectrogram(A::AbstractMatrix; threshold = 5)
     end
 end
 
-# Makie requires `String`
-function clabel(A; multiline = true)
-    name = mget(A, "LABLAXIS", SpaceDataModel.name(A))
-    units = unit_str(A)
-    return ulabel(name, units; multiline) |> String
+"""
+    clabel(A; multiline=true, schema=get_schema(A))
+
+Get the colorbar label for `data` using the metadata schema.
+"""
+function clabel(A; multiline = true, schema = get_schema(A))
+    sl = schema(A)
+    name = get(sl, :name, "")
+    units = get(sl, :unit, "")
+    return ulabel(name, units; multiline)
 end
 
-colorrange(x) = prioritized_get(meta(x), COLORRANGE_SOURCES)
+"""
+    heatmap_attributes(A; kwargs...)
 
-function heatmap_attributes(A; kwargs...)
-    attrs = Attributes(; kwargs...)
-    set_if_valid!(
-        attrs,
-        :colorscale => _scale_func(mget(A, "SCALETYP")),
-        :colorrange => colorrange(A)
-    )
+Extract heatmap attributes from metadata using the schema-based approach.
+"""
+function heatmap_attributes(A; schema = get_schema(A), kwargs...)
+    attrs = Dict{Symbol, Any}(kwargs)
+    sl = schema(A)
+    set_if_valid!(attrs; colorscale = sl[:scale])
+    modify!(_scale_func, attrs, :colorscale)
     heatmap_keys = Makie.attribute_names(Heatmap)
-    for (k, v) in meta(A)
+    for (k, v) in pairs(meta(A))
         if k in heatmap_keys
             attrs[k] = v
         end
@@ -90,5 +99,5 @@ function binedges(centers; transform = identity)
 end
 
 function binedges(centers::AbstractVector{Q}; kwargs...) where {Q <: Quantity}
-    return binedges(ustrip(centers); kwargs...) * unit(Q)
+    return binedges(ustrip(centers); kwargs...) * Unitful.unit(Q)
 end
