@@ -4,6 +4,16 @@ end
 
 apply(f, args...) = f(args...)
 apply(A::AbstractArray, tmin, tmax) = tview(A, tmin, tmax)
+data(f, args...) = apply(f, args...)
+
+# CachedFunction is a wrapper for a function and its data
+struct CachedFunction{F, D} <: Function
+    f::F
+    data::D
+end
+
+data(f::CachedFunction, args...) = f.data
+SpacePhysicsMakie.meta(f::CachedFunction) = meta(f.f)
 
 """
     functionplot(gp, f, tmin, tmax; kwargs...)
@@ -15,10 +25,10 @@ function functionplot(gp, f, tmin, tmax; axis = (;), add_title = DEFAULTS.add_ti
     tmin, tmax = _compat(tmin), _compat(tmax)
     data = f(tmin, tmax)
     m = @something meta(f) Dict()
-    attrs = axis_attributes(f, tmin, tmax; data, add_title)
+    attrs = axis_attributes(CachedFunction(f, data); add_title)
     ax = Axis(gp; attrs..., axis...)
     plot = _merge(plottype_attributes(m), plot)
-    p = functionplot!(ax, f, tmin, tmax; data, plot, kwargs...)
+    p = functionplot!(ax, f, tmin, tmax; plot, kwargs...)
     isspectrogram(data) && add_colorbar && Colorbar(gp[1, 2], p; label = clabel(data))
     return PanelAxesPlots(gp, AxisPlots(ax, p))
 end
@@ -32,7 +42,7 @@ _compat(x) = x
 
 Interactive plot of a function `f` on `ax` for a time range from `tmin` to `tmax`
 """
-function functionplot!(ax, f, tmin, tmax; data = nothing, plot = (;), kwargs...)
+function functionplot!(ax, f, tmin, tmax; plot = (;), kwargs...)
     return iviz_api!(ax, f, (tmin, tmax); plot..., kwargs...)
 end
 

@@ -1,3 +1,20 @@
+meta(x) = SpaceDataModel.meta(x)
+meta(x::AbstractDict) = x
+
+depend_1(x) = unwrap(SpaceDataModel.dim(x, 2))
+
+function depend_1(::Type{Vector}, x)
+    d1 = depend_1(x)
+    return if isa(d1, AbstractMatrix)
+        cols = eachcol(d1)
+        flag = all(allequal, cols)
+        flag || @warn "y values are not constant along time"
+        flag ? cols[1] : mean(cols)
+    else
+        d1
+    end
+end
+
 struct Fill
     x
 end
@@ -9,6 +26,10 @@ _plottypes(x::Type{<:AbstractPlot}) = Fill(x)
 
 _dict(; kwargs...) = Dict(kwargs)
 
+# This is much faster than `∈(fieldnames(T))` as `fieldnames(Axis)` is pretty slow due to nospecialization
+# A not-erring version of `hasfield` when `x` is not a Symbol
+_hasfield(T, x) = x isa Symbol && hasfield(T, x)
+_hasfield(T) = x -> _hasfield(T, x)
 
 """
     resample(arr, n=DEFAULTS.resample; dim=1, verbose=false)
@@ -62,13 +83,24 @@ _is_valid(x) = true
 _is_valid(::Nothing) = false
 _is_valid(x::AbstractString) = !isempty(x)
 _is_valid(x::AbstractArray) = !isempty(x)
-function _set_if_valid!(d, val, key)
-    _is_valid(val) && setindex!(d, val, key)
+
+# like `get!`:  get!(f::Function, collection, key)
+# modify the value if the key exists, otherwise return the collection
+function modify!(f, collection, key)
+    haskey(collection, key) && (collection[key] = f(collection[key]))
+    return collection
+end
+
+@inline function set_if_valid!(d, pairs...)
+    for (key, val) in pairs
+        _is_valid(val) && setindex!(d, val, key)
+    end
     return d
 end
-function set_if_valid!(d, pairs::Pair...)
-    for (key, value) in pairs
-        _set_if_valid!(d, value, key)
+
+@inline function set_if_valid!(d; kwargs...)
+    for (key, val) in kwargs
+        _is_valid(val) && setindex!(d, val, key)
     end
     return d
 end
@@ -123,30 +155,22 @@ x2t(x::Float64) = DateTime(Dates.UTM(round(Int64, x)))
 
 
 """
-    spectrogram_y_values(ta; check=false, center=false, transform=identity)
+    centers_or_edges(x; transform=identity)
 
-Get y-axis values from a spectrogram array.
-Can return either bin centers or edges. By default, return bin edges for better compatibility.
-
-# Arguments
-- `check`: If true, check if values are constant along time
-- `center`: If true, return bin centers instead of edges
-- `transform`: Optional transform function for edge calculation (e.g., log for logarithmic bins)
+Get a compatible bin edges or centers for plotting with `transform`
 
 Reference: Makie.edges
 """
-function spectrogram_y_values(ta; check = false, center = true, transform = yscale(ta))
-    transform = _scale_func(transform)
-    centers = yvalues(Vector, ta)
+function centers_or_edges(x; center = true, transform = nothing)
+    transform = @something(transform, identity)
     if center && transform == log10
-        edges = binedges(centers)
+        edges = binedges(x)
         if first(edges) < zero(eltype(edges)) || last(edges) < zero(eltype(edges))
             @warn "Automatically using edge for Makie because transform == $transform and the first edge is negative"
             center = false
         end
     end
-
-    return !center ? binedges(centers; transform) : centers
+    return !center ? binedges(x; transform) : x
 end
 
 _makie_t2x(x) = x

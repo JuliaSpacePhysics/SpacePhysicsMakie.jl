@@ -3,7 +3,7 @@ using Makie
 using Dates
 using Unitful
 using InverseFunctions: inverse
-using SpaceDataModel: meta, times, unwrap, NoMetadata
+using SpaceDataModel: SpaceDataModel, times, unwrap, NoMetadata
 using DimensionalData: DimArray
 using Statistics: mean
 
@@ -17,6 +17,8 @@ export multiplot
 export MultiAxisData, MultiAxisPlot, multiaxisplot
 export tlims!, tlines!, add_labels!
 export axis_attributes, plot_attributes
+export isspectrogram
+export get_schema, validate_schema, MetadataSchema
 
 function tplot end
 function multiaxisplot end
@@ -25,6 +27,8 @@ include("types.jl")
 include("transform.jl")
 include("core.jl")
 include("panel.jl")
+include("utils.jl")
+include("schemas/schema.jl")
 include("spectrogram.jl")
 include("specapi.jl")
 include("recipes/funcplot.jl")
@@ -36,7 +40,6 @@ include("interactive.jl")
 include("attributes.jl")
 include("axis.jl")
 include("methods.jl")
-include("utils.jl")
 include("makie.jl")
 include("../ext/DimensionalDataExt.jl")
 include("../ext/SpaceDataModelExt.jl")
