@@ -10,11 +10,17 @@ function ulabel(l, u; multiline = false)
     return multiline ? "$(l)\n($(u))" : "$(l) ($(u))"
 end
 
+# Like `eltype`, but recursively applies to arrays to get the innermost element type
+function numtype(x)
+    T = eltype(x)
+    return T <: AbstractArray ? numtype(T) : T
+end
+
 # Return the unit of the data:
 # If A is a Unitful object, return the unit of A
 # Otherwise, return the unit from the metadata schema
 function _unit(A; schema = get_schema(A))
-    u = Unitful.unit(eltype(A))
+    u = Unitful.unit(numtype(A))
     return u == NoUnits ? schema(A)[:unit] : u
 end
 
