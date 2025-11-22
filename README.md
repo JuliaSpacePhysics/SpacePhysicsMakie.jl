@@ -13,21 +13,27 @@ Designed for fast, interactive plotting of multiple time series with automatic h
 ## Features
 
 - **Versatile**: Unified API (`tplot`) for various time series representations including dimensional arrays, functions, or product IDs (strings).
-- **Flexible Layouts**: Separate panels (`tplot_panel`), overlaid plots (`multiplot`), or dual-axis (`dualplot`) panels.
+- **Flexible Layouts**: Separate panels (`tplot_panel`), overlaid plots (`multiplot`), or secondary-y-axis (`multiaxisplot`) panels.
 - **Interactive Exploration**: Efficient data retrieval and rendering during zoom/pan operations.
+
+## Roadmap
+
+- [ ] Add marking tools such as vertical lines across panels, horizontal bars, and rectangular shadings. The marking tools are often used to indicate interesting time periods for event analysis.
+- [ ] Geospatial plotting support
 
 ## Development
 
 - To support other data types, the simplest way is to extend the `transform` function and `transform` the data to a supported type like `DimArray`.
-    - Also if possible define a proper `depend_1` is used to get the y axis label and unit.
-
-
-## Roadmap
-
-- [ ] Add marking tools such as vertical lines across panels, horizontal bars, and rectangular shadings. The marking tools are often used to indicate interesting time periods for a event analysis.
+- A better approach would be to extend `getmeta` and `dim` methods in [`SpaceDataModel`][SpaceDataModel] for your custom data structures so that we can extract the dimension data with its metadata (label and unit) automatically.
 
 ## Elsewhere
 
 - Makie.jl and its ecosystem
     - [GeoMakie.jl](https://github.com/JuliaPlots/GeoMakie.jl): plotting geospatial data on a given map projection
     - [UnfoldMakie.jl](https://github.com/JuliaNeuroscience/UnfoldMakie.jl): visualizations of EEG/ERP data and Unfold.jl models.
+    - [AlgebraOfGraphics](https://aog.makie.org/stable/): An algebraic spin on grammar-of-graphics data visualization
+- [PyTplot](https://pyspedas.readthedocs.io/en/latest/pytplot.html)
+- [InteractiveViz.jl](https://github.com/org-arl/InteractiveViz.jl)
+- [SciQLop](https://github.com/SciQLop/SciQLop): A python application built on top of `Qt` to explore multivariate time series effortlessly,
+
+[SpaceDataModel]: https://juliaspacephysics.github.io/SpaceDataModel.jl

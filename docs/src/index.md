@@ -113,13 +113,6 @@ You can extend the transformation system by defining methods for your types:
 transform(x::MyType) = DimArray(x.data)
 ```
 
-## Related packages
-
-- [AlgebraOfGraphics](https://aog.makie.org/stable/): An algebraic spin on grammar-of-graphics data visualization
-- [PyTplot](https://pyspedas.readthedocs.io/en/latest/pytplot.html)
-- [InteractiveViz.jl](https://github.com/org-arl/InteractiveViz.jl)
-- [SciQLop](https://github.com/SciQLop/SciQLop) : A python application built on top of `Qt` to explore multivariate time series effortlessly,
-
 ## API
 
 ```@index
