@@ -1,14 +1,14 @@
 isspectrogram(A) = false
 
 """
-    isspectrogram(A::AbstractMatrix; threshold=5, schema=get_schema(A))
+    isspectrogram(A::AbstractMatrix; threshold=8, schema=get_schema(A))
 
 Determine if data should be plotted as a spectrogram using the metadata schema.
 """
-function isspectrogram(A::AbstractMatrix; threshold = 5, schema = get_schema(A))
+function isspectrogram(A::AbstractMatrix; threshold = 8, schema = get_schema(A))
     m = schema(A)[:display_type]
     return if isnothing(m)
-        size(A, 2) >= threshold
+        size(A, otherdimnum(A)) >= threshold
     else
         m == "spectrogram" || m == "spectral"
     end

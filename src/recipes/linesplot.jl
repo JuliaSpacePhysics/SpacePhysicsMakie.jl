@@ -58,9 +58,10 @@ end
 function linesplot!(ax::Axis, x, A; labels = nothing, plottype = Lines, kwargs...)
     lbs = something(labels, Some(meta_labels(A)))
     pf = plotfunc!(plottype)
-    N = size(A, 2)
+    odim = otherdimnum(A)
+    N = size(A, odim)
     return map(1:N) do i
-        y = @views parent(A)[:, i]
+        y = selectdim(parent(A), odim, i)
         pf(ax, x, y; label = get(lbs, i, nothing), kwargs...)
     end
 end
@@ -73,10 +74,11 @@ function linesplot!(ax::Axis, A::Computed; labels = nothing, plottype = Lines, k
     x_obs = lift(makie_x, A)
     lbs = something(labels, Some(meta_labels(A[])))
     pf = plotfunc!(plottype)
-    N = size(A[], 2)
+    odim = otherdimnum(A[])
+    N = size(A[], odim)
     return map(1:N) do i
         y_obs = lift(A) do data
-            @views parent(data)[:, i]
+            @views selectdim(parent(data), odim, i)
         end
         pf(ax, x_obs, y_obs; label = get(lbs, i, nothing), kwargs...)
     end
@@ -88,4 +90,11 @@ function linesplot(A; kwargs...)
     f = Figure()
     ap = linesplot(f[1, 1], A; kwargs...)
     return FigureAxes(f, ap.axis)
+end
+
+timedimnum(A) = 1
+otherdimnum(A) = if timedimnum(A) == 1
+    2
+else
+    1
 end
