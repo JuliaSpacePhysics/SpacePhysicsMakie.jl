@@ -21,8 +21,8 @@ Get the colorbar label for `data` using the metadata schema.
 """
 function clabel(A; multiline = true, schema = get_schema(A))
     sl = schema(A)
-    name = get(sl, :name, "")
-    units = get(sl, :unit, "")
+    name = sl[:name]
+    units = sl[:unit]
     return ulabel(name, units; multiline)
 end
 

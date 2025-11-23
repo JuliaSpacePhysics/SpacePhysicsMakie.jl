@@ -6,6 +6,7 @@ using InverseFunctions: inverse
 using SpaceDataModel: SpaceDataModel, times, unwrap, NoMetadata
 using DimensionalData: DimArray
 using Statistics: mean
+using NaNStatistics: nanextrema
 
 import Makie: convert_arguments, plot!, conversion_trait, get_plots
 using Makie: ComputeGraph

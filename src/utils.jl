@@ -179,3 +179,8 @@ makie_t2x(x) = _makie_t2x.(x)
 makie_x(x) = 1:size(x, 1)
 
 function donothing(args...; kwargs...) end
+
+function logspan(x)
+    min, max = nanextrema(x)
+    return log10(max) - log10(min)
+end

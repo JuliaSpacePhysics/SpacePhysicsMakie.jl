@@ -46,7 +46,12 @@ end
 Base.keys(sl::SchemaLookup) = keys(sl.schema)
 
 struct DefaultSchema <: MetadataSchema end
-Base.get(::DefaultSchema, key, _) = key
+Base.get(::DefaultSchema, key, _) = get(_DEFAULT_MAPPING, key, key)
+
+const _DEFAULT_MAPPING = (
+    name = "name" => SpaceDataModel.name,
+    unit = "unit",
+)
 
 include("istp.jl")
 include("hapi.jl")
@@ -80,8 +85,16 @@ resolve_metadata(data, depend_1 => ("UNITS" => "")) # Chained
 ```
 """
 # 1. Base case: String or Symbol -> Direct lookup
+resolve_metadata(data, lookup::Union{String, Symbol}) = mget(data, lookup)
 # 2. Tuple case: Priority lookup pattern ("Key1", "Key2", ...)
-resolve_metadata(data, lookup::Union{Tuple, String, Symbol}) = mget(data, lookup)
+function resolve_metadata(data, lookup::Tuple)
+    for key in lookup
+        val = resolve_metadata(data, key)
+        isnothing(val) || return val
+    end
+    return nothing
+end
+resolve_metadata(data, lookup::Function) = lookup(data)
 
 # 3. Pair case with `=>`: Can be (Accessor => sublookup) or (Definition => DefaultValue/DefaultFunction)
 function resolve_metadata(data, lookup::Pair)
