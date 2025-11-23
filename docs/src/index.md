@@ -4,6 +4,9 @@ CurrentModule = SpacePhysicsMakie
 
 # SpacePhysicsMakie.jl
 
+[![DOI](https://zenodo.org/badge/1034835340.svg)](https://doi.org/10.5281/zenodo.17655281)
+[![version](https://juliahub.com/docs/General/SpacePhysicsMakie/stable/version.svg)](https://juliahub.com/ui/Packages/General/SpacePhysicsMakie)
+
 [SpacePhysicsMakie.jl](https://github.com/JuliaSpacePhysics/SpacePhysicsMakie.jl) provides a set of utilities for visualizing space physics data:
 
 - [`tplot_panel`](@ref): Creates single panel plots with support for multiple data types
