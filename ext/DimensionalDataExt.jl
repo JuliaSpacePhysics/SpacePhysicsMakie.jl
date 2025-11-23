@@ -1,6 +1,6 @@
 import DimensionalData
 import DimensionalData as DD
-using DimensionalData: AbstractDimArray, AbstractDimVector, AbstractDimMatrix, AbstractDimStack, TimeDim, Dimension, lookup, basetypeof, dimnum, dims
+using DimensionalData: AbstractDimArray, AbstractDimStack, TimeDim, Dimension, basetypeof, hasdim, dimnum, dims, Dim
 
 dimtype_eltype(d) = (basetypeof(d), eltype(d))
 dimtype_eltype(A, query) = dimtype_eltype(dims(A, something(query, TimeDim)))
@@ -22,6 +22,9 @@ plot2spec(ds::AbstractDimStack; kwargs...) =
     plot2spec(ds; kwargs...)
 end |> collect
 
-timedimnum(A::AbstractDimArray) = @something dimnum(A, TimeDim) 1
 
-# Makie.convert_arguments(t::Type{<:LinesPlot}, da::AbstractDimVector{<:AbstractVector}) = convert_arguments(t, tstack(da))
+# A no-error version of `dimnum`
+_dimnum(x, dim) = hasdim(x, dim) ? dimnum(x, dim) : nothing
+function timedimnum(A::AbstractDimArray) 
+    return @something _dimnum(A, TimeDim) _dimnum(A, Dim{:time}) (@info "Could not find time dimension, assuming 1"; 1)
+end

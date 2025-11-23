@@ -13,9 +13,19 @@ function specplot(gp, ta; axis = (;), add_colorbar = DEFAULTS.add_colorbar, add_
     return PanelAxesPlots(gp, AxisPlots(ax, plots))
 end
 
+const LOG_SCALE_THRESHOLD = 2.5
+
+# Some educated guess about the color scale
+function _colorscale(A)
+    # If all values are positive (skipping NaNs) and span a large range, use log scale
+    all(i -> !isfinite(i) || i > 0, A) && logspan(A) > LOG_SCALE_THRESHOLD && return log10
+    return identity
+end
+
 # A temporary solution until https://github.com/MakieOrg/Makie.jl/issues/5193 is fixed
 # Some optimizations are possible here https://discourse.julialang.org/t/virtual-or-lazy-representation-of-a-repeated-array/124954
-function _heatmap!(ax, x, y, matrix; colorscale = log10, kw...)
+function _heatmap!(ax, x, y, matrix; colorscale = nothing, kw...)
+    colorscale = @something colorscale _colorscale(matrix)
     xx = repeat(x, 1, size(matrix, 2))
     mat = ustrip(matrix)
     z = zero(mat)

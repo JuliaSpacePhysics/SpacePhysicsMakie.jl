@@ -1,21 +1,6 @@
 # https://github.com/MakieOrg/Makie.jl/blob/master/src/basic_recipes/series.jl
 # https://github.com/rafaqz/DimensionalData.jl/blob/main/ext/DimensionalDataMakie.jl
 
-# @recipe LinesPlot begin
-#     cycle = [:color]
-#     color = @inherit color
-#     labels = nothing
-#     plottype = Lines
-#     predicate = nothing
-#     # resample = 10000
-# end
-
-# function Makie.convert_arguments(::Type{<:LinesPlot}, x::AbstractVector, ys::AbstractMatrix)
-#     A = parent(ys)
-#     curves = map(i -> (x, view(A, :, i)), 1:size(A, 2))
-#     return (curves,)
-# end
-
 # function Makie.plot!(plot::LinesPlot{<:Tuple{AbstractArray}})
 #     curves = plot[1]
 #     return map(eachindex(curves[])) do i
@@ -26,20 +11,6 @@
 #     end
 # end
 
-# function Makie.plot!(plot::LinesPlot{<:Tuple{AbstractArray{<:Number}}})
-#     A = resample(plot[1][])
-#     x = makie_x(A)
-#     lbs = something(plot.labels[], Some(labels(A)))
-#     pf = plotfunc!(plot.plottype[])
-#     for (i, col) in enumerate(eachcol(parent(A)))
-#         _predicate(plot.predicate[], i) || continue
-#         label = get(lbs, i, nothing)
-#         pf(plot, plot.attributes, x, col; label)
-#     end
-#     return plot
-# end
-
-# Makie.get_plots(plot::LinesPlot) = plot.plots
 function linesplot end
 const LinesPlot = Plot{linesplot}
 

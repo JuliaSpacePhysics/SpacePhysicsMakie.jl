@@ -3,13 +3,13 @@ Schema for PySPEDAS Tplot Variable metadata.
 """
 struct PySPEDASSchema <: MetadataSchema end
 
-cdf(x) = meta(x)["CDF"]
-vatt(x) = cdf(x)["VATT"]
+cdf(x) = get(meta(x), "CDF", NoMetadata())
+vatt(x) = get(cdf(x), "VATT", NoMetadata())
 
 function metadata_keys(::PySPEDASSchema)
     return (
         desc = vatt => "CATDESC",
-        name = vatt => "LABLAXIS",
+        name = (vatt => "LABLAXIS", SpaceDataModel.name),
         long_name = vatt => "FIELDNAM",
         unit = vatt => "UNITS",
         scale = vatt => "SCALETYP",
