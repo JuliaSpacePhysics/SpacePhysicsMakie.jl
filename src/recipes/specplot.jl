@@ -45,7 +45,7 @@ end
 Plot heatmap of a time series on the same axis
 """
 function specplot!(ax::Axis, A; labels = labels(A), verbose = true, kwargs...)
-    A = resample(A; verbose)
+    # A = resample(A; verbose)
     x = makie_x(A)
     y = prepare_y_values(A)
     attrs = heatmap_attributes(A; kwargs...)
