@@ -14,6 +14,7 @@ end
 
 data(f::CachedFunction, args...) = f.data
 SpacePhysicsMakie.meta(f::CachedFunction) = meta(f.f)
+get_schema(f::CachedFunction) = get_schema(f.data)
 
 """
     functionplot(gp, f, tmin, tmax; kwargs...)
