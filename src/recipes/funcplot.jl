@@ -2,20 +2,6 @@
     plotfunc = tplot_panel!
 end
 
-apply(f, args...) = f(args...)
-apply(A::AbstractArray, tmin, tmax) = tview(A, tmin, tmax)
-data(f, args...) = apply(f, args...)
-
-# CachedFunction is a wrapper for a function and its data
-struct CachedFunction{F, D} <: Function
-    f::F
-    data::D
-end
-
-data(f::CachedFunction, args...) = f.data
-SpacePhysicsMakie.meta(f::CachedFunction) = meta(f.f)
-get_schema(f::CachedFunction) = get_schema(f.data)
-
 """
     functionplot(gp, f, tmin, tmax; kwargs...)
 

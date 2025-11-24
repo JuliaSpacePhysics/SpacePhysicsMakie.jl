@@ -21,6 +21,7 @@ Base.get(schema::MetadataSchema, key, default) = get(metadata_keys(schema), key,
 Get the appropriate metadata schema for the data.
 """
 get_schema(data) = _get_schema(meta(data))
+get_schema(f::Function, args...) = get_schema(data(f, args...))
 _get_schema(::Any) = DefaultSchema()
 function _get_schema(meta::AbstractDict)
     haskey(meta, "CATDESC") && return ISTPSchema()

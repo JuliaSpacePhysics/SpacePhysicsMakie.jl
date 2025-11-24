@@ -82,7 +82,7 @@ function multiaxisplot(
             gp;
             leftspinecolor = color1,
             _axis_color(color1)...,
-            axis_attributes(primary, args...; add_title)...,
+            axis_attributes(primary; add_title)...,
             axis...
         )
         ptype = get(ptypes, 1, plottype(primary))
@@ -99,12 +99,11 @@ function multiaxisplot(
         color = _to_color(colors[i + ci])
         style = i < length(styles) ? styles[i + 1] : styles[end]
         pad = (i - 1) * pad_increment
-
         ax = make_secondary_axis(
             gp;
             color,
             yticklabelpad = pad,
-            axis_attributes(sec_data, args...; add_title = false)...
+            axis_attributes(sec; add_title = false)...
         )
 
         ptype = get(ptypes, i + 1, plottype(sec))
