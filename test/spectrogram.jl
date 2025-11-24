@@ -1,4 +1,5 @@
 @testitem "colorscale detection" begin
+    using SpacePhysicsMakie: _colorscale
     @test _colorscale([1, 10, 1000]) == log10  # Large positive range
     @test _colorscale([1, 2, 3]) == identity   # Small range
     @test _colorscale([NaN, 1, 2]) == identity # With NaN values

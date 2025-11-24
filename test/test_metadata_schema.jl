@@ -28,6 +28,7 @@ end
 
     # Should default to ISTP schema
     @test get_schema(data) isa ISTPSchema
+    @test get_schema(() -> data) isa ISTPSchema
 end
 
 @testitem "Extract Attributes" setup = [MetadataTest] begin
