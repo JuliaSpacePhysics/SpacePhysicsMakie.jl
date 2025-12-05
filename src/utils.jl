@@ -178,7 +178,7 @@ end
 _makie_t2x(x) = x
 _makie_t2x(x::Dates.AbstractDateTime) = DateTime(x)
 makie_t2x(x) = _makie_t2x.(x)
-makie_x(x) = makie_t2x(times(x))
+makie_x(x) = 1:size(x, 1)
 
 function donothing(args...; kwargs...) end
 

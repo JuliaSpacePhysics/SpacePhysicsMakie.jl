@@ -49,7 +49,7 @@ function linesplot!(ax::Axis, A::Computed; labels = nothing, plottype = Lines, k
     N = size(A[], odim)
     return map(1:N) do i
         y_obs = lift(A) do data
-            @views selectdim(parent(data), odim, i)
+            selectdim(parent(data), odim, i)
         end
         pf(ax, x_obs, y_obs; label = get(lbs, i, nothing), kwargs...)
     end

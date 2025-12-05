@@ -25,10 +25,10 @@ A = [10, 20, 30, 40, 50]
 old_coords = [1.0, 2.0, 3.0, 4.0, 5.0]
 new_coords = [1.5, 2.5, 3.5]
 
-# Nearest neighbor (works with unsorted coords)
+# Nearest neighbor
 reindex(A, old_coords, new_coords; method=:nearest)  # [10, 20, 30]
 
-# Linear interpolation (requires sorted coords)
+# Linear interpolation
 reindex(A, old_coords, new_coords; method=:linear)   # [15.0, 25.0, 35.0]
 
 # 2D array reindexing along dimension 2

@@ -11,8 +11,12 @@ Extend this for custom data types to integrate with the plotting system.
 @doc pfdoc function plotfunc end
 @doc pfdoc function plotfunc! end
 
+_has_timedim(x) = hasproperty(x, :time) || hasproperty(x, :times) || hasproperty(x, :dims)
+
 function plottype(x)
-    return if eltype(x) <: Number
+    return if _has_timedim(x)
+        isspectrogram(x) ? SpecPlot : LinesPlot
+    elseif eltype(x) <: Number
         # Makie default plottype for AbstractVector is Scatter
         # We change it to Lines
         x isa AbstractVector ? vector_plottype() : Makie.plottype(x)
@@ -41,7 +45,7 @@ Dispatches to appropriate implementation based on the plotting trait of the tran
 function tplot_panel(gp, data, args...; transform = transform, verbose = false, kwargs...)
     transformed = transform(data, args...)
     pf = plotfunc(transformed)
-    verbose && @info "$(pf) data of type $(typeof(transformed))"
+    @debug "$(pf) data of type $(typeof(transformed))"
     return pf(gp, transformed, args...; kwargs...)
 end
 
