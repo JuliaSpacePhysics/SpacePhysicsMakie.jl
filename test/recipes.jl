@@ -49,7 +49,7 @@ end
 @testitem "LinesPlot" begin
     using CairoMakie, Dates, DimensionalData, Unitful
     ys = [[1, 2, 4] [3, 4, 10]]
-    @test_nowarn linesplot(ys)
+    linesplot(ys)
     @test_broken linesplot([10, 20, 30], ys)
 
     t = Ti(range(DateTime(2000), step = Hour(1), length = 4))

@@ -3,7 +3,8 @@ using Makie
 using Dates
 using Unitful
 using InverseFunctions: inverse
-using SpaceDataModel: SpaceDataModel, times, unwrap, NoMetadata
+using SpaceDataModel: SpaceDataModel, times, unwrap, NoMetadata, tdimnum
+import SpaceDataModel as SDM
 using DimensionalData: DimArray
 using Statistics: mean
 using NaNStatistics: nanextrema
@@ -42,6 +43,10 @@ include("attributes.jl")
 include("axis.jl")
 include("methods.jl")
 include("makie.jl")
+
+export degap
+include("array/reindex.jl") # handling data gap
+include("array/degap.jl") # handling data gap
 include("../ext/DimensionalDataExt.jl")
 include("../ext/SpaceDataModelExt.jl")
 end

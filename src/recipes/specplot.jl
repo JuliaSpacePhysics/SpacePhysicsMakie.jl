@@ -23,11 +23,13 @@ function _colorscale(A)
 end
 
 # A temporary solution until https://github.com/MakieOrg/Makie.jl/issues/5193 is fixed
+# Related issue: https://github.com/MakieOrg/Makie.jl/issues/5460
 # Some optimizations are possible here https://discourse.julialang.org/t/virtual-or-lazy-representation-of-a-repeated-array/124954
 function _heatmap!(ax, x, y, matrix; colorscale = nothing, kw...)
     colorscale = @something colorscale _colorscale(matrix)
     xx = repeat(x, 1, size(matrix, 2))
     mat = ustrip(matrix)
+    mat = colorscale in (log10, log) ? replace(mat, 0 => NaN) : mat
     z = zero(mat)
     return surface!(ax, xx, y, z; color = mat, shading = NoShading, colorscale, kw...)
 end
@@ -45,9 +47,15 @@ end
 Plot heatmap of a time series on the same axis
 """
 function specplot!(ax::Axis, A; labels = labels(A), verbose = true, kwargs...)
+    A = _to_value(A)
+    mat = tdimnum(A) == ndims(A) ? transpose(A) : A
+    attrs = heatmap_attributes(A; kwargs...)
     # A = resample(A; verbose)
     x = makie_x(A)
-    y = prepare_y_values(A)
-    attrs = heatmap_attributes(A; kwargs...)
-    return _heatmap!(ax, x, y, parent(A); attrs...)
+    y = prepare_y_values(mat)
+    return _heatmap!(ax, x, y, mat; attrs...)
 end
+
+
+_to_value(A) = to_value(A)
+_to_value(A::Computed) = _to_value(A[])

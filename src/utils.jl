@@ -1,7 +1,9 @@
 meta(x) = SpaceDataModel.meta(x)
 meta(x::AbstractDict) = x
 
-depend_1(x) = unwrap(SpaceDataModel.dim(x, 2))
+function depend_1(x)
+    return unwrap(SDM.dim(x, tdimnum(x) == ndims(x) ? 1 : 2))
+end
 
 function depend_1(::Type{Vector}, x)
     d1 = depend_1(x)
@@ -176,7 +178,7 @@ end
 _makie_t2x(x) = x
 _makie_t2x(x::Dates.AbstractDateTime) = DateTime(x)
 makie_t2x(x) = _makie_t2x.(x)
-makie_x(x) = 1:size(x, 1)
+makie_x(x) = makie_t2x(times(x))
 
 function donothing(args...; kwargs...) end
 
