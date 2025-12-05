@@ -52,6 +52,7 @@ Base.get(::DefaultSchema, key, _) = get(_DEFAULT_MAPPING, key, key)
 const _DEFAULT_MAPPING = (
     name = (:name, "name", SpaceDataModel.name),
     unit = (:unit, "unit"),
+    depend_1_name = depend_1 => (:name, "name"),
 )
 
 include("istp.jl")
