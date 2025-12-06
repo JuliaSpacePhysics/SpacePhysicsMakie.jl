@@ -49,7 +49,7 @@ const meta_labels = labels
 _scale_func(x) = (@warn "Unknown scale: $x"; identity)
 _scale_func(f::Function) = f
 function _scale_func(s::String)
-    return if s == "linear"
+    return if s == "linear" || s == "LINEAR"
         identity
     elseif s == "log10" || s == "log"
         log10
