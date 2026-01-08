@@ -1,7 +1,9 @@
 meta(x) = SpaceDataModel.meta(x)
 meta(x::AbstractDict) = x
 
-depend_1(x) = unwrap(SpaceDataModel.dim(x, 2))
+function depend_1(x)
+    return unwrap(SDM.dim(x, tdimnum(x) == ndims(x) ? 1 : 2))
+end
 
 function depend_1(::Type{Vector}, x)
     d1 = depend_1(x)
