@@ -178,7 +178,7 @@ end
 _makie_t2x(x) = x
 _makie_t2x(x::Dates.AbstractDateTime) = DateTime(x)
 makie_t2x(x) = _makie_t2x.(x)
-makie_x(x) = 1:size(x, 1)
+makie_x(x) = hasproperty(x, :time) ? makie_t2x(x.time) : 1:size(x, 1)
 
 function donothing(args...; kwargs...) end
 
