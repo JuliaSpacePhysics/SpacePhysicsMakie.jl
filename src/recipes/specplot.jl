@@ -22,6 +22,15 @@ function _colorscale(A)
     return identity
 end
 
+function calc_colorrange(da; scale = 32)
+    cmid = nanmedian(da)
+    cmax = cmid * scale
+    cmin = cmid / scale
+    return (cmin, cmax)
+end
+
+set_colorrange!(x; kwargs...) = setmeta!(x; colorrange = calc_colorrange(x; kwargs...))
+
 # A temporary solution until https://github.com/MakieOrg/Makie.jl/issues/5193 is fixed
 # Related issue: https://github.com/MakieOrg/Makie.jl/issues/5460
 # Some optimizations are possible here https://discourse.julialang.org/t/virtual-or-lazy-representation-of-a-repeated-array/124954
