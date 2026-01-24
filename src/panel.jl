@@ -42,7 +42,7 @@ Generic entry point for plotting different types of data on a grid position `gp`
 Transforms the arguments to appropriate types and calls the plotting function.
 Dispatches to appropriate implementation based on the plotting trait of the transformed arguments.
 """
-function tplot_panel(gp, data, args...; transform = transform, verbose = false, kwargs...)
+function tplot_panel(gp, data, args...; transform = transform, kwargs...)
     transformed = transform(data, args...)
     pf = plotfunc(transformed)
     @debug "$(pf) data of type $(typeof(transformed))"
