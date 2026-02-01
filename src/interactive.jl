@@ -10,7 +10,7 @@ This file contains functions for interactive plotting of time series data.
 function iviz_api!(ax::Axis, f, trange; delay = DEFAULTS.delay, kw...)
     graph = ComputeGraph()
     add_input!(graph, :input1, trange)
-    map!(tr -> f(tr...), graph, :input1, :output) # register_computation!
+    map!(tr -> transform(f(tr...)), graph, :input1, :output) # register_computation!
     pf! = plotfunc!(graph[:output][])
     plots = pf!(ax, graph[:output]; kw...)
 

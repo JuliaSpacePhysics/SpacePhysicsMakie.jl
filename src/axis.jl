@@ -16,9 +16,10 @@ function _axis_attributes(::Type, A, args...; add_title = false, schema = get_sc
         ylabel = ulabel(attrs[:depend_1_name], attrs[:depend_1_unit]; multiline)
         yscale = attrs[:depend_1_scale]
     else
-        ylabel = ulabel(attrs[:name], attrs[:unit]; multiline)
+        unit = _unit(A)
+        ylabel = ulabel(attrs[:name], unit; multiline)
         yscale = attrs[:scale]
-        set_if_valid!(axis; _yunit = _unit(A))
+        set_if_valid!(axis; _yunit = unit)
     end
     set_if_valid!(axis; yscale, ylabel)
     return merge_axis_attributes!(axis, meta(A))

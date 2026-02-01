@@ -7,7 +7,7 @@ using SpaceDataModel: SpaceDataModel, times, unwrap, NoMetadata, tdimnum
 import SpaceDataModel as SDM
 using DimensionalData: DimArray
 using Statistics: mean
-using NaNStatistics: nanextrema
+using NaNStatistics: nanextrema, nanmedian
 
 import Makie: convert_arguments, plot!, conversion_trait, get_plots
 using Makie: ComputeGraph

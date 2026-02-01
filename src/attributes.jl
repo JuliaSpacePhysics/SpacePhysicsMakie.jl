@@ -5,8 +5,12 @@ ulabel(::Nothing, ::Nothing; kw...) = ""
 ulabel(l::Nothing, u; kw...) = string(u)
 ulabel(l, u::Nothing; kw...) = string(l)
 function ulabel(l, u; multiline = false)
-    l == "" && return string(u)
-    u == "" && return string(l)
+   _ulabel(string(l), string(u); multiline)
+end
+
+function _ulabel(l, u; multiline = false)
+    l == "" && return u
+    u == "" && return l
     return multiline ? "$(l)\n($(u))" : "$(l) ($(u))"
 end
 
@@ -31,6 +35,7 @@ Get the labels for `data` using the metadata `schema`.
 """
 labels(x; schema = get_schema(x)) = _labels(
     @something(
+        mget(x, :labels),
         schema(x, :labels),
         schema(depend_1(x), :labels),
         Some(nothing)
