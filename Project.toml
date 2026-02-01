@@ -1,6 +1,6 @@
 name = "SpacePhysicsMakie"
 uuid = "0c28ffd8-ae30-4a56-b2e4-f8332c621ad2"
-version = "0.2.4"
+version = "0.2.5"
 
 [workspace]
 projects = ["docs", "test"]
