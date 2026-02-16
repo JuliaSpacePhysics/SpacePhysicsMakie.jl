@@ -40,5 +40,6 @@ Designed for fast, interactive plotting of multiple time series with automatic h
 - [PyTplot](https://pyspedas.readthedocs.io/en/latest/pytplot.html)
 - [InteractiveViz.jl](https://github.com/org-arl/InteractiveViz.jl)
 - [SciQLop](https://github.com/SciQLop/SciQLop): A python application built on top of `Qt` to explore multivariate time series effortlessly,
+- [KNMI HAPI timeline viewer](https://gitlab.com/KNMI-OSS/spaceweather/knmi-hapi-timeline-viewer): A web-based application for visualizing timeseries data. 
 
 [SpaceDataModel]: https://juliaspacephysics.github.io/SpaceDataModel.jl
