@@ -23,7 +23,7 @@ SpacePhysicsMakieHAPIClientExt = "HAPIClient"
 
 [compat]
 Dates = "1"
-DimensionalData = "0.29"
+DimensionalData = "0.29, 0.30"
 HAPIClient = "0.2"
 InverseFunctions = "0.1"
 Makie = "0.24"
