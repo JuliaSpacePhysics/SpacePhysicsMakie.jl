@@ -37,19 +37,11 @@ set_colorrange!(x; kwargs...) = setmeta!(x; colorrange = calc_colorrange(x; kwar
 function _heatmap!(ax, x, y, matrix; colorscale = nothing, kw...)
     colorscale = @something colorscale _colorscale(matrix)
     xx = repeat(x, 1, size(matrix, 2))
-    mat = ustrip(matrix)
+    yy = y isa AbstractVector ? repeat(y', size(matrix, 1), 1) : y
+    mat = ustrip.(matrix)
     mat = colorscale in (log10, log) ? replace(mat, 0 => NaN) : mat
     z = zero(mat)
-    return surface!(ax, xx, y, z; color = mat, shading = NoShading, colorscale, kw...)
-end
-
-function prepare_y_values(A)
-    y = depend_1(A)
-    return if isa(y, AbstractVector)
-        repeat(y', size(A, 1), 1)
-    else
-        y
-    end
+    return surface!(ax, xx, yy, z; color = mat, shading = NoShading, colorscale, kw...)
 end
 
 """
@@ -57,11 +49,11 @@ Plot heatmap of a time series on the same axis
 """
 function specplot!(ax::Axis, A; labels = labels(A), verbose = true, kwargs...)
     A = _to_value(A)
-    mat = tdimnum(A) == ndims(A) ? transpose(A) : A
+    A_raw = parent(A)
+    mat = tdimnum(A) == ndims(A) ? transpose(A_raw) : A_raw
     attrs = heatmap_attributes(A; kwargs...)
-    # A = resample(A; verbose)
     x = makie_x(A)
-    y = prepare_y_values(mat)
+    y = depend_1(A)
     return _heatmap!(ax, x, y, mat; attrs...)
 end
 

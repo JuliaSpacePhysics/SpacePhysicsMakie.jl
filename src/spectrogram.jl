@@ -10,7 +10,7 @@ function isspectrogram(A::AbstractMatrix; threshold = 8, schema = get_schema(A))
     return if isnothing(m)
         size(A, otherdimnum(A)) >= threshold
     else
-        m == "spectrogram" || m == "spectral"
+        occursin("spect", m)
     end
 end
 
