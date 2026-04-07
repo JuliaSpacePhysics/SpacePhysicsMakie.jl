@@ -1,3 +1,15 @@
+@testitem "specplot! with DimArray" begin
+    using CairoMakie, Dates, DimensionalData
+
+    t = Ti(range(DateTime(2000), step = Hour(1), length = 4))
+    A = rand(t, Y(11:18))
+    f = Figure()
+    @test_nowarn specplot!(Axis(f[1, 1]), A)
+    @test_nowarn specplot!(Axis(f[2, 1]), A')
+    colorbuffer(f)
+    @test f.content[1].yaxis.tickvalues[] == [12.5, 15.0, 17.5]
+end
+
 @testitem "colorscale detection" begin
     using SpacePhysicsMakie: _colorscale
     @test _colorscale([1, 10, 1000]) == log10  # Large positive range

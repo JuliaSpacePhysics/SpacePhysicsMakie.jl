@@ -3,30 +3,23 @@ Core functionality for time series plotting.
 This file contains the main `tplot` function and its variants.
 """
 
-"""
-    default_palette(x)
-
-Generate a default palette for positioning plots in a grid.
-Returns an iterator of (row, column) tuples for each item in x.
-"""
-default_palette(x) = ((i, 1) for i in 1:length(x))
-
 mappable(x) = values(x)
 mappable(x::SupportTypes) = (x,)
 
 """
     tplot(f, tas; legend=(; position=Right()), link_xaxes=true, link_yaxes=false, rowgap=5, kwargs...)
 
-Lay out multiple time series across different panels (rows) on one Figure / GridPosition `f`
+Lay out multiple time series across different panels (rows) on the Figure / GridPosition `f`
 
-If `legend` is `nothing`, no legend will be added to the plot. Otherwise, `legend` can be a `NamedTuple` containing options for legend placement and styling.
+If `legend` is `nothing`, no legend will be added to the plot. 
+Otherwise, `legend` can be a `NamedTuple` containing options for legend placement and styling.
 By default, the time series are transformed via extensible `transform`.
 
 See also: [`tplot_panel`](@ref), [`transform`](@ref)
 """
 function tplot(f::Drawable, tas, args...; link_xaxes = true, link_yaxes = false, rowgap = 5, axis = (;), palette = nothing, kwargs...)
     mtas = mappable(tas)
-    palette = something(palette, default_palette(mtas))
+    palette = something(palette, ((i, 1) for i in 1:length(mtas))) # an iterator of (row, column) tuples
     gaps = map(palette, mtas) do pos, ta
         gp = f[pos...]
         pap = tplot_panel(gp, ta, args...; axis, kwargs...)
