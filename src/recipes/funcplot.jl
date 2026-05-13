@@ -41,6 +41,8 @@ Merge specs before plotting so as to cycle through them.
 """
 function multiplot!(ax, fs, tmin, tmax; kwargs...)
     tmin, tmax = _compat(tmin), _compat(tmax)
-    func = (t0, t1) -> transform.(apply.(fs, t0, t1))
+    func = (t0, t1) -> map(fs) do f
+        transform(f(t0, t1))
+    end
     return iviz_api!(ax, func, (tmin, tmax); kwargs...)
 end

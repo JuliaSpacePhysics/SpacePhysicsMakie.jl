@@ -14,7 +14,6 @@ Abstract type `MetadataSchema` with concrete implementations:
 
 - `ISTPSchema` - For ISTP-compliant metadata (currently implemented)
 - `HAPISchema` - For HAPI interface
-- `MadrigalSchema` - For Madrigal data
 - `PySPEDASSchema` - For PySPEDAS tplot variable metadata
 
 ### 2. Key Mapping System
