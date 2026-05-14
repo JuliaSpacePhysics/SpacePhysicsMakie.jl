@@ -2,25 +2,13 @@
 # Also handle spectrogram
 
 function multiplot!(ax, tas, args...; plottypes = (), kwargs...)
+    c = _obs(tas)
     ptypes = _plottypes(plottypes)
-    return map(enumerate(tas)) do (i, x)
-        x′ = transform(x)
-        ptype = get(ptypes, i, plottype(x′))
+    return map(eachindex(c[])) do i
+        x = lift(cur -> transform(cur[i]), c)
+        ptype = get(ptypes, i, plottype(x[]))
         pf = plotfunc!(ptype)
-        pf(ax, x′; kwargs...)
-    end
-end
-
-# Reactive: project the Computed/Observable into per-child lifted Observables
-# so child recipes (linesplot!, specplot!) stay reactive end-to-end.
-function multiplot!(ax, c::Reactive, args...; plottypes = (), kwargs...)
-    ptypes = _plottypes(plottypes)
-    cv = c[]
-    return map(enumerate(cv)) do (i, _)
-        x_obs = lift(cur -> transform(cur[i]), c)
-        ptype = get(ptypes, i, plottype(x_obs[]))
-        pf = plotfunc!(ptype)
-        pf(ax, x_obs; kwargs...)
+        pf(ax, x; kwargs...)
     end
 end
 

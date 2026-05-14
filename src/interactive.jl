@@ -10,15 +10,9 @@ This file contains functions for interactive plotting of time series data.
 # supertype, so we union them for dispatch.
 const Reactive = Union{ComputePipeline.Computed, Observable}
 
-# Eager value access: materialize a Computed/Observable; passthrough for plain data.
-_value(A) = A
-_value(A::Reactive) = A[]
-
-# Lift a function over a value that may be plain or reactive.
-_lift(f, A) = f(A)
-_lift(f, A::Reactive) = lift(f, A)
-
-# https://github.com/MakieOrg/Makie.jl/pull/4630
+# Normalize a recipe input to a reactive
+_obs(A::Reactive) = A
+_obs(A) = Observable(A)
 
 function iviz_api!(ax::Axis, f, trange; delay = DEFAULTS.delay, kw...)
     graph = ComputeGraph()

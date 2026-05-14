@@ -17,19 +17,22 @@ function linesplot(gp::Drawable, A; axis = (;), add_title = DEFAULTS.add_title, 
 end
 
 function linesplot!(ax::Axis, x, A; labels = nothing, plottype = Lines, kwargs...)
-    Av = _value(A)
+    A = _obs(A)
+    Av = A[]
     lbs = something(labels, Some(meta_labels(Av)))
     pf = plotfunc!(plottype)
     odim = otherdimnum(Av)
     N = size(Av, odim)
     return map(1:N) do i
-        y = _lift(a -> selectdim(parent(a), odim, i), A)
+        y = lift(a -> selectdim(parent(a), odim, i), A)
         pf(ax, x, y; label = get(lbs, i, nothing), kwargs...)
     end
 end
 
-linesplot!(ax::Axis, A; labels = nothing, plottype = Lines, kwargs...) =
-    linesplot!(ax, _lift(makie_x, A), A; labels, plottype, kwargs...)
+function linesplot!(ax::Axis, A; labels = nothing, plottype = Lines, kwargs...)
+    A = _obs(A)
+    return linesplot!(ax, lift(makie_x, A), A; labels, plottype, kwargs...)
+end
 
 linesplot!(args; kwargs...) = linesplot!(current_axis(), args; kwargs...)
 

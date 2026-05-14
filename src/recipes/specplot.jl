@@ -34,38 +34,26 @@ set_colorrange!(x; kwargs...) = setmeta!(x; colorrange = calc_colorrange(x; kwar
 # A temporary solution until https://github.com/MakieOrg/Makie.jl/issues/5193 is fixed
 # Related issue: https://github.com/MakieOrg/Makie.jl/issues/5460
 # Some optimizations are possible here https://discourse.julialang.org/t/virtual-or-lazy-representation-of-a-repeated-array/124954
-function _heatmap!(ax, x, y, matrix; colorscale = nothing, kw...)
-    colorscale = @something colorscale _colorscale(matrix)
-    xx = repeat(x, 1, size(matrix, 2))
-    yy = y isa AbstractVector ? repeat(y', size(matrix, 1), 1) : y
-    mat = ustrip.(matrix)
-    mat = colorscale in (log10, log) ? replace(mat, 0 => NaN) : mat
-    z = zero(mat)
-    return surface!(ax, xx, yy, z; color = mat, shading = NoShading, colorscale, kw...)
-end
-
-# Reactive overload: any of x/y/matrix may be a Computed/Observable. We lift
-# all four `surface!` inputs so updates to the source propagate.
-function _heatmap!(ax, x, y, matrix::Reactive; colorscale = nothing, kw...)
+function _heatmap!(ax, x::Reactive, y::Reactive, matrix::Reactive; colorscale = nothing, kw...)
     colorscale = @something colorscale _colorscale(matrix[])
     mat = lift(matrix) do m
         m′ = ustrip.(m)
         colorscale in (log10, log) ? replace(m′, 0 => NaN) : m′
     end
-    xx = _lift(xv -> repeat(xv, 1, size(matrix[], 2)), x)
-    yy = _lift(yv -> yv isa AbstractVector ? repeat(yv', size(matrix[], 1), 1) : yv, y)
-    z = lift(m -> zero(m), mat)
+    xx = lift((xv, m) -> repeat(xv, 1, size(m, 2)), x, matrix)
+    yy = lift((yv, m) -> yv isa AbstractVector ? repeat(yv', size(m, 1), 1) : yv, y, matrix)
+    z = lift(zero, mat)
     return surface!(ax, xx, yy, z; color = mat, shading = NoShading, colorscale, kw...)
 end
 
 """
 Plot heatmap of a time series on the same axis
 """
-function specplot!(ax::Axis, A; labels = labels(A), verbose = true, kwargs...)
-    Av = _value(A)
-    attrs = heatmap_attributes(Av; kwargs...)
-    mat = _lift(a -> tdimnum(a) == ndims(a) ? transpose(parent(a)) : parent(a), A)
-    x = _lift(makie_x, A)
-    y = _lift(depend_1, A)
+function specplot!(ax::Axis, A; kwargs...)
+    A = _obs(A)
+    attrs = heatmap_attributes(A[]; kwargs...)
+    mat = lift(a -> tdimnum(a) == ndims(a) ? transpose(parent(a)) : parent(a), A)
+    x = lift(makie_x, A)
+    y = lift(depend_1, A)
     return _heatmap!(ax, x, y, mat; attrs...)
 end
