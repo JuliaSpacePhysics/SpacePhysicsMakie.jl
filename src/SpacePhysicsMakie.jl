@@ -8,6 +8,7 @@ import SpaceDataModel as SDM
 using DimensionalData: DimArray
 using Statistics: mean
 using NaNStatistics: nanextrema, nanmedian
+using TimeseriesUtilities: tview
 
 import Makie: convert_arguments, plot!, conversion_trait, get_plots
 using Makie: ComputeGraph

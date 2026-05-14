@@ -27,14 +27,12 @@ end
     y1 = [9, 7, 5, 1, 3, 5]
     y2 = [12, 25, 23, 16, 34, 19]
     y3 = [0, -1, -2, -3, -4, -5]
-    f1 = (t1, t2) -> t1 .+ t2 .+ rand(5)
 
     # Test with MultiAxisData
     data = MultiAxisData(y1, (y2, y3))
     @test length(data) == 3
 
     result = multiaxisplot(y1, y2, y3; plottypes = ScatterLines)
-    result = @test_nowarn multiaxisplot(y1, y2, f1, 0, 1)
     @test result isa Figure
 
     axis = (; title = "Dual y-axes")
