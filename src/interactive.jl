@@ -5,7 +5,14 @@ Interactive plotting functionality for time series.
 This file contains functions for interactive plotting of time series data.
 """
 
-# https://github.com/MakieOrg/Makie.jl/pull/4630
+# Reactive value carriers. `Computed` comes from Makie's ComputePipeline (used by
+# `iviz_api!`); `Observable` is what `lift` produces. They are not in a common
+# supertype, so we union them for dispatch.
+const Reactive = Union{ComputePipeline.Computed, Observable}
+
+# Normalize a recipe input to a reactive
+_obs(A::Reactive) = A
+_obs(A) = Observable(A)
 
 function iviz_api!(ax::Axis, f, trange; delay = DEFAULTS.delay, kw...)
     graph = ComputeGraph()

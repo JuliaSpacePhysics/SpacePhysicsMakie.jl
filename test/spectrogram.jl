@@ -10,6 +10,61 @@
     @test f.content[1].yaxis.tickvalues[] == [12.5, 15.0, 17.5]
 end
 
+@testitem "specplot reactive on Computed" begin
+    # Plotting a `Computed` should re-render when the graph input changes.
+    # Pre-fix `specplot!` silently unwrapped the Computed via `_to_value`, so
+    # `plt.color` stayed pinned to the initial materialized matrix.
+    using SpacePhysicsMakie
+    using CairoMakie, Dates, DimensionalData, Random
+    using Makie.ComputePipeline
+
+    g = Makie.ComputePipeline.ComputeGraph()
+    Makie.ComputePipeline.add_input!(g, :seed, 1)
+    Makie.ComputePipeline.map!(g, :seed, :out) do s
+        t = Ti(range(DateTime(2000); step = Hour(1), length = 4))
+        rand(MersenneTwister(s), t, Y(11:18))
+    end
+
+    f = Figure()
+    ax = Axis(f[1, 1])
+    plt = specplot!(ax, g[:out])
+
+    v1 = copy(plt.color[])
+    Makie.ComputePipeline.update!(g, seed = 2)
+    g[:out][]
+    v2 = copy(plt.color[])
+    @test v1 != v2
+end
+
+@testitem "multiplot reactive on Computed" begin
+    # Pre-fix `multiplot!(::Computed)` unwrapped to plain data and lost reactivity
+    # for heterogeneous lists (e.g. a spectrogram alongside line series).
+    using SpacePhysicsMakie
+    using CairoMakie, Dates, DimensionalData, Random
+    using Makie.ComputePipeline
+
+    g = Makie.ComputePipeline.ComputeGraph()
+    Makie.ComputePipeline.add_input!(g, :seed, 1)
+    Makie.ComputePipeline.map!(g, :seed, :out) do s
+        t = Ti(range(DateTime(2000); step = Hour(1), length = 4))
+        a = rand(MersenneTwister(s), t, Y(11:18))
+        b = rand(MersenneTwister(s + 100), t, Y(1:2))
+        [a, b]
+    end
+
+    f = Figure()
+    ax = Axis(f[1, 1])
+    plots = SpacePhysicsMakie.multiplot!(ax, g[:out])  # multiplot! not exported
+
+    # The first child is a spectrogram → `surface!`; its color is the lifted matrix.
+    surf = plots[1]
+    v1 = copy(surf.color[])
+    Makie.ComputePipeline.update!(g, seed = 2)
+    g[:out][]
+    v2 = copy(surf.color[])
+    @test v1 != v2
+end
+
 @testitem "colorscale detection" begin
     using SpacePhysicsMakie: _colorscale
     @test _colorscale([1, 10, 1000]) == log10  # Large positive range
