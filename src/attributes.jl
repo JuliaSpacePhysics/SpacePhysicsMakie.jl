@@ -45,7 +45,7 @@ labels(x; schema = get_schema(x)) = _labels(
 labels(x::AbstractVector; schema = get_schema(x)) =
     _labels(schema(x, :labels))
 
-labels(x::Computed; kw...) = labels(x[]; kw...)
+labels(x::Reactive; kw...) = labels(x[]; kw...)
 
 _labels(::Nothing) = NoMetadata()
 _labels(x::AbstractVector) = x

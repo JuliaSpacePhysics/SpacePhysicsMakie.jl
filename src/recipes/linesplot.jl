@@ -1,16 +1,6 @@
 # https://github.com/MakieOrg/Makie.jl/blob/master/src/basic_recipes/series.jl
 # https://github.com/rafaqz/DimensionalData.jl/blob/main/ext/DimensionalDataMakie.jl
 
-# function Makie.plot!(plot::LinesPlot{<:Tuple{AbstractArray}})
-#     curves = plot[1]
-#     return map(eachindex(curves[])) do i
-#         positions = lift(c -> c[i], plot, curves)
-#         x = lift(x -> x[1], positions)
-#         y = lift(x -> x[2], positions)
-#         lines!(plot, x, y)
-#     end
-# end
-
 function linesplot end
 const LinesPlot = Plot{linesplot}
 
@@ -27,33 +17,19 @@ function linesplot(gp::Drawable, A; axis = (;), add_title = DEFAULTS.add_title, 
 end
 
 function linesplot!(ax::Axis, x, A; labels = nothing, plottype = Lines, kwargs...)
-    lbs = something(labels, Some(meta_labels(A)))
+    Av = _value(A)
+    lbs = something(labels, Some(meta_labels(Av)))
     pf = plotfunc!(plottype)
-    odim = otherdimnum(A)
-    N = size(A, odim)
+    odim = otherdimnum(Av)
+    N = size(Av, odim)
     return map(1:N) do i
-        y = selectdim(parent(A), odim, i)
+        y = _lift(a -> selectdim(parent(a), odim, i), A)
         pf(ax, x, y; label = get(lbs, i, nothing), kwargs...)
     end
 end
 
 linesplot!(ax::Axis, A; labels = nothing, plottype = Lines, kwargs...) =
-    linesplot!(ax, makie_x(A), A; labels, plottype, kwargs...)
-
-# Create plots that automatically update when compute graph changes
-function linesplot!(ax::Axis, A::Computed; labels = nothing, plottype = Lines, kwargs...)
-    x_obs = lift(makie_x, A)
-    lbs = something(labels, Some(meta_labels(A[])))
-    pf = plotfunc!(plottype)
-    odim = otherdimnum(A[])
-    N = size(A[], odim)
-    return map(1:N) do i
-        y_obs = lift(A) do data
-            selectdim(parent(data), odim, i)
-        end
-        pf(ax, x_obs, y_obs; label = get(lbs, i, nothing), kwargs...)
-    end
-end
+    linesplot!(ax, _lift(makie_x, A), A; labels, plottype, kwargs...)
 
 linesplot!(args; kwargs...) = linesplot!(current_axis(), args; kwargs...)
 

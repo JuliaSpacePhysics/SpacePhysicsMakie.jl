@@ -11,7 +11,18 @@ function multiplot!(ax, tas, args...; plottypes = (), kwargs...)
     end
 end
 
-multiplot!(ax, c::Computed, args...; kwargs...) = multiplot!(ax, c[]; kwargs...)
+# Reactive: project the Computed/Observable into per-child lifted Observables
+# so child recipes (linesplot!, specplot!) stay reactive end-to-end.
+function multiplot!(ax, c::Reactive, args...; plottypes = (), kwargs...)
+    ptypes = _plottypes(plottypes)
+    cv = c[]
+    return map(enumerate(cv)) do (i, _)
+        x_obs = lift(cur -> transform(cur[i]), c)
+        ptype = get(ptypes, i, plottype(x_obs[]))
+        pf = plotfunc!(ptype)
+        pf(ax, x_obs; kwargs...)
+    end
+end
 
 """
     multiplot(gp, tas::MultiPlottable, args...; axis=(;), kwargs...)
@@ -30,47 +41,3 @@ function multiplot(gp, plottype::Type{<:AbstractPlot}, tas, args...; kwargs...)
 end
 
 const MultiPlot = Plot{multiplot}
-
-# Old implementation `@recipe` style
-# The problem with this implementation is that it does not cycle the attributes
-# See https://github.com/MakieOrg/Makie.jl/issues/5322, https://github.com/MakieOrg/Makie.jl/issues/4843
-
-# @recipe MultiPlot begin
-#     plottype = nothing
-# end
-
-# function Makie.plot!(p::MultiPlot)
-#     pt = p.plottype[]
-#     foreach(p[1][]) do x
-#         transformed = transform(x)
-#         pf = plotfunc!(something(pt, plottype(transformed)))
-#         pf(transformed)
-#     end
-#     return p
-# end
-
-
-# Makie.get_plots(plot::MultiPlot) = mapreduce(get_plots, vcat, plot.plots; init = AbstractPlot[])
-
-
-# For compatibility since `multiplot_spec!` need to concatenate specs before plotting
-# function multiplot!(ax::Axis, data, args...; plotfunc=tplot_panel!, kwargs...)
-#     plottypes = map(plottype, data)
-#     if all(plottypes .== Plot{plot})
-#         return multiplot_func!(ax, data, args...; plotfunc, kwargs...)
-#     else
-#         multiplot_spec!(ax, data, args...; kwargs...)
-#     end
-# end
-
-# multiplot_func!(ax::Axis, data, args...; plotfunc=tplot_panel!, kwargs...) =
-#     map(data) do x
-#         plotfunc(ax, x, args...; kwargs...)
-#     end
-
-# function multiplot_spec!(ax::Axis, data, args...; to_plotspec=plot2spec, kwargs...)
-#     specs = mapreduce(vcat, data) do x
-#         to_plotspec(x, args...; kwargs...)
-#     end
-#     plotlist!(ax, specs)
-# end

@@ -44,19 +44,28 @@ function _heatmap!(ax, x, y, matrix; colorscale = nothing, kw...)
     return surface!(ax, xx, yy, z; color = mat, shading = NoShading, colorscale, kw...)
 end
 
+# Reactive overload: any of x/y/matrix may be a Computed/Observable. We lift
+# all four `surface!` inputs so updates to the source propagate.
+function _heatmap!(ax, x, y, matrix::Reactive; colorscale = nothing, kw...)
+    colorscale = @something colorscale _colorscale(matrix[])
+    mat = lift(matrix) do m
+        m′ = ustrip.(m)
+        colorscale in (log10, log) ? replace(m′, 0 => NaN) : m′
+    end
+    xx = _lift(xv -> repeat(xv, 1, size(matrix[], 2)), x)
+    yy = _lift(yv -> yv isa AbstractVector ? repeat(yv', size(matrix[], 1), 1) : yv, y)
+    z = lift(m -> zero(m), mat)
+    return surface!(ax, xx, yy, z; color = mat, shading = NoShading, colorscale, kw...)
+end
+
 """
 Plot heatmap of a time series on the same axis
 """
 function specplot!(ax::Axis, A; labels = labels(A), verbose = true, kwargs...)
-    A = _to_value(A)
-    A_raw = parent(A)
-    mat = tdimnum(A) == ndims(A) ? transpose(A_raw) : A_raw
-    attrs = heatmap_attributes(A; kwargs...)
-    x = makie_x(A)
-    y = depend_1(A)
+    Av = _value(A)
+    attrs = heatmap_attributes(Av; kwargs...)
+    mat = _lift(a -> tdimnum(a) == ndims(a) ? transpose(parent(a)) : parent(a), A)
+    x = _lift(makie_x, A)
+    y = _lift(depend_1, A)
     return _heatmap!(ax, x, y, mat; attrs...)
 end
-
-
-_to_value(A) = to_value(A)
-_to_value(A::Computed) = _to_value(A[])
