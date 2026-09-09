@@ -4,10 +4,9 @@ using Dates
 using Unitful
 using InverseFunctions: inverse
 using SpaceDataModel: SpaceDataModel, getdata, getmeta, times, unwrap, NoMetadata, tdimnum
-using SpaceDataModel: Product, Transformed
+using SpaceDataModel: Product, Transformed, get_schema, depend_1
 import SpaceDataModel as SDM
 using DimensionalData: DimArray
-using Statistics: mean
 using NaNStatistics: nanextrema, nanmedian
 
 using Makie: ComputeGraph
@@ -20,7 +19,6 @@ export MultiAxisData, MultiAxisPlot, multiaxisplot
 export tlims!, tlines!, add_labels!
 export axis_attributes, plot_attributes
 export isspectrogram
-export get_schema, validate_schema, MetadataSchema
 
 function tplot end
 function multiaxisplot end
@@ -30,7 +28,6 @@ include("transform.jl")
 include("core.jl")
 include("panel.jl")
 include("utils.jl")
-include("schemas/schema.jl")
 include("spectrogram.jl")
 include("interactive.jl")
 include("recipes/funcplot.jl")

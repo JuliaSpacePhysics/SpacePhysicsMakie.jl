@@ -26,3 +26,20 @@
     @test axis_attributes(() -> test_data; add_title = true) == expected
     @test axis_attributes([() -> test_data, test_data]; add_title = true) == expected
 end
+
+@testitem "ISTP metadata to axis attributes" begin
+    using SpacePhysicsMakie: axis_attributes, labels, isspectrogram, clabel
+    using DimensionalData, Dates
+    t = Ti(range(DateTime(2000), step = Hour(1), length = 4))
+    meta = Dict(
+        "CATDESC" => "Velocity", "LABLAXIS" => "V", "UNITS" => "km/s",
+        "SCALETYP" => "log", "LABL_PTR_1" => ["x", "y", "z"],
+    )
+    A = rand(t, Y(1:3); metadata = meta)
+    @test axis_attributes(A; add_title = true) ==
+        Dict{Symbol, Any}(:title => "Velocity", :ylabel => "V\n(km/s)", :yscale => log10)
+    @test labels(A) == ["x", "y", "z"]
+    @test !isspectrogram(A)
+    @test isspectrogram(rand(t, Y(1:3); metadata = Dict("CATDESC" => "", "DISPLAY_TYPE" => "spectrogram")))
+    @test clabel(A) == "V\n(km/s)"
+end
