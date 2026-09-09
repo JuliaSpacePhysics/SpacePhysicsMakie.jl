@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Removed
+
+- **Breaking**: `degap` and `reindex`.
+
 ## [0.2.0] - 2025-11-19
 
 ### Changed

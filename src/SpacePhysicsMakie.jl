@@ -43,9 +43,6 @@ include("axis.jl")
 include("methods.jl")
 include("makie.jl")
 
-export degap
-include("array/reindex.jl") # handling data gap
-include("array/degap.jl") # handling data gap
 include("../ext/DimensionalDataExt.jl")
 include("../ext/SpaceDataModelExt.jl")
 end
