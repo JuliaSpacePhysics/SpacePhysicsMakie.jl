@@ -34,7 +34,7 @@ end
 Get the labels for `data` using the metadata `schema`.
 """
 labels(x; schema = get_schema(x)) = _labels(
-    @something(schema(x, :labels), schema(depend_1(x), :labels), Some(nothing))
+    @something(schema(x, :labels), hastimedim(x) ? schema(depend_1(x), :labels) : nothing, Some(nothing))
 )
 
 labels(x::AbstractVector; schema = get_schema(x)) =

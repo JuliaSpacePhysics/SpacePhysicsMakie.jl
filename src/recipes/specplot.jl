@@ -52,7 +52,7 @@ Plot heatmap of a time series on the same axis
 function specplot!(ax::Axis, A; kwargs...)
     A = _obs(A)
     attrs = heatmap_attributes(A[]; kwargs...)
-    mat = lift(a -> tdimnum(a) == ndims(a) ? transpose(parent(a)) : parent(a), A)
+    mat = lift(a -> timedimnum(a) == ndims(a) ? transpose(parent(a)) : parent(a), A)
     x = lift(makie_x, A)
     y = lift(depend_1, A)
     return _heatmap!(ax, x, y, mat; attrs...)

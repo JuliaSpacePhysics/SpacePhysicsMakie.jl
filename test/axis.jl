@@ -43,3 +43,15 @@ end
     @test isspectrogram(rand(t, Y(1:3); metadata = Dict("CATDESC" => "", "DISPLAY_TYPE" => "spectrogram")))
     @test clabel(A) == "V\n(km/s)"
 end
+
+@testitem "time dimension detection" begin
+    using SpacePhysicsMakie: plottype, hastimedim, makie_x, LinesPlot
+    using DimensionalData, Dates, Makie
+    t = range(DateTime(2000), step = Hour(1), length = 4)
+    @test plottype(rand(Ti(t))) == LinesPlot
+    @test makie_x(rand(Ti(t))) == collect(t)
+    @test makie_x(rand(Y(1:3), Ti(t))) == collect(t)
+    @test !hastimedim(rand(X(1:4)))
+    @test plottype(rand(4)) == Lines
+    @test makie_x(rand(4, 2)) == 1:4
+end

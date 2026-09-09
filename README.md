@@ -28,8 +28,7 @@ Designed for fast, interactive plotting of multiple time series with automatic h
 
 ## Development
 
-- To support other data types, the simplest way is to extend the `transform` function and `transform` the data to a supported type like `DimArray`.
-- A better approach would be to extend `getmeta` and `dim` methods in [`SpaceDataModel`][SpaceDataModel] for your custom data structures so that we can extract the dimension data with its metadata (label and unit) automatically.
+- To support other data types, extend `transform` to convert them to a supported type like `DimArray`, or implement the [`SpaceDataModel`][SpaceDataModel] variable interface and extend `SpacePhysicsMakie.hastimedim`.
 
 ## Elsewhere
 
