@@ -14,7 +14,7 @@ const Reactive = Union{ComputePipeline.Computed, Observable}
 _obs(A::Reactive) = A
 _obs(A) = Observable(A)
 
-function iviz_api!(ax::Axis, f, trange; delay = DEFAULTS.delay, kw...)
+function iviz_api!(ax::Axis, f, trange; delay = setting(:delay), kw...)
     graph = ComputeGraph()
     add_input!(graph, :input1, trange)
     map!(tr -> transform(getdata(f, tr...)), graph, :input1, :output) # register_computation!

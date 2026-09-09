@@ -57,7 +57,7 @@ function multiaxisplot(
         pad_increment = 50.0,
         plottypes = (),
         axis = (;),
-        add_title = DEFAULTS.add_title,
+        add_title = setting(:add_title),
         kwargs...
     )
     secondaries = data.secondaries

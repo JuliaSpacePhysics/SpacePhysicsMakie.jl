@@ -7,7 +7,7 @@ end
 
 Interactively plot a source `f` (see `DataSource`) over a time range on a grid position
 """
-function functionplot(gp, f, tmin, tmax; axis = (;), add_title = DEFAULTS.add_title, add_colorbar = DEFAULTS.add_colorbar, plot = (;), kwargs...)
+function functionplot(gp, f, tmin, tmax; axis = (;), add_title = setting(:add_title), add_colorbar = setting(:add_colorbar), plot = (;), kwargs...)
     # get a sample data to determine the attributes and plot types
     tmin, tmax = _compat(tmin), _compat(tmax)
     data = transform(getdata(f, tmin, tmax))

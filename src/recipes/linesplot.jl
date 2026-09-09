@@ -9,7 +9,7 @@ const LinesPlot = Plot{linesplot}
 
 Plot a multivariate time series on a panel
 """
-function linesplot(gp::Drawable, A; axis = (;), add_title = DEFAULTS.add_title, legend = (;), plot = (;), kwargs...)
+function linesplot(gp::Drawable, A; axis = (;), add_title = setting(:add_title), legend = (;), plot = (;), kwargs...)
     ax = Axis(gp; axis_attributes(A; add_title)..., axis...)
     plots = linesplot!(ax, A; plot..., kwargs...)
     !isnothing(legend) && add_legend!(gp, ax; legend...)
