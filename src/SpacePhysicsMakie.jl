@@ -4,9 +4,8 @@ using Dates
 using Unitful
 using InverseFunctions: inverse
 using SpaceDataModel: SpaceDataModel, getdata, getmeta, times, unwrap, NoMetadata, tdimnum
-using SpaceDataModel: Product, Transformed, get_schema, depend_1
+using SpaceDataModel: Product, Transformed, AbstractDataVariable, get_schema, depend_1
 import SpaceDataModel as SDM
-using DimensionalData: DimArray
 using NaNStatistics: nanextrema, nanmedian
 
 using Makie: ComputeGraph
@@ -39,7 +38,4 @@ include("attributes.jl")
 include("axis.jl")
 include("methods.jl")
 include("makie.jl")
-
-include("../ext/DimensionalDataExt.jl")
-include("../ext/SpaceDataModelExt.jl")
 end
