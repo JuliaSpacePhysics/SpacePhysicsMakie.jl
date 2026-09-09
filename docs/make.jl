@@ -8,7 +8,6 @@ makedocs(
         "Toy Examples" => "interactive.md",
         "Speasy Examples" => "speasy.md",
         "More Examples" => "examples.md",
-        "Schema Guide" => "schema_guide.md",
     ],
     format = Documenter.HTML(size_threshold = nothing),
     modules = [SpacePhysicsMakie],

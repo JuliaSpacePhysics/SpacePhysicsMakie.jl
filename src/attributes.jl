@@ -34,12 +34,7 @@ end
 Get the labels for `data` using the metadata `schema`.
 """
 labels(x; schema = get_schema(x)) = _labels(
-    @something(
-        mget(x, :labels),
-        schema(x, :labels),
-        schema(depend_1(x), :labels),
-        Some(nothing)
-    )
+    @something(schema(x, :labels), schema(depend_1(x), :labels), Some(nothing))
 )
 
 labels(x::AbstractVector; schema = get_schema(x)) =
@@ -66,12 +61,6 @@ function _scale_func(s::String)
     end
 end
 
-function scale(x, sources)
-    return _scale_func(
-        prioritized_get(getmeta(x), sources, identity)
-    )
-end
-
 filter_by_keys(f, d) = length(d) == 0 ? Dict{Symbol, Any}() : filter(f ∘ first, pairs(d))
 filter_by_keys!(f, d) = filter!(f ∘ first, pairs(d))
 function filter_by_keys!(T::Type{<:AbstractPlot}, d)
@@ -81,7 +70,7 @@ end
 
 function plottype_attributes(A; schema = get_schema(A))
     attrs = Dict{Symbol, Any}()
-    lookup = SchemaLookup(schema, A)
+    lookup = schema(A)
     set_if_valid!(attrs; labels = lookup[:labels])
     return attrs
 end

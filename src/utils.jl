@@ -1,19 +1,3 @@
-function depend_1(x)
-    return unwrap(SDM.dim(x, tdimnum(x) == ndims(x) ? 1 : 2))
-end
-
-function depend_1(::Type{Vector}, x)
-    d1 = depend_1(x)
-    return if isa(d1, AbstractMatrix)
-        cols = eachcol(d1)
-        flag = all(allequal, cols)
-        flag || @warn "y values are not constant along time"
-        flag ? cols[1] : mean(cols)
-    else
-        d1
-    end
-end
-
 struct Fill
     x
 end
@@ -46,35 +30,6 @@ function resample(arr; n = DEFAULTS.resample, dim = 1, verbose = false)
     else
         arr
     end
-end
-
-# like get, but handles NamedTuple
-_get(x, key, default) = get(x, key, default)
-_get(::NamedTuple, ::String, default) = default
-
-mget(x, key, default = nothing) = _get(getmeta(x), key, default)
-mget(x, keys::Tuple, default = nothing) = prioritized_get(getmeta(x), keys, default)
-
-"""
-    prioritized_get(container, keys, default=nothing)
-
-Extract a value from a `container` using a prioritized list of `keys`.
-Returns the first non-nothing value found, or `default` if none found.
-"""
-function prioritized_get(c, keys, default = nothing)
-    for k in keys
-        v = _get(c, k, nothing)
-        !isnothing(v) && return v
-    end
-    return default
-end
-
-function prioritized_get(nt::NamedTuple, keys, default = nothing)
-    for k in keys
-        k_sym = Symbol(k)
-        hasproperty(nt, k_sym) && return getfield(nt, k_sym)
-    end
-    return default
 end
 
 # filter out invalid values (nothing, or empty string, or empty array)
