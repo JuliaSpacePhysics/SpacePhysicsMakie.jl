@@ -11,10 +11,8 @@ Extend this for custom data types to integrate with the plotting system.
 @doc pfdoc function plotfunc end
 @doc pfdoc function plotfunc! end
 
-_has_timedim(x) = hasproperty(x, :time) || hasproperty(x, :times) || hasproperty(x, :dims)
-
 function plottype(x)
-    return if _has_timedim(x)
+    return if hastimedim(x)
         isspectrogram(x) ? SpecPlot : LinesPlot
     elseif eltype(x) <: Number
         # Makie default plottype for AbstractVector is Scatter

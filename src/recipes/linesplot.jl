@@ -41,10 +41,3 @@ function linesplot(A; kwargs...)
     ap = linesplot(f[1, 1], A; kwargs...)
     return FigureAxes(f, ap.axis)
 end
-
-timedimnum(A) = 1
-otherdimnum(A) = if timedimnum(A) == 1
-    2
-else
-    1
-end
