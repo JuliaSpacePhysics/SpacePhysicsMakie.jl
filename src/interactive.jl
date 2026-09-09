@@ -1,10 +1,5 @@
 get_xrange(limit) = (limit.origin[1], limit.origin[1] + limit.widths[1])
 
-"""
-Interactive plotting functionality for time series.
-This file contains functions for interactive plotting of time series data.
-"""
-
 # Reactive value carriers. `Computed` comes from Makie's ComputePipeline (used by
 # `iviz_api!`); `Observable` is what `lift` produces. They are not in a common
 # supertype, so we union them for dispatch.
@@ -14,33 +9,22 @@ const Reactive = Union{ComputePipeline.Computed, Observable}
 _obs(A::Reactive) = A
 _obs(A) = Observable(A)
 
-function iviz_api!(ax::Axis, f, trange; delay = setting(:delay), kw...)
+"Plot `f` over `trange` on `ax`, refetching when the view leaves the loaded range."
+function iviz_api!(ax::Axis, f, trange; data = transform(getdata(f, trange...)), delay = setting(:delay), kw...)
     graph = ComputeGraph()
-    add_input!(graph, :input1, trange)
-    map!(tr -> transform(getdata(f, tr...)), graph, :input1, :output) # register_computation!
-    pf! = plotfunc!(graph[:output][])
-    plots = pf!(ax, graph[:output]; kw...)
-
-    axislimits = ax.finallimits
-    # Keep track of the previous range
-    prev_xrange = collect(get_xrange(axislimits[]))
+    add_input!(graph, :trange, trange)
+    add_input!(graph, :data, data)
+    plots = plotfunc!(data)(ax, graph[:data]; kw...)
+    tlims!(ax, trange...)
 
     function update(lims)
-        xrange = get_xrange(lims)
-        # Update if new range extends beyond previously loaded range
-        prev_xmin, prev_xmax = prev_xrange
-        needs_update = xrange[1] < prev_xmin || xrange[2] > prev_xmax
-
-        if needs_update
-            trange = x2t.(xrange)
-            update!(graph, input1 = trange)
-            graph[:output]
-            prev_xrange .= xrange
-        end
+        t0, t1 = x2t.(get_xrange(lims))
+        loaded0, loaded1 = graph[:trange][]
+        (t0 < loaded0 || t1 > loaded1) || return
+        update!(graph; trange = (t0, t1), data = transform(getdata(f, t0, t1)))
         return
     end
-    on(Debouncer(update, delay), axislimits)
-
+    on(Debouncer(update, delay), ax.finallimits)
     return plots
 end
 
