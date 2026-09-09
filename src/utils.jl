@@ -138,6 +138,7 @@ makie_x(x) = hastimedim(x) ? makie_t2x(times(x)) : 1:size(x, timedimnum(x))
 Whether `x` has a time coordinate (SpaceDataModel's `times` and `tdimnum`); without one, its first axis is drawn as an index.
 """
 hastimedim(x) = false
+hastimedim(::AbstractDataVariable) = true
 
 timedimnum(x) = hastimedim(x) ? tdimnum(x) : 1
 otherdimnum(x) = timedimnum(x) == 1 ? 2 : 1
