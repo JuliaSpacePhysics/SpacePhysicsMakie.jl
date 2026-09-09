@@ -3,7 +3,7 @@ Schema for PySPEDAS Tplot Variable metadata.
 """
 struct PySPEDASSchema <: MetadataSchema end
 
-cdf(x) = get(meta(x), "CDF", NoMetadata())
+cdf(x) = get(getmeta(x), "CDF", NoMetadata())
 vatt(x) = get(cdf(x), "VATT", NoMetadata())
 
 function metadata_keys(::PySPEDASSchema)

@@ -6,6 +6,10 @@
 
 - **Breaking**: `degap` and `reindex`.
 
+### Changed
+
+- **Breaking**: lazy sources (plain functions, `Product`, `Transformed`) are fetched through `SpaceDataModel.getdata(x, t0, t1)` (SpaceDataModel 0.3).
+
 ## [0.2.0] - 2025-11-19
 
 ### Changed

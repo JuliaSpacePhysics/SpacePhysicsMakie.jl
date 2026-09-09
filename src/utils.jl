@@ -1,6 +1,3 @@
-meta(x) = SpaceDataModel.meta(x)
-meta(x::AbstractDict) = x
-
 function depend_1(x)
     return unwrap(SDM.dim(x, tdimnum(x) == ndims(x) ? 1 : 2))
 end
@@ -55,8 +52,8 @@ end
 _get(x, key, default) = get(x, key, default)
 _get(::NamedTuple, ::String, default) = default
 
-mget(x, key, default = nothing) = _get(meta(x), key, default)
-mget(x, keys::Tuple, default = nothing) = prioritized_get(meta(x), keys, default)
+mget(x, key, default = nothing) = _get(getmeta(x), key, default)
+mget(x, keys::Tuple, default = nothing) = prioritized_get(getmeta(x), keys, default)
 
 """
     prioritized_get(container, keys, default=nothing)

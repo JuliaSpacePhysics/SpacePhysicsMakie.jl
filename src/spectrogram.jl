@@ -37,7 +37,7 @@ function heatmap_attributes(A; schema = get_schema(A), kwargs...)
     set_if_valid!(attrs; colorscale = sl[:scale])
     modify!(_scale_func, attrs, :colorscale)
     heatmap_keys = Makie.attribute_names(Heatmap)
-    for (k, v) in pairs(meta(A))
+    for (k, v) in pairs(getmeta(A))
         if k in heatmap_keys
             attrs[k] = v
         end

@@ -3,12 +3,12 @@ using Makie
 using Dates
 using Unitful
 using InverseFunctions: inverse
-using SpaceDataModel: SpaceDataModel, times, unwrap, NoMetadata, tdimnum
+using SpaceDataModel: SpaceDataModel, getdata, getmeta, times, unwrap, NoMetadata, tdimnum
+using SpaceDataModel: Product, Transformed
 import SpaceDataModel as SDM
 using DimensionalData: DimArray
 using Statistics: mean
 using NaNStatistics: nanextrema, nanmedian
-using TimeseriesUtilities: tview
 
 using Makie: ComputeGraph
 using Makie.ComputePipeline
