@@ -65,3 +65,27 @@ end
         f
     end
 end
+
+@testitem "interactive refetch only outside the loaded range" begin
+    using CairoMakie, Dates, DimensionalData
+    calls = Ref(0)
+    function src(t0, t1)
+        calls[] += 1
+        x = t0:Hour(1):t1
+        DimArray(rand(length(x)), Ti(x))
+    end
+    t0, t1 = DateTime(2001, 1, 1), DateTime(2001, 1, 2)
+    with_theme(SpacePhysicsMakie = (; delay = 0.05)) do
+        f, axes = tplot(src, t0, t1)
+        ax = axes[1]
+        sleep(0.3)
+        n = calls[]
+        @test n == 1 # the axis attributes and the plot share one fetch
+        tlims!(ax, t0 + Hour(2), t1 - Hour(2)); sleep(0.3) # zoom in: covered
+        @test calls[] == n
+        tlims!(ax, t0 - Hour(2), t1); sleep(0.3) # pan out: refetch
+        @test calls[] == n + 1
+        tlims!(ax, t0 - Hour(1), t1); sleep(0.3) # back inside the new range
+        @test calls[] == n + 1
+    end
+end
