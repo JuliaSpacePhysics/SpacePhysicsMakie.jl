@@ -58,3 +58,16 @@ end
     resampled_2d_dim2 = resample(arr_2d; n = 3, dim = 2)
     @test size(resampled_2d_dim2) == (4, 3)
 end
+
+@testitem "theme settings" begin
+    using SpacePhysicsMakie: setting
+    using Makie
+    @test setting(:add_title) == false
+    with_theme(SpacePhysicsMakie = (; add_title = true)) do
+        @test setting(:add_title) == true
+        @test setting(:delay) == 0.25
+    end
+    with_theme(SpacePhysicsMakie = (; add_titel = true)) do
+        @test_throws ArgumentError setting(:add_title)
+    end
+end

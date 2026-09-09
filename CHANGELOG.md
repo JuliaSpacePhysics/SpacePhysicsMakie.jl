@@ -6,6 +6,10 @@
 
 - **Breaking**: `degap` and `reindex`.
 
+### Added
+
+- `DEFAULTS` settings can be overridden through the `SpacePhysicsMakie` theme key, e.g. `with_theme(SpacePhysicsMakie = (; add_title = true))`.
+
 ### Changed
 
 - **Breaking**: DimensionalData is a weak dependency; `SpacePhysicsMakie.DimArray` is no longer available.

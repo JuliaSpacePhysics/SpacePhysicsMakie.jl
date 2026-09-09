@@ -15,15 +15,14 @@ _hasfield(T, x) = x isa Symbol && hasfield(T, x)
 _hasfield(T) = x -> _hasfield(T, x)
 
 """
-    resample(arr, n=DEFAULTS.resample; dim=1, verbose=false)
+    resample(arr; n=setting(:resample), dim=1, verbose=false)
 
 Resample an array along the dimension `dim` to `n` points.
 If the original length is less than or equal to `n`, the original array is returned unchanged.
 """
-function resample(arr; n = DEFAULTS.resample, dim = 1, verbose = false)
+function resample(arr; n = setting(:resample), dim = 1, verbose = false)
     sz = size(arr, dim)
     return if sz > n
-        # verbose && @info "Resampling array of size $(size(arr)) along dimension $dim from $sz to $n points"
         verbose && @info "Resampling $(summary(arr)) along dimension $dim from $sz to $n points"
         indices = round.(Int, range(1, sz, length = n))
         selectdim(arr, dim, indices)
