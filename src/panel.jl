@@ -25,7 +25,7 @@ function plottype(x)
     end
 end
 plottype(::MultiAxisData) = MultiAxisPlot
-plottype(::Function) = FunctionPlot
+plottype(::DataSource) = FunctionPlot
 plottype(args...) = plottype(args[1])
 
 plotfunc(args...) = Makie.plotfunc(plottype(args...))

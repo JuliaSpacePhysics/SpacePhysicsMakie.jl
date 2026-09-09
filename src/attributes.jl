@@ -68,7 +68,7 @@ end
 
 function scale(x, sources)
     return _scale_func(
-        prioritized_get(meta(x), sources, identity)
+        prioritized_get(getmeta(x), sources, identity)
     )
 end
 
@@ -92,4 +92,4 @@ function plot_attributes(A; schema = get_schema(A), kw...)
         :plot => plottype_attributes(A; schema)
     )
 end
-plot_attributes(f::Function, args...; kwargs...) = plot_attributes(f(args...); kwargs...)
+plot_attributes(f::DataSource, args...; kwargs...) = plot_attributes(transform(getdata(f, args...)); kwargs...)

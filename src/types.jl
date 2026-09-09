@@ -2,8 +2,11 @@
 """Union type for drawable containers that can hold plots"""
 const Drawable = Union{Figure, GridPosition, GridSubposition}
 
+"Lazy sources, materialized by `getdata(x, t0, t1)`."
+const DataSource = Union{Function, Product, Transformed}
+
 """Union type for data types supported by the plotting system"""
-const SupportTypes = Union{AbstractArray{<:Number}, Function, String}
+const SupportTypes = Union{AbstractArray{<:Number}, DataSource, String}
 
 """Union type for data that can be plotted as multiple series"""
 const MultiPlottable = Union{AbstractVector{<:SupportTypes}, NamedTuple, Tuple}

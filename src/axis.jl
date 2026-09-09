@@ -22,17 +22,17 @@ function _axis_attributes(::Type, A, args...; add_title = false, schema = get_sc
         set_if_valid!(axis; _yunit = unit)
     end
     set_if_valid!(axis; yscale, ylabel)
-    return merge_axis_attributes!(axis, meta(A))
+    return merge_axis_attributes!(axis, getmeta(A))
 end
 
 function _axis_attributes(::Type{FunctionPlot}, f, args...; kw...)
-    attrs = _axis_attributes(data(f, args...); kw...)
-    return merge_axis_attributes!(attrs, meta(f))
+    return _source_axis_attributes(f, transform(getdata(f, args...)); kw...)
 end
+_source_axis_attributes(f, data; kw...) = merge_axis_attributes!(_axis_attributes(data; kw...), getmeta(f))
 
 function _axis_attributes(::Type{MultiPlot}, fs, args...; kw...)
     attrs = _intersect!(_axis_attributes.(values(fs), args...; kw...)...)
-    return merge_axis_attributes!(attrs, meta(fs))
+    return merge_axis_attributes!(attrs, getmeta(fs))
 end
 
 # Process axis attributes before makie
@@ -49,8 +49,4 @@ end
 """
 Get axis attributes for `x`
 """
-function axis_attributes(x, args...; schema = get_schema(x), kw...)
-    return process_axis_attributes!(
-        _axis_attributes(x, args...; kw..., schema = schema)
-    )
-end
+axis_attributes(x, args...; kw...) = process_axis_attributes!(_axis_attributes(x, args...; kw...))

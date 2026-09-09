@@ -5,16 +5,15 @@ end
 """
     functionplot(gp, f, tmin, tmax; kwargs...)
 
-Interactively plot a function over a time range on a grid position
+Interactively plot a source `f` (see `DataSource`) over a time range on a grid position
 """
 function functionplot(gp, f, tmin, tmax; axis = (;), add_title = DEFAULTS.add_title, add_colorbar = DEFAULTS.add_colorbar, plot = (;), kwargs...)
     # get a sample data to determine the attributes and plot types
     tmin, tmax = _compat(tmin), _compat(tmax)
-    data = transform(f(tmin, tmax))
-    m = @something meta(f) Dict()
-    attrs = axis_attributes(CachedFunction(f, data); add_title)
+    data = transform(getdata(f, tmin, tmax))
+    attrs = process_axis_attributes!(_source_axis_attributes(f, data; add_title))
     ax = Axis(gp; attrs..., axis...)
-    plot = _merge(plottype_attributes(m), plot)
+    plot = _merge(plottype_attributes(getmeta(f)), plot)
     p = functionplot!(ax, f, tmin, tmax; plot, kwargs...)
     isspectrogram(data) && add_colorbar && Colorbar(gp[1, 2], p; label = clabel(data))
     return PanelAxesPlots(gp, AxisPlots(ax, p))
@@ -41,7 +40,7 @@ Overlay several sources on `ax`, fetched together so they refetch together on zo
 function multiplot!(ax, fs, tmin, tmax; kwargs...)
     tmin, tmax = _compat(tmin), _compat(tmax)
     func = (t0, t1) -> map(fs) do f
-        transform(f(t0, t1))
+        transform(getdata(f, t0, t1))
     end
     return iviz_api!(ax, func, (tmin, tmax); kwargs...)
 end
