@@ -4,7 +4,7 @@ using Dates
 using Unitful
 using InverseFunctions: inverse
 using SpaceDataModel: SpaceDataModel, getdata, getmeta, times, unwrap, NoMetadata, tdimnum
-using SpaceDataModel: Product, Transformed, AbstractDataVariable, get_schema, depend_1
+using SpaceDataModel: Dataset, Product, Transformed, AbstractDataVariable, get_schema, depend_1
 import SpaceDataModel as SDM
 using NaNStatistics: nanextrema, nanmedian
 
@@ -25,6 +25,7 @@ function multiaxisplot end
 include("types.jl")
 include("transform.jl")
 include("core.jl")
+include("dataset.jl")
 include("panel.jl")
 include("utils.jl")
 include("spectrogram.jl")

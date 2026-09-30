@@ -89,3 +89,30 @@ end
         @test calls[] == n + 1
     end
 end
+
+@testitem "Dataset: one panel per data variable, one fetch per range" begin
+    using CairoMakie, Dates, DimensionalData, SpaceDataModel
+    calls = Ref(0)
+    function src(t0, t1)
+        calls[] += 1
+        x = t0:Hour(1):t1
+        return (;
+            B = DimArray(rand(length(x), 3), (Ti(x), Y(1:3))),
+            n = DimArray(rand(length(x)), Ti(x)),
+            m = DimArray(rand(length(x)), Ti(x); metadata = Dict("VAR_TYPE" => "data", "DEPEND_0" => "Epoch")),
+            q = DimArray(rand(length(x)), Ti(x); metadata = Dict("VAR_TYPE" => "support_data")),
+            nrv = DimArray(rand(3, 1), (Y(1:3), Ti(1:1)); metadata = Dict("VAR_TYPE" => "data")),
+            energy = rand(4),
+        )
+    end
+    t0, t1 = DateTime(2001, 1, 1), DateTime(2001, 1, 2)
+    with_theme(SpacePhysicsMakie = (; delay = 0.05)) do
+        f, axes = tplot(Dataset("toy", src), t0, t1)
+        @test length(axes) == 3
+        sleep(0.3)
+        @test calls[] == 1
+        tlims!(axes[1], t0 - Hour(2), t1); sleep(0.3)
+        @test calls[] == 2
+    end
+    @test length(tplot(Dataset("toy", src), t0, t1; vars = [:n]).axes) == 1
+end
