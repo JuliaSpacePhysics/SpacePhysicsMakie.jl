@@ -2,13 +2,14 @@
 
 ## [Unreleased]
 
+### Added
+
+- `tplot(ds::Dataset, t0, t1; vars)` plots one panel per data variable; the panels share each fetch.
+- `DEFAULTS` settings can be overridden through the `SpacePhysicsMakie` theme key, e.g. `with_theme(SpacePhysicsMakie = (; add_title = true))`.
+
 ### Removed
 
 - **Breaking**: `degap` and `reindex`.
-
-### Added
-
-- `DEFAULTS` settings can be overridden through the `SpacePhysicsMakie` theme key, e.g. `with_theme(SpacePhysicsMakie = (; add_title = true))`.
 
 ### Changed
 
