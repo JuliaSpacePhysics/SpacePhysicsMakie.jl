@@ -8,3 +8,13 @@ SpaceDataModel = "0b37b92c-f0c5-4a52-bd5c-390dec20857c"
 SpacePhysicsMakie = "0c28ffd8-ae30-4a56-b2e4-f8332c621ad2"
 Speasy = "09b745ad-c67d-442f-94a6-c7f4d1e4d861"
 Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
+
+[compat]
+CairoMakie = "0.15"
+DimensionalData = "0.29, 0.30"
+Documenter = "1"
+HAPIClient = "0.2"
+PySPEDAS = "0.2"
+SpaceDataModel = "0.2.1"
+Speasy = "0.4"
+Unitful = "1"
