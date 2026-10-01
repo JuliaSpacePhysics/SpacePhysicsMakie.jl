@@ -3,10 +3,6 @@
 [![DOI](https://zenodo.org/badge/1034835340.svg)](https://doi.org/10.5281/zenodo.17655281)
 [![version](https://juliahub.com/docs/General/SpacePhysicsMakie/stable/version.svg)](https://juliahub.com/ui/Packages/General/SpacePhysicsMakie)
 
-[![Build Status](https://github.com/JuliaSpacePhysics/SpacePhysicsMakie.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/JuliaSpacePhysics/SpacePhysicsMakie.jl/actions/workflows/CI.yml?query=branch%3Amain)
-[![Aqua QA](https://raw.githubusercontent.com/JuliaTesting/Aqua.jl/master/badge.svg)](https://github.com/JuliaTesting/Aqua.jl)
-[![Coverage](https://codecov.io/gh/JuliaSpacePhysics/SpacePhysicsMakie.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/JuliaSpacePhysics/SpacePhysicsMakie.jl)
-
 Space physics plotting utilities built on [`Makie.jl`](https://makie.juliaplots.org/).  
 
 Designed for fast, interactive plotting of multiple time series with automatic handling of ISTP metadata. While tailored for space physics, it supports any time series data via extensible `transform` function.
