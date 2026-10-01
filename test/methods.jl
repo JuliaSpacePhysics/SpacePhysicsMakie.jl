@@ -1,5 +1,5 @@
 @testitem "tlines! and tvspan! on time axes" begin
-    using CairoMakie, Dates, DimensionalData
+    using Makie, Dates, DimensionalData
     t = DateTime(2020) .+ Hour.(0:9)
     ms = Dates.value.(t)
     faxes = tplot([rand(Ti(t)), rand(Ti(t))])

@@ -1,12 +1,12 @@
 @testitem "specplot! with DimArray" begin
-    using CairoMakie, Dates, DimensionalData
+    using Makie, Dates, DimensionalData
 
     t = Ti(range(DateTime(2000), step = Hour(1), length = 4))
     A = rand(t, Y(11:18))
     f = Figure()
     @test_nowarn specplot!(Axis(f[1, 1]), A)
     @test_nowarn specplot!(Axis(f[2, 1]), A')
-    colorbuffer(f)
+    Makie.update_state_before_display!(f)
     @test f.content[1].yaxis.tickvalues[] == [12.5, 15.0, 17.5]
 end
 
@@ -15,7 +15,7 @@ end
     # Pre-fix `specplot!` silently unwrapped the Computed via `_to_value`, so
     # `plt.color` stayed pinned to the initial materialized matrix.
     using SpacePhysicsMakie
-    using CairoMakie, Dates, DimensionalData, Random
+    using Makie, Dates, DimensionalData, Random
     using Makie.ComputePipeline
 
     g = Makie.ComputePipeline.ComputeGraph()
@@ -40,7 +40,7 @@ end
     # Pre-fix `multiplot!(::Computed)` unwrapped to plain data and lost reactivity
     # for heterogeneous lists (e.g. a spectrogram alongside line series).
     using SpacePhysicsMakie
-    using CairoMakie, Dates, DimensionalData, Random
+    using Makie, Dates, DimensionalData, Random
     using Makie.ComputePipeline
 
     g = Makie.ComputePipeline.ComputeGraph()

@@ -8,7 +8,7 @@ using TestItemRunner
 end
 
 @testitem "Basic plotting workflow" begin
-    using CairoMakie
+    using Makie
     using Unitful
     using Dates
 
@@ -38,7 +38,7 @@ end
 
 
 @testitem "tplot_panel dispatch" begin
-    using CairoMakie
+    using Makie
     using Unitful
     n = 24
     v1, v2 = rand(n) * 4u"km/s", rand(n) * 4u"km/s"
