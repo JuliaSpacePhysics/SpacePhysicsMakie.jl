@@ -9,10 +9,6 @@ plottype(x::AbstractDimArray) = isspectrogram(x) ? SpecPlot : LinesPlot
 
 makie_x(da::AbstractDimArray) = makie_t2x(times(da))
 
-plot2spec(ds::AbstractDimStack; kwargs...) =
-    map(values(ds)) do ds
-    plot2spec(ds; kwargs...)
-end |> collect
 
 
 # A no-error version of `dimnum`

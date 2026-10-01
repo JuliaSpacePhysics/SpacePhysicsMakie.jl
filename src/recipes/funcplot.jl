@@ -34,10 +34,9 @@ function functionplot!(ax, f, tmin, tmax; plot = (;), kwargs...)
 end
 
 """
-    multiplot!(ax, fs, t0, t1; plotfunc=plot2spec, kwargs...)
+    multiplot!(ax, fs, tmin, tmax; kwargs...)
 
-Specialized multiplot function for `functionplot`.
-Merge specs before plotting so as to cycle through them.
+Overlay several sources on `ax`, fetched together so they refetch together on zoom.
 """
 function multiplot!(ax, fs, tmin, tmax; kwargs...)
     tmin, tmax = _compat(tmin), _compat(tmax)
