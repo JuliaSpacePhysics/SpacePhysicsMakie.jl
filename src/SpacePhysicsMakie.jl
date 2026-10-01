@@ -8,14 +8,14 @@ using SpaceDataModel: Dataset, Product, Transformed, AbstractDataVariable, get_s
 import SpaceDataModel as SDM
 using NaNStatistics: nanextrema, nanmedian
 
-using Makie: ComputeGraph
+using Makie: ComputeGraph, Interval
 using Makie.ComputePipeline
 
 export tplot!, tplot, tplot_panel, tplot_panel!
 export LinesPlot, linesplot, linesplot!
 export multiplot
 export MultiAxisData, MultiAxisPlot, multiaxisplot
-export tlims!, tlines!, add_labels!
+export tlims!, tlines!, tvspan!, add_labels!
 export axis_attributes, plot_attributes
 export isspectrogram
 

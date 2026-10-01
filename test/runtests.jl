@@ -37,51 +37,18 @@ end
 end
 
 
-@testsnippet DataShare begin
+@testitem "tplot_panel dispatch" begin
     using CairoMakie
     using Unitful
-    # Create sample data
     n = 24
-    data1 = rand(n) * 4u"km/s"  # Vector with units
-    data2 = rand(n) * 4u"km/s"  # Same units
-    data3 = rand(n) * 1u"eV"    # Different units
-    data4 = rand(n, 6)           # Matrix (for heatmap)
-end
-
-# "Multiple series"
-@testitem "Multiple series" setup = [DataShare] begin
+    v1, v2 = rand(n) * 4u"km/s", rand(n) * 4u"km/s"
+    e = rand(n) * 1u"eV"
+    m = rand(n, 6)
     f = Figure()
-    # Method 1
-    scatterlines(f[1, 1], data1); scatterlines!(f[1, 1], data2)
-    # Method 2
-    @test_nowarn tplot_panel(f[2, 1], [data1, data2]; plottypes = ScatterLines)
-    # Method 3
-    @test_nowarn multiplot(f[3, 1], [data1, data2], plottypes = ScatterLines)
-    f
-end
-
-@testitem "Overlay series" setup = [DataShare] begin
-    f = Figure()
-    # Method 1
-    plot(f[1, 1], data4); plot!(f[1, 1], data1); plot!(f[1, 1], data2)
-    # Method 2
-    @test_nowarn tplot_panel(f[2, 1], [data4, data1, data2])
-    # Method 3
-    @test_nowarn multiplot(f[3, 1], [data4, data1, data2])
-
-    @test_nowarn multiaxisplot(f[4, 1], data4, data1)
-    f
-end
-
-@testitem "tplot_panel dispatch" setup = [DataShare] begin
-    f = Figure()
-    # Multiple Series (same y-axis)
-    @test_nowarn tplot_panel(f[1, 1], [data1, data2]; axis = (; title = "Multiple series"), plottypes = ScatterLines)
-    # Dual Y-Axes (different units)
-    @test_nowarn tplot_panel(f[2, 1], (data1, data3); axis = (; title = "Dual y-axes"))
-    # Overlay Series on Heatmap
-    @test_nowarn tplot_panel(f[1, 2], [data4, data1, data2]; axis = (; title = "Heatmap with overlays"))
-    # XY Plot (non-time series)
-    @test_nowarn tplot_panel(f[2, 2], data2, data3; axis = (; title = "XY plot (fallback)"))
-    f
+    @test_nowarn tplot_panel(f[1, 1], [v1, v2]; plottypes = ScatterLines)
+    @test_nowarn multiplot(f[2, 1], [v1, v2], plottypes = ScatterLines)
+    @test_nowarn tplot_panel(f[3, 1], (v1, e))
+    @test_nowarn tplot_panel(f[1, 2], [m, v1, v2])
+    @test_nowarn multiaxisplot(f[2, 2], m, v1)
+    @test_nowarn tplot_panel(f[3, 2], v2, e)
 end

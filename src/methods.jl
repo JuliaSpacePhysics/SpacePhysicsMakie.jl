@@ -20,12 +20,19 @@ end
 tlims!(tmin, tmax) = tlims!(current_axis(), tmin, tmax)
 tlims!(trange) = tlims!(trange...)
 
-"""Add vertical lines to a plot"""
-tlines!(ax, time; kwargs...) = vlines!(ax, Dates.value.(DateTime.(time)); kwargs...)
-tlines!(time; kwargs...) = tlines!(current_axis(), time; kwargs...)
-tlines!(faxes::FigureAxes, time; kwargs...) =
-    foreach(faxes.axes) do ax
-    tlines!(ax, time; kwargs...)
+"""Add vertical lines at `time` to a plot"""
+tlines!(ax::Axis, time; kwargs...) = vlines!(ax, _ms(time); kwargs...)
+
+"""Add vertical bands spanning `tmins` to `tmaxs` to a plot"""
+tvspan!(ax::Axis, tmins, tmaxs; kwargs...) = vspan!(ax, Interval.(_ms(tmins), _ms(tmaxs)); kwargs...)
+
+# Plain numbers bypass the axis dim conversion, so pass times as milliseconds (the DateTimeConversion unit).
+# vspan!(low, high) would dim-convert `high` as y (https://github.com/MakieOrg/Makie.jl/issues/4412); a single Interval argument is not dim-converted.
+_ms(t) = Dates.value.(DateTime.(t))
+
+for f in (:tlines!, :tvspan!)
+    @eval $f(args...; kwargs...) = $f(current_axis(), args...; kwargs...)
+    @eval $f(faxes::FigureAxes, args...; kwargs...) = foreach(ax -> $f(ax, args...; kwargs...), faxes.axes)
 end
 
 """
