@@ -8,7 +8,6 @@ plottype(::AbstractDataSet) = MultiPlot
 
 makie_x(da::AbstractDataVariable) = makie_t2x(times(da))
 
-# Makie.convert_arguments(::Type{<:LinesPlot}, da::AbstractDataVariable; kwargs...) = plot2spec(LinesPlot, da; kwargs...)
 
 transform(x::AbstractProduct, args...) = DimArray ∘ x
 transform(x::AbstractDataSet, args...) = x

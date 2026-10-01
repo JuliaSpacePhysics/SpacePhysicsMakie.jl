@@ -10,7 +10,6 @@ using Statistics: mean
 using NaNStatistics: nanextrema, nanmedian
 using TimeseriesUtilities: tview
 
-import Makie: convert_arguments, plot!, conversion_trait, get_plots
 using Makie: ComputeGraph
 using Makie.ComputePipeline
 
@@ -33,7 +32,6 @@ include("panel.jl")
 include("utils.jl")
 include("schemas/schema.jl")
 include("spectrogram.jl")
-include("specapi.jl")
 include("interactive.jl")
 include("recipes/funcplot.jl")
 include("recipes/linesplot.jl")
