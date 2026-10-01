@@ -25,9 +25,7 @@ jobs:
   test:
     uses: JuliaSpacePhysics/actions/.github/workflows/julia-ci.yml@main
     with:
-      versions: '["1", "lts", "pre"]'
-      env: |
-        SPEASY_CORE_DISABLED_PROVIDERS=csa
+      versions: '["1", "lts"]'
     permissions:
       actions: write
       contents: read

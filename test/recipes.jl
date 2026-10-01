@@ -1,5 +1,5 @@
 @testitem "FunctionPlot" begin
-    using CairoMakie, Dates, DimensionalData
+    using Makie, Dates, DimensionalData
 
     t0 = DateTime(2001, 1, 1)
     t1 = DateTime(2001, 1, 2)
@@ -21,7 +21,7 @@
 end
 
 @testitem "MultiAxisPlot" begin
-    using CairoMakie
+    using Makie
 
     # Basic test with three axes
     y1 = [9, 7, 5, 1, 3, 5]
@@ -45,7 +45,7 @@ end
 end
 
 @testitem "LinesPlot" begin
-    using CairoMakie, Dates, DimensionalData, Unitful
+    using Makie, Dates, DimensionalData, Unitful
     ys = [[1, 2, 4] [3, 4, 10]]
     linesplot(ys)
     @test_broken linesplot([10, 20, 30], ys)
@@ -67,7 +67,7 @@ end
 end
 
 @testitem "interactive refetch only outside the loaded range" begin
-    using CairoMakie, Dates, DimensionalData
+    using Makie, Dates, DimensionalData
     calls = Ref(0)
     function src(t0, t1)
         calls[] += 1
@@ -91,7 +91,7 @@ end
 end
 
 @testitem "Dataset: one panel per data variable, one fetch per range" begin
-    using CairoMakie, Dates, DimensionalData, SpaceDataModel
+    using Makie, Dates, DimensionalData, SpaceDataModel
     calls = Ref(0)
     function src(t0, t1)
         calls[] += 1
