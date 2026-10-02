@@ -5,7 +5,7 @@ function multiplot!(ax, tas, args...; plottypes = (), kwargs...)
     c = _obs(tas)
     ptypes = _plottypes(plottypes)
     return map(eachindex(c[])) do i
-        x = lift(cur -> transform(cur[i]), c)
+        x = lift(cur -> plottable(cur[i]), c)
         ptype = get(ptypes, i, plottype(x[]))
         pf = plotfunc!(ptype)
         pf(ax, x; kwargs...)

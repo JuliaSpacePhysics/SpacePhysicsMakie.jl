@@ -10,7 +10,7 @@ _obs(A::Reactive) = A
 _obs(A) = Observable(A)
 
 "Plot `f` over `trange` on `ax`, refetching when the view leaves the loaded range."
-function iviz_api!(ax::Axis, f, trange; data = transform(getdata(f, trange...)), delay = setting(:delay), kw...)
+function iviz_api!(ax::Axis, f, trange; data = plottable(getdata(f, trange...)), delay = setting(:delay), kw...)
     graph = ComputeGraph()
     add_input!(graph, :trange, trange)
     add_input!(graph, :data, data)
@@ -21,7 +21,7 @@ function iviz_api!(ax::Axis, f, trange; data = transform(getdata(f, trange...)),
         t0, t1 = x2t.(get_xrange(lims))
         loaded0, loaded1 = graph[:trange][]
         (t0 < loaded0 || t1 > loaded1) || return
-        update!(graph; trange = (t0, t1), data = transform(getdata(f, t0, t1)))
+        update!(graph; trange = (t0, t1), data = plottable(getdata(f, t0, t1)))
         return
     end
     on(Debouncer(update, delay), ax.finallimits)

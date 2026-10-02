@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Added
+
+- Time series in raw storage (types extending `SpaceDataModel.sanitize`, e.g. CDFDatasets variables) plot without conversion: each fetch is read once, with fill and out-of-range values masked and coordinates loaded. `transform` remains an optional hook.
+
 ### Changed
 
 - **Breaking**: time series are detected by SpaceDataModel's `hastimedim`, i.e. a `tdimnum` method; an `AbstractDataVariable` without one is no longer plotted as a time series. The DimensionalData extension is gone: SpaceDataModel provides `tdimnum` for `DimArray`s (SpaceDataModel 0.4).

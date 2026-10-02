@@ -116,3 +116,28 @@ end
     end
     @test length(tplot(Dataset("toy", src), t0, t1; vars = [:n]).axes) == 1
 end
+
+@testitem "Raw CDF variables plot like their DimArray" begin
+    using Makie, CDFDatasets, DimensionalData
+    ds = cdfopen(joinpath(pkgdir(CDFDatasets), "data", "elb_l2_epdef_20210914_v01.cdf"))
+    function panel(x, T)
+        ax = only(tplot(x).axes)
+        return ax, only(filter(p -> p isa T, ax.scene.plots))
+    end
+
+    # Int8 sector numbers, 16 of them outside VALIDMIN/VALIDMAX
+    v = ds["elb_pef_sectnum"]
+    @test SpacePhysicsMakie.plottable(v) isa SpacePhysicsMakie.Materialized
+    (ax1, l1), (ax2, l2) = panel(v, Lines), panel(DimArray(v), Lines)
+    @test ax1.dim1_conversion[] isa Makie.DateTimeConversion
+    @test count(p -> isnan(p[2]), l1.converted[][1]) == 16
+    @test isequal(l1.converted[][1], l2.converted[][1])
+    @test ax1.ylabel[] == ax2.ylabel[]
+
+    s = ds["elb_pef_Et_eflux"]
+    (ax1, s1), (ax2, s2) = panel(s, Surface), panel(DimArray(s), Surface)
+    @test isequal(s1.color[], s2.color[])
+    @test isequal(s1[1][], s2[1][])
+    @test isequal(s1[2][], s2[2][])
+    @test ax1.ylabel[] == ax2.ylabel[]
+end
