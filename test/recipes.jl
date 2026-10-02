@@ -102,6 +102,7 @@ end
             m = DimArray(rand(length(x)), Ti(x); metadata = Dict("VAR_TYPE" => "data", "DEPEND_0" => "Epoch")),
             q = DimArray(rand(length(x)), Ti(x); metadata = Dict("VAR_TYPE" => "support_data")),
             nrv = DimArray(rand(3, 1), (Y(1:3), Ti(1:1)); metadata = Dict("VAR_TYPE" => "data")),
+            notime = DimArray(rand(length(x)), X(x); metadata = Dict("VAR_TYPE" => "data", "DEPEND_0" => "Epoch")),
             energy = rand(4),
         )
     end

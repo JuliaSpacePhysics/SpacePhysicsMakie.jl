@@ -12,6 +12,7 @@
 
 ### Fixed
 
+- `tplot(ds::Dataset, t0, t1)` skips ISTP data variables without a time dimension instead of drawing them against an index axis.
 - Spectrograms with a time-varying `depend_1` (a matrix laid out like the data) transpose it along with the data.
 
 ## [0.3.0] - 2026-10-01
