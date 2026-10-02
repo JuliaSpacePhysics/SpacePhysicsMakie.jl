@@ -13,10 +13,12 @@ function tlims!(ax, tmin, tmax)
     elseif dim_conversion isa Makie.UnitfulConversion
         xlims!(ax, tmin, tmax)
     else
-        xlims!(ax, Dates.value(tmin), Dates.value(tmax))
+        xlims!(ax, _value(tmin), _value(tmax))
     end
     return current_figure()
 end
+_value(t) = Dates.value(t)
+_value(t::Dates.AbstractDateTime) = Dates.value(DateTime(t))
 tlims!(tmin, tmax) = tlims!(current_axis(), tmin, tmax)
 tlims!(trange) = tlims!(trange...)
 
