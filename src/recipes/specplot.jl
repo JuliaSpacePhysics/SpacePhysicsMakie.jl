@@ -52,8 +52,12 @@ Plot heatmap of a time series on the same axis
 function specplot!(ax::Axis, A; kwargs...)
     A = _obs(A)
     attrs = heatmap_attributes(A[]; kwargs...)
-    mat = lift(a -> timedimnum(a) == ndims(a) ? transpose(parent(a)) : parent(a), A)
+    mat = lift(a -> _time_first(a, parent(a)), A)
     x = lift(makie_x, A)
-    y = lift(depend_1, A)
+    y = lift(a -> _time_first(a, unwrap(depend_1(a))), A)
     return _heatmap!(ax, x, y, mat; attrs...)
 end
+
+# A time-varying `depend_1` is laid out like the data, so it is transposed with it.
+_time_first(a, m::AbstractMatrix) = timedimnum(a) == ndims(a) ? transpose(m) : m
+_time_first(a, v) = v
