@@ -1,5 +1,6 @@
 [deps]
 Aqua = "4c88cf16-eb10-579e-8560-4a9242c79595"
+CDFDatasets = "075ae62b-f872-4368-b383-31e3aa6c3154"
 CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
 Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
 DimensionalData = "0703355e-b756-11e9-17c0-8b28908087d0"
@@ -14,6 +15,7 @@ Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
 
 [compat]
 Aqua = "0.8"
+CDFDatasets = "0.3"
 DimensionalData = "0.29, 0.30"
 Makie = "0.24"
 TestItemRunner = "1"
