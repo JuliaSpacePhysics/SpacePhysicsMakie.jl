@@ -108,3 +108,14 @@ end
         @test unit(edges_log[1]) == u"m"
     end
 end
+
+@testitem "specplot! with a time-varying depend_1" begin
+    using Makie, Dates
+    using SpacePhysicsMakie: Materialized
+    using SpaceDataModel: DefaultSchema
+    t = DateTime(2000) .+ Hour.(0:3)
+    E = [10.0i + j for i in 1:5, j in 1:4]  # energy × time, like the data
+    A = Materialized(rand(5, 4), (E, t), 2, Dict(), "flux", DefaultSchema())
+    p = specplot!(Axis(Figure()[1, 1]), A)
+    @test p[2][] == permutedims(E)
+end
