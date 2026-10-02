@@ -24,7 +24,7 @@ Designed for fast, interactive plotting of multiple time series with automatic h
 
 ## Development
 
-- To support other data types, extend `transform` to convert them to a supported type like `DimArray`, or implement the [`SpaceDataModel`][SpaceDataModel] variable interface and extend `SpacePhysicsMakie.hastimedim`.
+- To support other data types, extend `transform` to convert them to a supported type like `DimArray`, or implement the [`SpaceDataModel`][SpaceDataModel] variable interface, declaring the time dimension with `tdimnum`.
 
 ## Elsewhere
 

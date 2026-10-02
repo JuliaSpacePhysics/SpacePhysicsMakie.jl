@@ -46,6 +46,7 @@ end
 
 @testitem "time dimension detection" begin
     using SpacePhysicsMakie: plottype, hastimedim, makie_x, LinesPlot
+    using SpaceDataModel: DataVariable
     using DimensionalData, Dates, Makie
     t = range(DateTime(2000), step = Hour(1), length = 4)
     @test plottype(rand(Ti(t))) == LinesPlot
@@ -54,4 +55,9 @@ end
     @test !hastimedim(rand(X(1:4)))
     @test plottype(rand(4)) == Lines
     @test makie_x(rand(4, 2)) == 1:4
+
+    # subtyping alone does not declare a time dimension; `tdimnum` does
+    v = DataVariable(rand(4), Dict())
+    @test !hastimedim(v)
+    @test plottype(v) == Lines
 end
