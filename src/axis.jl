@@ -26,7 +26,7 @@ function _axis_attributes(::Type, A, args...; add_title = false, schema = get_sc
 end
 
 function _axis_attributes(::Type{FunctionPlot}, f, args...; kw...)
-    return _source_axis_attributes(f, transform(getdata(f, args...)); kw...)
+    return _source_axis_attributes(f, plottable(getdata(f, args...)); kw...)
 end
 _source_axis_attributes(f, data; kw...) = merge_axis_attributes!(_axis_attributes(data; kw...), getmeta(f))
 

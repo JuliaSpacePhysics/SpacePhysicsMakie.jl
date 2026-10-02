@@ -116,6 +116,8 @@ You can extend the transformation system by defining methods for your types:
 transform(x::MyType) = DimArray(x.data)
 ```
 
+Types implementing the SpaceDataModel variable interface need no `transform`.
+
 ## API
 
 ```@index

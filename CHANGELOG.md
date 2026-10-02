@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Added
+
+- Time series in storage (e.g. CDFDatasets variables) plot without `transform`: each fetch is read into memory once, coordinates included.
+
 ### Changed
 
 - **Breaking**: requires SpaceDataModel 0.4. Time series are those with a `tdimnum` (SpaceDataModel's `hastimedim`). The DimensionalData extension is removed, as SpaceDataModel implements `tdimnum` for `DimArray`s.
