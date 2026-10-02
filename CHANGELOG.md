@@ -10,6 +10,10 @@
 
 - **Breaking**: requires SpaceDataModel 0.4. Time series are those with a `tdimnum` (SpaceDataModel's `hastimedim`). The DimensionalData extension is removed, as SpaceDataModel implements `tdimnum` for `DimArray`s.
 
+### Fixed
+
+- `tplot(ds::Dataset, t0, t1)` skips ISTP data variables without a time dimension instead of drawing them against an index axis.
+
 ## [0.3.0] - 2026-10-01
 
 ### Added
