@@ -22,13 +22,13 @@ Keys of `data` worth a panel: time series of rank ≤ 2, excluding ISTP support 
 """
 data_variables(data) = [k for k in keys(data) if _is_data_variable(data[k])]
 
-# ISTP metadata decides without reading data. `hastimedim(transform(v))` would also accept a
-# non-record-varying CDF variable, which converts to a `DimArray` with a length-1 `Ti`.
+# ISTP variables skip `transform`, a user hook that may read data. `DEPEND_0` excludes
+# non-record-varying variables, which as `DimArray`s carry a length-1 `Ti`.
 function _is_data_variable(v)
     ndims(v) <= 2 || return false
     vartype = getmeta(v, "VAR_TYPE")
     isnothing(vartype) && return hastimedim(transform(v))
-    return vartype == "data" && !isnothing(getmeta(v, "DEPEND_0"))
+    return vartype == "data" && !isnothing(getmeta(v, "DEPEND_0")) && hastimedim(v)
 end
 
 # Linked panels request the same range at once on zoom; the lock makes one of them fetch.
