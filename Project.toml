@@ -14,7 +14,7 @@ SpaceDataModel = "0b37b92c-f0c5-4a52-bd5c-390dec20857c"
 Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
 
 [sources]
-SpaceDataModel = {path = "/Users/zijin/src/JuliaSpacePhysics/SpaceDataModel.jl"}
+SpaceDataModel = {url = "https://github.com/JuliaSpacePhysics/SpaceDataModel.jl", rev = "sdm-plot-interface"}
 
 [compat]
 Dates = "1"
