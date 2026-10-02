@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+
+### Changed
+
+- **Breaking**: requires SpaceDataModel 0.4. Time series are those with a `tdimnum` (SpaceDataModel's `hastimedim`). The DimensionalData extension is removed, as SpaceDataModel implements `tdimnum` for `DimArray`s.
+
 ## [0.3.0] - 2026-10-01
 
 ### Added
