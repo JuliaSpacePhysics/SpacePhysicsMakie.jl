@@ -15,8 +15,7 @@ function _normalize(x)
     hastimedim(x) || return x
     A = SDM.sanitize(x)
     A === x && return x
-    dims = ntuple(i -> SDM.dim(x, i), ndims(x))
-    return Materialized(parent(A), dims, tdimnum(x), getmeta(x), SDM.name(x), get_schema(x))
+    return Materialized(parent(A), SDM.dims(x), tdimnum(x), getmeta(x), SDM.name(x), get_schema(x))
 end
 
 struct Materialized{T, N, A <: AbstractArray{T, N}, D <: Tuple, M, Nm, S} <: AbstractDataVariable{T, N}
