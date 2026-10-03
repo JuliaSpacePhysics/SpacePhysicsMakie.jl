@@ -41,7 +41,7 @@ Transforms the arguments to appropriate types and calls the plotting function.
 Dispatches to appropriate implementation based on the plotting trait of the transformed arguments.
 """
 function tplot_panel(gp, data, args...; transform = transform, kwargs...)
-    transformed = transform(data, args...)
+    transformed = plottable(data, args...; transform)
     pf = plotfunc(transformed)
     @debug "$(pf) data of type $(typeof(transformed))"
     return pf(gp, transformed, args...; kwargs...)
@@ -56,7 +56,7 @@ Transforms the arguments to appropriate types and calls the plotting function.
 Dispatches to appropriate implementation based on the plotting trait of the transformed arguments.
 """
 function tplot_panel!(ax::Axis, data, args...; kwargs...)
-    transformed = transform(data, args...)
+    transformed = plottable(data, args...)
     pf! = plotfunc!(transformed)
     return pf!(ax, transformed, args...; kwargs...)
 end

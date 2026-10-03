@@ -1,5 +1,20 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- Time series in storage (e.g. CDFDatasets variables) plot without conversion: each fetch is read into memory once, coordinates included. `transform` remains an optional hook.
+
+### Changed
+
+- **Breaking**: time series are detected by SpaceDataModel's `hastimedim`, i.e. a `tdimnum` method; an `AbstractDataVariable` without one is no longer plotted as a time series. The DimensionalData extension is gone: SpaceDataModel provides `tdimnum` for `DimArray`s (SpaceDataModel 0.4).
+
+### Fixed
+
+- `tplot(ds::Dataset, t0, t1)` skips ISTP data variables without a time dimension instead of drawing them against an index axis.
+- Spectrograms with a time-varying `depend_1` (a matrix laid out like the data) transpose it along with the data.
+
 ## [0.3.0] - 2026-10-01
 
 ### Added

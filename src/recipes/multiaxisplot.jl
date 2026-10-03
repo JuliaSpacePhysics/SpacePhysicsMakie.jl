@@ -77,7 +77,7 @@ function multiaxisplot(
     ci = 0
     # Primary axis
     color1 = _to_color(colors[1])
-    let primary = transform(data.primary, args...)
+    let primary = plottable(data.primary, args...)
         ax1 = Axis(
             gp;
             leftspinecolor = color1,
@@ -95,7 +95,7 @@ function multiaxisplot(
 
     # Secondary axes
     for (i, sec_data) in enumerate(secondaries)
-        sec = transform(sec_data, args...)
+        sec = plottable(sec_data, args...)
         color = _to_color(colors[i + ci])
         style = i < length(styles) ? styles[i + 1] : styles[end]
         pad = (i - 1) * pad_increment

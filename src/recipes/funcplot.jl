@@ -9,7 +9,7 @@ Interactively plot a source `f` (see `DataSource`) over a time range on a grid p
 """
 function functionplot(gp, f, tmin, tmax; axis = (;), add_title = setting(:add_title), add_colorbar = setting(:add_colorbar), plot = (;), kwargs...)
     tmin, tmax = _compat(tmin), _compat(tmax)
-    data = transform(getdata(f, tmin, tmax))
+    data = plottable(getdata(f, tmin, tmax))
     attrs = process_axis_attributes!(_source_axis_attributes(f, data; add_title))
     ax = Axis(gp; attrs..., axis...)
     plot = _merge(plottype_attributes(getmeta(f)), plot)
@@ -39,7 +39,7 @@ Overlay several sources on `ax`, fetched together so they refetch together on zo
 function multiplot!(ax, fs, tmin, tmax; kwargs...)
     tmin, tmax = _compat(tmin), _compat(tmax)
     func = (t0, t1) -> map(fs) do f
-        transform(getdata(f, t0, t1))
+        plottable(getdata(f, t0, t1))
     end
     return iviz_api!(ax, func, (tmin, tmax); kwargs...)
 end
