@@ -4,7 +4,7 @@
 
 ### Added
 
-- Time series in raw storage (types extending `SpaceDataModel.sanitize`, e.g. CDFDatasets variables) plot without conversion: each fetch is read once, with fill and out-of-range values masked and coordinates loaded. `transform` remains an optional hook.
+- Time series in storage (e.g. CDFDatasets variables) plot without conversion: each fetch is read into memory once, coordinates included. `transform` remains an optional hook.
 
 ### Changed
 

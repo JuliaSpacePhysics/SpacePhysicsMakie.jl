@@ -116,7 +116,7 @@ You can extend the transformation system by defining methods for your types:
 transform(x::MyType) = DimArray(x.data)
 ```
 
-Types implementing the SpaceDataModel variable interface need no `transform`. Time series backed by raw storage (types extending `SpaceDataModel.sanitize`, such as CDFDatasets variables) are read once per fetch, with fill and out-of-range values masked.
+Types implementing the SpaceDataModel variable interface need no `transform`. Time series backed by storage (such as CDFDatasets variables, which decode fill values on read) are read into memory once per fetch.
 
 ## API
 
