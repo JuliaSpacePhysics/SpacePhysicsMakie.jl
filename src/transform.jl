@@ -28,5 +28,6 @@ struct Materialized{T, N, A <: AbstractArray{T, N}, D <: Tuple, M, Nm, S} <: Abs
     schema::S
 end
 
+_normalize(x::Materialized) = x
 SDM.tdimnum(x::Materialized) = x.tdim
 SDM.get_schema(x::Materialized) = x.schema

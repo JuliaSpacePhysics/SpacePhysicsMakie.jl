@@ -128,7 +128,9 @@ end
 
     # Int8 sector numbers, 16 of them outside VALIDMIN/VALIDMAX
     v = ds["elb_pef_sectnum"]
-    @test SpacePhysicsMakie.plottable(v) isa SpacePhysicsMakie.Materialized
+    m = SpacePhysicsMakie.plottable(v)
+    @test m isa SpacePhysicsMakie.Materialized
+    @test SpacePhysicsMakie.plottable(m) === m
     (ax1, l1), (ax2, l2) = panel(v, Lines), panel(DimArray(v), Lines)
     @test ax1.dim1_conversion[] isa Makie.DateTimeConversion
     @test count(p -> isnan(p[2]), l1.converted[][1]) == 16
