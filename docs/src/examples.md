@@ -7,7 +7,7 @@ Visualize Heliophysics Application Programmer's Interface (HAPI) compliant data 
 ```@example hapi
 using HAPIClient: get_data
 
-da = get_data("CDAWeb/AC_H0_MFI/Magnitude,BGSEc", "2001-1-2", "2001-1-2T6")
+da = get_data("CDAWeb/AC_H0_MFI/Magnitude,BGSEc", "2001-01-02", "2001-01-02T06:00:00")
 ```
 
 ### Plot the data
