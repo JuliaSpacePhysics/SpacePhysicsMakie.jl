@@ -6,6 +6,7 @@ makedocs(
     pages = [
         "Home" => "index.md",
         "Toy Examples" => "interactive.md",
+        "Spectrograms" => "spectrogram.md",
         "Speasy Examples" => "speasy.md",
         "More Examples" => "examples.md",
     ],
