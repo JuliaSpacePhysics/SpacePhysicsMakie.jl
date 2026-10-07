@@ -14,23 +14,6 @@ _dict(; kwargs...) = Dict(kwargs)
 _hasfield(T, x) = x isa Symbol && hasfield(T, x)
 _hasfield(T) = x -> _hasfield(T, x)
 
-"""
-    resample(arr; n=setting(:resample), dim=1, verbose=false)
-
-Resample an array along the dimension `dim` to `n` points.
-If the original length is less than or equal to `n`, the original array is returned unchanged.
-"""
-function resample(arr; n = setting(:resample), dim = 1, verbose = false)
-    sz = size(arr, dim)
-    return if sz > n
-        verbose && @info "Resampling $(summary(arr)) along dimension $dim from $sz to $n points"
-        indices = round.(Int, range(1, sz, length = n))
-        selectdim(arr, dim, indices)
-    else
-        arr
-    end
-end
-
 # filter out invalid values (nothing, or empty string, or empty array)
 _is_valid(x) = true
 _is_valid(::Nothing) = false
@@ -58,28 +41,6 @@ end
     return d
 end
 
-function _intersect(nt::NamedTuple, itr...)
-    ntkeys = filter(keys(nt)) do key
-        res = true
-        val = getfield(nt, key)
-        for i in itr
-            if (!hasproperty(i, key)) || (getfield(i, key) != val)
-                res = false
-            end
-        end
-        res
-    end
-    return NamedTuple{ntkeys}(nt)
-end
-
-"""
-    _intersect(d, itr...)
-
-Find common key-value pairs across multiple dictionaries `dicts`.
-Only includes pairs where the key exists in all dictionaries with the same value.
-"""
-_intersect(d::AbstractDict, itr...) = _intersect!(copy(d), itr...)
-
 function _intersect!(d, itr...)
     for i in itr
         for (key, value) in pairs(d)
@@ -103,28 +64,8 @@ Reference:
 - https://github.com/MakieOrg/Makie.jl/issues/442
 - https://github.com/MakieOrg/Makie.jl/blob/master/src/dim-converts/dates-integration.jl
 """
-x2t(x::Millisecond) = DateTime(Dates.UTM(x))
 x2t(x::Float64) = DateTime(Dates.UTM(round(Int64, x)))
 
-
-"""
-    centers_or_edges(x; transform=identity)
-
-Get a compatible bin edges or centers for plotting with `transform`
-
-Reference: Makie.edges
-"""
-function centers_or_edges(x; center = true, transform = nothing)
-    transform = @something(transform, identity)
-    if center && transform == log10
-        edges = binedges(x)
-        if first(edges) < zero(eltype(edges)) || last(edges) < zero(eltype(edges))
-            @warn "Automatically using edge for Makie because transform == $transform and the first edge is negative"
-            center = false
-        end
-    end
-    return !center ? binedges(x; transform) : x
-end
 
 _makie_t2x(x) = x
 _makie_t2x(x::Dates.AbstractDateTime) = DateTime(x)

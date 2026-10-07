@@ -14,6 +14,10 @@
 
 - `tplot(ds::Dataset, t0, t1)` skips ISTP data variables without a time dimension instead of drawing them against an index axis.
 
+### Removed
+
+- `DEFAULTS.resample`, which no plot read.
+
 ## [0.3.0] - 2026-10-01
 
 ### Added

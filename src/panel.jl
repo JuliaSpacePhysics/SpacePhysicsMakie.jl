@@ -1,8 +1,3 @@
-"""
-Panel plotting functionality for time series.
-This module contains the `tplot_panel` function and its variants.
-"""
-
 pfdoc = """
 Determine the plotting function for a given data type.
 Extend this for custom data types to integrate with the plotting system.

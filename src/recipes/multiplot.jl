@@ -13,7 +13,7 @@ function multiplot!(ax, tas, args...; plottypes = (), kwargs...)
 end
 
 """
-    multiplot(gp, tas::MultiPlottable, args...; axis=(;), kwargs...)
+    multiplot(gp, tas, args...; axis=(;), kwargs...)
 
 Setup the panel on a position and plot multiple time series on it
 """
