@@ -7,6 +7,7 @@ using SpaceDataModel: Dataset, Product, Transformed, AbstractDataVariable, get_s
 import SpaceDataModel as SDM
 using InverseFunctions: inverse
 using NaNStatistics: nanextrema
+using Statistics: mean
 
 using Makie: ComputeGraph, Interval
 using Makie.ComputePipeline
