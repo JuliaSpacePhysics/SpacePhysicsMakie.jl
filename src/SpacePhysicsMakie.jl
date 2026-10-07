@@ -2,11 +2,11 @@ module SpacePhysicsMakie
 using Makie
 using Dates
 using Unitful
-using InverseFunctions: inverse
 using SpaceDataModel: SpaceDataModel, getdata, getmeta, times, unwrap, NoMetadata, tdimnum, hastimedim
 using SpaceDataModel: Dataset, Product, Transformed, AbstractDataVariable, get_schema, depend_1
 import SpaceDataModel as SDM
-using NaNStatistics: nanextrema, nanmedian
+using InverseFunctions: inverse
+using NaNStatistics: nanextrema
 
 using Makie: ComputeGraph, Interval
 using Makie.ComputePipeline

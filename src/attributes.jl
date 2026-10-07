@@ -61,7 +61,6 @@ function _scale_func(s::String)
     end
 end
 
-filter_by_keys(f, d) = length(d) == 0 ? Dict{Symbol, Any}() : filter(f ∘ first, pairs(d))
 filter_by_keys!(f, d) = filter!(f ∘ first, pairs(d))
 function filter_by_keys!(T::Type{<:AbstractPlot}, d)
     atts = Makie.attribute_names(T)

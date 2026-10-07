@@ -8,15 +8,10 @@ const DataSource = Union{Function, Product, Transformed}
 """Union type for data types supported by the plotting system"""
 const SupportTypes = Union{AbstractArray{<:Number}, DataSource, String}
 
-"""Union type for data that can be plotted as multiple series"""
-const MultiPlottable = Union{AbstractVector{<:SupportTypes}, NamedTuple, Tuple}
-
-
 @kwdef mutable struct Defaults
     add_title::Bool
     add_colorbar::Bool
     delay::Float64
-    resample::Int
     position
     vector_plottype::Symbol
 end
@@ -30,7 +25,6 @@ e.g. `with_theme(SpacePhysicsMakie = (; add_title = true)) do ... end`.
 - `add_title`: use the description metadata as the axis title
 - `add_colorbar`: add a colorbar to spectrogram panels
 - `delay`: idle seconds before an interactive panel refetches
-- `resample`: number of points long series are resampled to
 - `position`: legend and colorbar placement
 - `vector_plottype`: Makie plot type for plain vectors
 """
@@ -38,7 +32,6 @@ const DEFAULTS = Defaults(;
     add_title = false,
     add_colorbar = true,
     delay = 0.25,
-    resample = 6070,
     position = Right(),
     vector_plottype = :Lines,
 )

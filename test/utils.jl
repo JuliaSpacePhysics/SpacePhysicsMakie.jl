@@ -4,14 +4,6 @@
     @test d == Dict{Symbol, Any}(:a => 1)
 end
 
-@testitem "resample" begin
-    using SpacePhysicsMakie: resample
-    arr = collect(1:100)
-    @test resample(arr; n = 10) == round.(Int, range(1, 100, length = 10))
-    @test resample(arr; n = 200) === arr
-    @test size(resample(reshape(1:20, 4, 5); n = 3, dim = 2)) == (4, 3)
-end
-
 @testitem "theme settings" begin
     using SpacePhysicsMakie: setting
     using Makie

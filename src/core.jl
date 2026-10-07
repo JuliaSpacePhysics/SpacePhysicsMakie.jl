@@ -1,8 +1,3 @@
-"""
-Core functionality for time series plotting.
-This file contains the main `tplot` function and its variants.
-"""
-
 mappable(x) = values(x)
 mappable(x::SupportTypes) = (x,)
 

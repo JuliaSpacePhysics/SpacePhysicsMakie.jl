@@ -27,5 +27,3 @@ function iviz_api!(ax::Axis, f, trange; data = plottable(getdata(f, trange...)),
     on(Debouncer(update, delay), ax.finallimits)
     return plots
 end
-
-iviz_api(f, args...; kwargs...) = iviz_api!(current_axis(), f, args...; kwargs...)
