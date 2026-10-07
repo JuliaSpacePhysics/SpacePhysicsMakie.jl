@@ -4,6 +4,7 @@
 
 ### Added
 
+- `DEFAULTS.bin` (and `specplot!(ax, A; bin)`): how merged spectrogram samples combine, `mean` by default; e.g. `maximum` keeps short bursts visible, `nothing` draws every sample.
 - Time series in storage (e.g. CDFDatasets variables) plot without `transform`: each fetch is read into memory once, coordinates included.
 
 ### Changed
@@ -12,6 +13,8 @@
 
 ### Fixed
 
+- Spectrograms draw each sample and channel as one flat cell, with channel edges at geometric midpoints on a log axis, instead of blending colors between samples and cutting the outer half-cells. A sample spans half its local cadence on each side, so dense (burst) periods do not overlap their neighbours and data gaps stay empty.
+- Long spectrograms render: samples narrower than a pixel are merged as the view changes (GLMakie drew nothing past ~32k samples; CairoMakie took a minute for a day at 1 s).
 - `tplot(ds::Dataset, t0, t1)` skips ISTP data variables without a time dimension instead of drawing them against an index axis.
 
 ### Removed

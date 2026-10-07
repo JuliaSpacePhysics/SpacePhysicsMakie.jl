@@ -22,31 +22,34 @@ function _colorscale(A)
     return identity
 end
 
-# A temporary solution until https://github.com/MakieOrg/Makie.jl/issues/5193 is fixed
-# Related issue: https://github.com/MakieOrg/Makie.jl/issues/5460
-# Some optimizations are possible here https://discourse.julialang.org/t/virtual-or-lazy-representation-of-a-repeated-array/124954
-function _heatmap!(ax, x::Reactive, y::Reactive, matrix::Reactive; colorscale = nothing, kw...)
-    colorscale = @something colorscale _colorscale(matrix[])
-    mat = lift(matrix) do m
-        m′ = ustrip.(m)
-        colorscale in (log10, log) ? replace(m′, 0 => NaN) : m′
-    end
-    xx = lift((xv, m) -> repeat(xv, 1, size(m, 2)), x, matrix)
-    yy = lift((yv, m) -> yv isa AbstractVector ? repeat(yv', size(m, 1), 1) : yv, y, matrix)
-    z = lift(zero, mat)
-    return surface!(ax, xx, yy, z; color = mat, shading = NoShading, colorscale, kw...)
-end
+"""
+    specplot!(ax, A; bin = setting(:bin), kwargs...)
 
+Plot the spectrogram `A` on `ax`, one flat cell per sample and channel. Samples narrower than a pixel
+are merged with `bin` (applied to their non-NaN values; `nothing` draws every sample), and re-merged as the view changes.
 """
-Plot heatmap of a time series on the same axis
-"""
-function specplot!(ax::Axis, A; kwargs...)
+function specplot!(ax::Axis, A; bin = setting(:bin), kwargs...)
     A = _obs(A)
     attrs = heatmap_attributes(A[]; kwargs...)
-    mat = lift(a -> _time_first(a, parent(a)), A)
-    x = lift(makie_x, A)
-    y = lift(a -> _time_first(a, unwrap(depend_1(a))), A)
-    return _heatmap!(ax, x, y, mat; attrs...)
+    colorscale = @something pop!(attrs, :colorscale, nothing) _colorscale(_time_first(A[], parent(A[])))
+    cells = lift(A) do a
+        x = makie_x(a)
+        M = float.(ustrip.(_time_first(a, parent(a))))
+        colorscale in (log10, log) && replace!(M, 0 => NaN)
+        lo, hi = sample_cells(_num.(x))
+        Y = channel_edges(_time_first(a, unwrap(depend_1(a))), ax.yscale[])
+        (; lo, hi, M, Y, T = eltype(x))
+    end
+    grid = lift(cells, ax.finallimits, ax.scene.viewport) do c, limits, viewport
+        lo, hi, M, Y = isnothing(bin) ? (c.lo, c.hi, c.M, c.Y) :
+            merge_cells(c.lo, c.hi, c.M, c.Y, pixel_stop(c.lo, c.hi, limits, viewport), bin)
+        xx, yy, C = cell_grid(lo, hi, M, Y)
+        return (_fromnum.(c.T, xx), yy, C)
+    end
+    return surface!(
+        ax, lift(g -> g[1], grid), lift(g -> g[2], grid), lift(g -> zeros(size(g[3])), grid);
+        color = lift(g -> g[3], grid), shading = NoShading, colorscale, attrs...
+    )
 end
 
 # A time-varying `depend_1` is laid out like the data, so it is transposed with it.
