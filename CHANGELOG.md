@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-10-07
+
 ### Added
 
 - `DEFAULTS.bin` (and `specplot!(ax, A; bin)`): how merged spectrogram samples combine, `mean` by default; e.g. `maximum` keeps short bursts visible, `nothing` draws every sample.
