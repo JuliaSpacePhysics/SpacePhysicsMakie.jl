@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Added
+
+- Any `SpaceDataModel.DataSource` is a panel, and `tplot(ds, t0, t1)` takes any `SpaceDataModel.AbstractDataset` (e.g. `CDAWeb.Dataset`).
+
 ## [0.4.0] - 2026-10-07
 
 ### Added
