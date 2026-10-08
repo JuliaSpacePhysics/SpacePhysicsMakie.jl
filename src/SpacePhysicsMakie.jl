@@ -3,7 +3,7 @@ using Makie
 using Dates
 using Unitful
 using SpaceDataModel: SpaceDataModel, getdata, getmeta, times, unwrap, NoMetadata, tdimnum, hastimedim
-using SpaceDataModel: Dataset, Product, Transformed, AbstractDataVariable, get_schema, depend_1
+using SpaceDataModel: AbstractDataset, Product, AbstractDataVariable, get_schema, depend_1
 import SpaceDataModel as SDM
 using InverseFunctions: inverse
 using NaNStatistics: nanextrema

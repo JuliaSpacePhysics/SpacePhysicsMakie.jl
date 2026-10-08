@@ -1,11 +1,11 @@
 """
-    tplot([f,] ds::Dataset, t0, t1; vars = data_variables(getdata(ds, t0, t1)), kwargs...)
+    tplot([f,] ds::AbstractDataset, t0, t1; vars = data_variables(getdata(ds, t0, t1)), kwargs...)
 
 One panel per variable of `ds`; the panels share each fetch.
 """
-tplot(f::Drawable, ds::Dataset, t0, t1; vars = nothing, kwargs...) =
+tplot(f::Drawable, ds::AbstractDataset, t0, t1; vars = nothing, kwargs...) =
     tplot(f, _variable_sources(ds, t0, t1, vars), t0, t1; kwargs...)
-tplot(ds::Dataset, t0, t1; vars = nothing, kwargs...) =
+tplot(ds::AbstractDataset, t0, t1; vars = nothing, kwargs...) =
     tplot(_variable_sources(ds, t0, t1, vars), t0, t1; kwargs...)
 
 function _variable_sources(ds, t0, t1, vars)

@@ -3,7 +3,7 @@
 const Drawable = Union{Figure, GridPosition, GridSubposition}
 
 "Lazy sources, materialized by `getdata(x, t0, t1)`."
-const DataSource = Union{Function, Product, Transformed}
+const DataSource = Union{Function, SDM.DataSource}
 
 """Union type for data types supported by the plotting system"""
 const SupportTypes = Union{AbstractArray{<:Number}, DataSource, String}
