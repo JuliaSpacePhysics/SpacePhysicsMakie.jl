@@ -1,5 +1,6 @@
 @testitem "FunctionPlot" begin
     using Makie, Dates, DimensionalData
+    import SpaceDataModel
 
     t0 = DateTime(2001, 1, 1)
     t1 = DateTime(2001, 1, 2)
@@ -18,6 +19,10 @@
         @test_nowarn tplot([func, f2], t0, t1)
         @test_nowarn tplot([[func, f2]], t0, t1)
     end
+
+    struct Source <: SpaceDataModel.DataSource end
+    SpaceDataModel.getdata(::Source, t0, t1) = func(t0, t1)
+    @test_nowarn tplot(Source(), t0, t1)
 end
 
 @testitem "MultiAxisPlot" begin
