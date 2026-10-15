@@ -41,6 +41,9 @@ end
     @test labels(A) == ["x", "y", "z"]
     @test !isspectrogram(A)
     @test isspectrogram(rand(t, Y(1:3); metadata = Dict("CATDESC" => "", "DISPLAY_TYPE" => "spectrogram")))
+    @test isspectrogram(rand(t, Y(1:8)))
+    @test !isspectrogram(rand(t, Y(string.(1:8))))
+    @test isspectrogram(rand(t, Y(string.(1:8)); metadata = Dict("CATDESC" => "", "DISPLAY_TYPE" => "spectrogram")))
     @test clabel(A) == "V\n(km/s)"
 end
 

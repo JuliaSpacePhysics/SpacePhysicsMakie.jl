@@ -3,11 +3,9 @@ isspectrogram(A) = false
 # Determine if data should be plotted as a spectrogram using the metadata schema.
 function isspectrogram(A::AbstractMatrix; threshold = 8, schema = get_schema(A))
     m = schema(A)[:display_type]
-    return if isnothing(m)
-        size(A, otherdimnum(A)) >= threshold
-    else
-        occursin("spect", m)
-    end
+    isnothing(m) || return occursin("spect", m)
+    # Channels named by strings are components (e.g. sectors, Bx/By/Bz).
+    return !(unwrap(depend_1(A)) isa AbstractVector{<:AbstractString}) && size(A, otherdimnum(A)) >= threshold
 end
 
 
@@ -127,6 +125,8 @@ end
 _edge_transform(scale) = scale in (log10, log, log2) ? scale : identity
 channel_edges(y, scale) = _channel_edges(y, _edge_transform(scale))
 channel_edges(y::AbstractArray{<:Quantity}, scale) = channel_edges(ustrip(y), scale) * Unitful.unit(eltype(y))
+# Channels named by labels (CDF `LABL_PTR_1` without `DEPEND_1`) sit at their channel numbers.
+channel_edges(y::AbstractVector{<:AbstractString}, scale) = channel_edges(1:length(y), scale)
 
 _channel_edges(y::AbstractVector, f::F) where {F} = _edges!(similar(y, float(eltype(y)), length(y) + 1), y, f)
 function _channel_edges(y::AbstractMatrix, f::F) where {F}
