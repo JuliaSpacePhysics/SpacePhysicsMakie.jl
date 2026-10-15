@@ -69,6 +69,13 @@ end
     @test channel_edges([1.0 10.0; 10.0 100.0] * u"eV", log10) ≈ exp10.([-0.5 0.5 1.5; 0.5 1.5 2.5]) * u"eV"
 end
 
+@testitem "specplot! with labelled channels" begin
+    using Makie, Dates, DimensionalData
+    A = rand(Ti(DateTime(2000) .+ Hour.(0:3)), Y(["sect 0", "sect 1", "sect 2"]))
+    yy = specplot!(Axis(Figure()[1, 1]), A; bin = nothing)[2][]
+    @test extrema(yy) == (0.5, 3.5)
+end
+
 @testitem "specplot! with a time-varying depend_1" begin
     using Makie, Dates
     using SpacePhysicsMakie: Materialized, channel_edges

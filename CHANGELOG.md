@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Changed
+
+- A time series whose channels are named by strings (e.g. CDF `LABL_PTR_1` labels without `DEPEND_1`) plots as lines unless its `DISPLAY_TYPE` says spectrogram.
+
 ## [0.4.0] - 2026-10-07
 
 ### Added
