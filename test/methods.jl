@@ -14,3 +14,15 @@
     tvspan!(faxes, t[7], t[8])
     @test all(ax -> count(p -> p isa VSpan, ax.scene.plots) == 1 + (ax === faxes.axes[1]), faxes.axes)
 end
+
+@testitem "overlaid single-channel series are labeled by name" begin
+    using Makie, Dates, DimensionalData
+    t = Ti(DateTime(2020) .+ Hour.(0:3))
+    ni = rand(t; name = :Ni)
+    ne = rand(t; name = :Ne)
+    faxes = tplot([[ni, ne]])
+    lines = filter(p -> p isa Lines, faxes.axes[1].scene.plots)
+    @test [l.label[] for l in lines] == ["Ni", "Ne"]
+    unnamed = tplot([[rand(t), ne]]).axes[1].scene.plots
+    @test [l.label[] for l in filter(p -> p isa Lines, unnamed)] == [nothing, "Ne"]
+end

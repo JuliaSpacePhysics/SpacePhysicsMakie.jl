@@ -8,8 +8,16 @@ function multiplot!(ax, tas, args...; plottypes = (), kwargs...)
         x = lift(cur -> plottable(cur[i]), c)
         ptype = get(ptypes, i, plottype(x[]))
         pf = plotfunc!(ptype)
-        pf(ax, x; kwargs...)
+        pf(ax, x; _overlay_labels(ptype, x[])..., kwargs...)
     end
+end
+
+# Overlaid single-channel series are told apart by name, as channels of one series are by their labels.
+_overlay_labels(_, _) = (;)
+function _overlay_labels(::Type{LinesPlot}, x::AbstractVector)
+    labels(x) isa NoMetadata || return (;)
+    name = get_schema(x)(x, :name)
+    return isempty(name) ? (;) : (; labels = (name,))
 end
 
 """
