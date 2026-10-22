@@ -37,7 +37,7 @@ function specplot!(ax::Axis, A; bin = setting(:bin), kwargs...)
         M = float.(ustrip.(_time_first(a, parent(a))))
         colorscale in (log10, log) && replace!(M, 0 => NaN)
         lo, hi = sample_cells(_num.(x))
-        Y = channel_edges(_time_first(a, unwrap(depend_1(a))), ax.yscale[])
+        Y = channel_edges(_time_first(a, _channels(a)), ax.yscale[])
         (; lo, hi, M, Y, T = eltype(x))
     end
     grid = lift(cells, ax.finallimits, ax.scene.viewport) do c, limits, viewport
@@ -51,6 +51,11 @@ function specplot!(ax::Axis, A; bin = setting(:bin), kwargs...)
         color = lift(g -> g[3], grid), shading = NoShading, colorscale, attrs...
     )
 end
+
+# Channels without coordinates, or named by labels (CDF `LABL_PTR_1` without `DEPEND_1`), sit at their numbers.
+_channels(a) = _channels(a, unwrap(depend_1(a)))
+_channels(a, y) = y
+_channels(a, ::Union{Nothing, AbstractVector{<:AbstractString}}) = axes(a, otherdimnum(a))
 
 # A time-varying `depend_1` is laid out like the data, so it is transposed with it.
 _time_first(a, m::AbstractMatrix) = timedimnum(a) == ndims(a) ? transpose(m) : m

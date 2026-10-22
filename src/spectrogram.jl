@@ -125,8 +125,6 @@ end
 _edge_transform(scale) = scale in (log10, log, log2) ? scale : identity
 channel_edges(y, scale) = _channel_edges(y, _edge_transform(scale))
 channel_edges(y::AbstractArray{<:Quantity}, scale) = channel_edges(ustrip(y), scale) * Unitful.unit(eltype(y))
-# Channels named by labels (CDF `LABL_PTR_1` without `DEPEND_1`) sit at their channel numbers.
-channel_edges(y::AbstractVector{<:AbstractString}, scale) = channel_edges(1:length(y), scale)
 
 _channel_edges(y::AbstractVector, f::F) where {F} = _edges!(similar(y, float(eltype(y)), length(y) + 1), y, f)
 function _channel_edges(y::AbstractMatrix, f::F) where {F}
