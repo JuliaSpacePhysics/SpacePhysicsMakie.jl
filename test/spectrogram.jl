@@ -76,6 +76,15 @@ end
     @test extrema(yy) == (0.5, 3.5)
 end
 
+@testitem "specplot! without a depend_1" begin
+    using Makie, Dates
+    using SpacePhysicsMakie: Materialized
+    using SpaceDataModel: DefaultSchema
+    A = Materialized(rand(4, 5), (DateTime(2000) .+ Hour.(0:3), nothing), 1, Dict(), "flux", DefaultSchema())
+    yy = specplot!(Axis(Figure()[1, 1]), A)[2][]
+    @test extrema(yy) == (0.5, 5.5)
+end
+
 @testitem "specplot! with a time-varying depend_1" begin
     using Makie, Dates
     using SpacePhysicsMakie: Materialized, channel_edges
